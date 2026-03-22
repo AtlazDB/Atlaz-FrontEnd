@@ -39,7 +39,13 @@
             <option value="Oficina">Oficina</option>
             <option value="Supervisão">Supervisão</option>
             <option value="Translado">Translado</option>
+            <option value="Verificação">Verificação</option>
         </select>
+
+        <div class="campo-justificativa">
+           <label class="campo-label">Justificativa</label>
+            <textarea v-model="justificativa" rows="3" placeholder="Informações adicionais..."></textarea>
+        </div>
 
       </div>
 
@@ -149,23 +155,82 @@
         >
       </div>
 
+      <div class="Datas">
+
+       <div class="campo-data">
+        <label class="campo-label">Data Saída</label>
+       <input
+        type="text"
+        v-model="dataSaida"
+        placeholder="DD/MM/YYYY">
+        </div>
+
+       <div class="campo-data">
+        <label class="campo-label">Data Chegada</label>
+        <input type="text" v-model="dataChegada" placeholder="DD/MM/YYYY">
+       </div>
+      </div>
+
+    </div>
+
+    <div class="Abastecimento">
+
+       <div class="campo-Litros">
+        <label class="campo-label">Litros</label>
+        <input
+          type="text"
+          class="campo-input"
+          v-model="Litros"
+          placeholder="0,00"
+        >
+      </div>
+
+       <div class="campo-Valor">
+        <label class="campo-label">Valor Total (R$)</label>
+        <input
+          type="text"
+          class="campo-input"
+          v-model="Valor"
+          placeholder="R$ 0,00"
+        >
+      </div>
+
+      <div class="campo-NotaFiscal">
+        <label class="campo-label">N° Nota Fiscal</label>
+        <input
+          type="text"
+          class="campo-input"
+          v-model="notaFiscal"
+          placeholder="000.000.000"
+        >
+      </div>
+
     </div>
 
   </div>
 </template>
 
 <script>
+
 export default {
   data() {
     return {
       viaturaSelecionada: "",
+
       ocorrenciaSelecionada: "",
       requisitante: "",
       destinoSelecionado: "",
+
       SaidaKM: "",
       ChegadaKM: "",
       HorarioSaida: "",
-      HorarioChegada: ""
+      HorarioChegada: "",
+      dataSaida: "",
+      dataChegada: "",
+
+      Litros: "",
+      Valor: "",
+      notaFiscal: ""
   }
 }
 }
