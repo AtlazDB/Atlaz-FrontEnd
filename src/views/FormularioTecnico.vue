@@ -59,6 +59,67 @@
           v-model="requisitante"
           placeholder="Ex: Indústrias e Comércios"
         >
+<template>
+  <div class="formulario-container">
+
+    <header class="header">
+      <h1></h1>
+    </header>
+
+    <div class="identificacaoViatura">
+      <h2 class="identificacao-titulo">IDENTIFICAÇÃO</h2>
+
+      <div class="dropdown-viatura">
+        <label class="dropdown-label">Viatura</label>
+        <select class="dropdown-select" v-model="viaturaSelecionada">
+          <option value="">Selecione...</option>
+          <option value="L746">L746 - HYUNDAI HB20</option>
+          <option value="L747">L747 - FIAT ARGO</option>
+          <option value="L748">L748 - VW GOL</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="PlanejamentoViagem">
+      <h2 class="Planejamento-titulo">PLANEJAMENTO</h2>
+
+      <div class="dropdown-planejamento-viagem">
+
+        <label class="dropdown-label">Tipo de Ocorrência</label>
+
+        <select class="dropdown-select" v-model="ocorrenciaSelecionada">
+            <option value="">Selecione...</option>
+            <option value="Administrativo">Administrativo</option>
+            <option value="Auditoria">Auditoria</option>
+            <option value="Ensaio">Ensaio</option>
+            <option value="Fiscalização">Fiscalização</option>
+            <option value="Inspeção">Inspeção</option>
+            <option value="Inspetoria">Inspetoria</option>
+            <option value="Juridico">Juridico</option>
+            <option value="Oficina">Oficina</option>
+            <option value="Supervisão">Supervisão</option>
+            <option value="Translado">Translado</option>
+            <option value="Verificação">Verificação</option>
+        </select>
+
+        <div class="campo-justificativa">
+           <label class="campo-label">Justificativa</label>
+            <textarea v-model="justificativa" rows="3" placeholder="Informações adicionais..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="PlanejamentoRequisitante">
+
+      <div class="campo-requisitante">
+        <label class="campo-label">Requisitante</label>
+        <input
+          type="text"
+          class="campo-input"
+          v-model="requisitante"
+          placeholder="Ex: Indústrias e Comércios"
+        >
       </div>
       </div>
 
@@ -232,6 +293,99 @@ export default {
       Valor: "",
       notaFiscal: ""
   }
-}
+},
+  computed: {
+    kmPercorrido() {
+      if (this.SaidaKM && this.ChegadaKM) {
+        const saida = parseFloat(this.SaidaKM);
+        const chegada = parseFloat(this.ChegadaKM);
+        return (chegada - saida).toFixed(2);
+      }
+      return 0;
+    },
+
+    valorFormatado() {
+      if (this.Valor) {
+        return new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(this.Valor);
+      }
+      return 'R$ 0,00';
+    }
+  },
+
+  methods: {
+    validarFormulario() {
+      const camposObrigatorios = [
+        { campo: this.viaturaSelecionada, nome: "Viatura" },
+        { campo: this.ocorrenciaSelecionada, nome: "Tipo de Ocorrência" },
+        { campo: this.requisitante, nome: "Requisitante" },
+        { campo: this.destinoSelecionado, nome: "Destino" },
+        { campo: this.SaidaKM, nome: "Quilometragem de Saída" }
+      ];
+
+           const camposVazios = camposObrigatorios.filter(item => !item.campo);
+
+      if (camposVazios.length > 0) {
+        const mensagem = `Preencha os campos obrigatórios: ${camposVazios.map(item => item.nome).join(", ")}`;
+        alert(mensagem);
+        return false;
+      }
+
+      return true;
+    },
+
+    validarNumeros() {
+      if (this.SaidaKM && isNaN(parseFloat(this.SaidaKM))) {
+        alert("Quilometragem de saída deve ser um número válido");
+        return false;
+      }
+
+      if (this.ChegadaKM && isNaN(parseFloat(this.ChegadaKM))) {
+        alert("Quilometragem de chegada deve ser um número válido");
+        return false;
+      }
+
+      if (this.Litros && isNaN(parseFloat(this.Litros))) {
+        alert("Litros deve ser um número válido");
+        return false;
+      }
+
+      if (this.Valor && isNaN(parseFloat(this.Valor))) {
+        alert("Valor deve ser um número válido");
+        return false;
+      }
+
+      return true;
+    },
+
+    validarDatas() {
+      if (this.dataSaida && !this.validarData(this.dataSaida)) {
+        alert("Data de saída inválida. Use o formato DD/MM/YYYY");
+        return false;
+      }
+
+      if (this.dataChegada && !this.validarData(this.dataChegada)) {
+        alert("Data de chegada inválida. Use o formato DD/MM/YYYY");
+        return false;
+      }
+
+      return true;
+    },
+
+    validarData(data) {
+      const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+      if (!regex.test(data)) return false;
+
+      const [dia, mes, ano] = data.split('/').map(Number);
+      const dataObj = new Date(ano, mes - 1, dia);
+
+      return dataObj.getFullYear() === ano &&
+             dataObj.getMonth() === mes - 1 &&
+             dataObj.getDate() === dia;
+    },
+
+    }
 }
 </script>
