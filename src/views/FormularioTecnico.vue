@@ -59,67 +59,6 @@
           v-model="requisitante"
           placeholder="Ex: Indústrias e Comércios"
         >
-<template>
-  <div class="formulario-container">
-
-    <header class="header">
-      <h1></h1>
-    </header>
-
-    <div class="identificacaoViatura">
-      <h2 class="identificacao-titulo">IDENTIFICAÇÃO</h2>
-
-      <div class="dropdown-viatura">
-        <label class="dropdown-label">Viatura</label>
-        <select class="dropdown-select" v-model="viaturaSelecionada">
-          <option value="">Selecione...</option>
-          <option value="L746">L746 - HYUNDAI HB20</option>
-          <option value="L747">L747 - FIAT ARGO</option>
-          <option value="L748">L748 - VW GOL</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div class="PlanejamentoViagem">
-      <h2 class="Planejamento-titulo">PLANEJAMENTO</h2>
-
-      <div class="dropdown-planejamento-viagem">
-
-        <label class="dropdown-label">Tipo de Ocorrência</label>
-
-        <select class="dropdown-select" v-model="ocorrenciaSelecionada">
-            <option value="">Selecione...</option>
-            <option value="Administrativo">Administrativo</option>
-            <option value="Auditoria">Auditoria</option>
-            <option value="Ensaio">Ensaio</option>
-            <option value="Fiscalização">Fiscalização</option>
-            <option value="Inspeção">Inspeção</option>
-            <option value="Inspetoria">Inspetoria</option>
-            <option value="Juridico">Juridico</option>
-            <option value="Oficina">Oficina</option>
-            <option value="Supervisão">Supervisão</option>
-            <option value="Translado">Translado</option>
-            <option value="Verificação">Verificação</option>
-        </select>
-
-        <div class="campo-justificativa">
-           <label class="campo-label">Justificativa</label>
-            <textarea v-model="justificativa" rows="3" placeholder="Informações adicionais..."></textarea>
-        </div>
-
-      </div>
-
-      <div class="PlanejamentoRequisitante">
-
-      <div class="campo-requisitante">
-        <label class="campo-label">Requisitante</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="requisitante"
-          placeholder="Ex: Indústrias e Comércios"
-        >
       </div>
       </div>
 
@@ -268,6 +207,16 @@
 
     </div>
 
+    <div class="botao-enviar">
+     <button
+    type="button"
+    class="btn-enviar"
+    @click="salvarDados"
+  >
+    Enviar
+   </button>
+</div>
+
   </div>
 </template>
 
@@ -279,6 +228,7 @@ export default {
       viaturaSelecionada: "",
 
       ocorrenciaSelecionada: "",
+      justificativa: "",
       requisitante: "",
       destinoSelecionado: "",
 
@@ -386,6 +336,70 @@ export default {
              dataObj.getDate() === dia;
     },
 
+    formatarKM(valor) {
+      if (!valor) return "";
+      return valor.replace(/\D/g, '').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    },
+
+    formatarValorMonetario(valor) {
+      if (!valor) return "";
+      let v = valor.replace(/\D/g, '');
+      v = (parseInt(v) / 100).toFixed(2);
+      return v.replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+    },
+
+    resetarFormulario() {
+      this.viaturaSelecionada = "";
+      this.ocorrenciaSelecionada = "";
+      this.justificativa = "";
+      this.requisitante = "";
+      this.destinoSelecionado = "";
+      this.SaidaKM = "";
+      this.ChegadaKM = "";
+      this.HorarioSaida = "";
+      this.HorarioChegada = "";
+      this.dataSaida = "";
+      this.dataChegada = "";
+      this.Litros = "";
+      this.Valor = "";
+      this.notaFiscal = "";
+    },
+
+    async salvarDados(){
+      if (!this.validarFormulario()) return;
+      if (!this.validarNumeros()) return;
+      if (!this.validarDatas()) return;
+
+      const dados = {
+        identificacao: {
+          viatura: this.viaturaSelecionada
+        },
+
+        planejamento: {
+          ocorrencia: this.ocorrenciaSelecionada,
+          justificativa: this.justificativa,
+          requisitante: this.requisitante,
+          destino: this.destinoSelecionado
+        },
+
+        medicao: {
+          saida: this.saida,
+          chegada: this.chegada,
+          horarioSaida: this.HorarioSaida,
+          horarioChegada:this.HorarioChegada,
+          dataSaida: this.dataSaida,
+          dataChegada: this.dataChegada
+        },
+
+        abastecimento: {
+          litros: this.Litros,
+          valor: this.valor,
+          notaFiscal:this.notaFiscal
+        },
+         dataRegistro: new Date().toISOString()
+    };
+
     }
+ }
 }
 </script>
