@@ -222,6 +222,8 @@
 
 <script>
 
+import api from '@/services/api'
+
 export default {
   data() {
     return {
@@ -265,8 +267,88 @@ export default {
     }
   },
 
+  async mounted() {
+    await this.carregarViaturas();
+  },
+
   methods: {
-    validarFormulario() {
+
+     async carregarViaturas() {
+      try {
+        this.viaturas = await viaturaService.listar();
+        console.log('✅ Viaturas carregadas:', this.viaturas);
+      } catch (error) {
+        console.error('❌ Erro ao carregar viaturas:', error);
+        this.exibirMensagem('Erro ao carregar lista de viaturas', 'erro');
+      }
+    },
+
+    async salvarDados(){
+      if (!this.validarFormulario()) return;
+      if (!this.validarNumeros()) return;
+      if (!this.validarDatas()) return;
+
+      const viaturaSelecionadaObj = this.viaturas.find(v => v.id == this.viaturaSelecionada);
+
+      const dados = {
+        identificacao: {
+          viatura: this.viaturaSelecionada
+        },
+
+        planejamento: {
+          ocorrencia: this.ocorrenciaSelecionada,
+          justificativa: this.justificativa,
+          requisitante: this.requisitante,
+          destino: this.destinoSelecionado
+        },
+
+        medicao: {
+          kmSaida: this.saidaKM,
+          Kmchegada: this.ChegadaKM,
+          horarioSaida: this.HorarioSaida,
+          horarioChegada:this.HorarioChegada,
+          dataSaida: this.dataSaida,
+          dataChegada: this.dataChegada
+        },
+
+        abastecimento: {
+          litros: this.Litros,
+          valorTotal: this.valor,
+          notaFiscal:this.notaFiscal
+        },
+         dataRegistro: new Date().toISOString()
+    };
+
+    try {
+        const response = await viagemService.salvar(dados);
+
+        console.log('Dados salvos com sucesso:', response);
+        this.exibirMensagem('Dados salvos com sucesso!', 'sucesso');
+        this.resetarFormulario();
+
+      } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+
+       if (error.response) {
+        const status = error.response.status;
+
+      if (status === 400) {
+         this.exibirMensagem('Erro de validação. Verifique os dados informados.', 'erro');
+      } else if (status === 500) {
+         this.exibirMensagem('Erro no servidor. Tente novamente mais tarde.', 'erro');
+      } else {
+         this.exibirMensagem(`Erro ${status} ao salvar dados.`, 'erro');
+      }
+      } else if (error.request) {
+        this.exibirMensagem(`Erro: ${error.message}`, 'erro');
+      }
+
+      } finally {
+        this.carregando = false;
+      }
+    },
+
+  validarFormulario() {
       const camposObrigatorios = [
         { campo: this.viaturaSelecionada, nome: "Viatura" },
         { campo: this.ocorrenciaSelecionada, nome: "Tipo de Ocorrência" },
@@ -275,49 +357,50 @@ export default {
         { campo: this.SaidaKM, nome: "Quilometragem de Saída" }
       ];
 
-           const camposVazios = camposObrigatorios.filter(item => !item.campo);
+      const camposVazios = camposObrigatorios.filter(item => !item.campo);
 
       if (camposVazios.length > 0) {
         const mensagem = `Preencha os campos obrigatórios: ${camposVazios.map(item => item.nome).join(", ")}`;
-        alert(mensagem);
+        this.exibirMensagem(mensagem, 'erro');
         return false;
       }
 
       return true;
     },
 
-    validarNumeros() {
+ validarNumeros() {
       if (this.SaidaKM && isNaN(parseFloat(this.SaidaKM))) {
-        alert("Quilometragem de saída deve ser um número válido");
+        this.exibirMensagem("Quilometragem de saída deve ser um número válido", 'erro');
         return false;
       }
 
       if (this.ChegadaKM && isNaN(parseFloat(this.ChegadaKM))) {
-        alert("Quilometragem de chegada deve ser um número válido");
+        this.exibirMensagem("Quilometragem de chegada deve ser um número válido", 'erro');
         return false;
       }
 
       if (this.Litros && isNaN(parseFloat(this.Litros))) {
-        alert("Litros deve ser um número válido");
+        this.exibirMensagem("Litros deve ser um número válido", 'erro');
         return false;
       }
 
       if (this.Valor && isNaN(parseFloat(this.Valor))) {
-        alert("Valor deve ser um número válido");
+        this.exibirMensagem("Valor deve ser um número válido", 'erro');
         return false;
       }
 
       return true;
     },
 
+
     validarDatas() {
       if (this.dataSaida && !this.validarData(this.dataSaida)) {
-        alert("Data de saída inválida. Use o formato DD/MM/YYYY");
+        this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
 
       if (this.dataChegada && !this.validarData(this.dataChegada)) {
-        alert("Data de chegada inválida. Use o formato DD/MM/YYYY");
+        this.exibirMensagem("Data de chegada inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
 
@@ -335,20 +418,7 @@ export default {
              dataObj.getMonth() === mes - 1 &&
              dataObj.getDate() === dia;
     },
-
-    formatarKM(valor) {
-      if (!valor) return "";
-      return valor.replace(/\D/g, '').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-    },
-
-    formatarValorMonetario(valor) {
-      if (!valor) return "";
-      let v = valor.replace(/\D/g, '');
-      v = (parseInt(v) / 100).toFixed(2);
-      return v.replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-    },
-
-    resetarFormulario() {
+ resetarFormulario() {
       this.viaturaSelecionada = "";
       this.ocorrenciaSelecionada = "";
       this.justificativa = "";
@@ -363,43 +433,8 @@ export default {
       this.Litros = "";
       this.Valor = "";
       this.notaFiscal = "";
-    },
-
-    async salvarDados(){
-      if (!this.validarFormulario()) return;
-      if (!this.validarNumeros()) return;
-      if (!this.validarDatas()) return;
-
-      const dados = {
-        identificacao: {
-          viatura: this.viaturaSelecionada
-        },
-
-        planejamento: {
-          ocorrencia: this.ocorrenciaSelecionada,
-          justificativa: this.justificativa,
-          requisitante: this.requisitante,
-          destino: this.destinoSelecionado
-        },
-
-        medicao: {
-          saida: this.saida,
-          chegada: this.chegada,
-          horarioSaida: this.HorarioSaida,
-          horarioChegada:this.HorarioChegada,
-          dataSaida: this.dataSaida,
-          dataChegada: this.dataChegada
-        },
-
-        abastecimento: {
-          litros: this.Litros,
-          valor: this.valor,
-          notaFiscal:this.notaFiscal
-        },
-         dataRegistro: new Date().toISOString()
-    };
-
     }
- }
-}
+  }
+};
+
 </script>
