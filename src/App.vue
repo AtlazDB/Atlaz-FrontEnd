@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <SuaView />
-  </div>
+  <router-view />
 </template>
 
-<script setup>
-import FormularioTecnico from './views/FormularioTecnico.vue' 
+<script>
+export default {
+  name: 'App'
+}
 </script>

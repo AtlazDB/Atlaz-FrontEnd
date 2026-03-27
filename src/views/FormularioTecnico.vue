@@ -1,6 +1,6 @@
 <template>
   <div class="formulario-container">
-
+    
     <header class="header">
       <h1></h1>
     </header>
@@ -50,12 +50,12 @@
       </div>
 
       <div class="PlanejamentoRequisitante">
-
+      
       <div class="campo-requisitante">
         <label class="campo-label">Requisitante</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="requisitante"
           placeholder="Ex: Indústrias e Comércios"
         >
@@ -111,7 +111,7 @@
             <option value="Tremembé">Tremembé</option>
             <option value="Ubatuba">Ubatuba</option>
           </select>
-
+        
       </div>
       </div>
     </div>
@@ -121,36 +121,36 @@
 
        <div class="campo-Saida">
         <label class="campo-label">Saída(KM)</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="SaidaKM"
         >
       </div>
 
       <div class="campo-Chegada">
         <label class="campo-label">Chegada(KM)</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="ChegadaKM"
         >
       </div>
 
       <div class="campo-Horario-Saida">
         <label class="campo-label">Hora de Saída</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="HorarioSaida"
         >
       </div>
 
       <div class="campo-Horario-Chegada">
         <label class="campo-label">Hora de Chegada</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="HorarioChegada"
         >
       </div>
@@ -164,7 +164,7 @@
         v-model="dataSaida"
         placeholder="DD/MM/YYYY">
         </div>
-
+  
        <div class="campo-data">
         <label class="campo-label">Data Chegada</label>
         <input type="text" v-model="dataChegada" placeholder="DD/MM/YYYY">
@@ -172,14 +172,14 @@
       </div>
 
     </div>
-
+    
     <div class="Abastecimento">
 
        <div class="campo-Litros">
         <label class="campo-label">Litros</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="Litros"
           placeholder="0,00"
         >
@@ -187,9 +187,9 @@
 
        <div class="campo-Valor">
         <label class="campo-label">Valor Total (R$)</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="Valor"
           placeholder="R$ 0,00"
         >
@@ -197,9 +197,9 @@
 
       <div class="campo-NotaFiscal">
         <label class="campo-label">N° Nota Fiscal</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="notaFiscal"
           placeholder="000.000.000"
         >
@@ -208,16 +208,16 @@
     </div>
 
     <div class="botao-enviar">
-     <button
-    type="button"
-    class="btn-enviar"
+     <button 
+    type="button" 
+    class="btn-enviar" 
     @click="salvarDados"
   >
     Enviar
    </button>
 </div>
-
-  </div>
+    
+  </div> 
 </template>
 
 <script>
@@ -227,11 +227,11 @@ import api from '@/services/api'
 export default {
   data() {
     return {
-      viaturaSelecionada: "",
+      viaturaSelecionada: "", 
 
-      ocorrenciaSelecionada: "",
+      ocorrenciaSelecionada: "",  
       justificativa: "",
-      requisitante: "",
+      requisitante: "",            
       destinoSelecionado: "",
 
       SaidaKM: "",
@@ -239,7 +239,7 @@ export default {
       HorarioSaida: "",
       HorarioChegada: "",
       dataSaida: "",
-      dataChegada: "",
+      dataChegada: "", 
 
       Litros: "",
       Valor: "",
@@ -255,7 +255,7 @@ export default {
       }
       return 0;
     },
-
+    
     valorFormatado() {
       if (this.Valor) {
         return new Intl.NumberFormat('pt-BR', {
@@ -266,7 +266,7 @@ export default {
       return 'R$ 0,00';
     }
   },
-
+   
   async mounted() {
     await this.carregarViaturas();
   },
@@ -321,17 +321,17 @@ export default {
 
     try {
         const response = await viagemService.salvar(dados);
-
+        
         console.log('Dados salvos com sucesso:', response);
         this.exibirMensagem('Dados salvos com sucesso!', 'sucesso');
         this.resetarFormulario();
-
+        
       } catch (error) {
         console.error('Erro ao salvar dados:', error);
-
+        
        if (error.response) {
         const status = error.response.status;
-
+  
       if (status === 400) {
          this.exibirMensagem('Erro de validação. Verifique os dados informados.', 'erro');
       } else if (status === 500) {
@@ -358,13 +358,13 @@ export default {
       ];
 
       const camposVazios = camposObrigatorios.filter(item => !item.campo);
-
+      
       if (camposVazios.length > 0) {
         const mensagem = `Preencha os campos obrigatórios: ${camposVazios.map(item => item.nome).join(", ")}`;
         this.exibirMensagem(mensagem, 'erro');
         return false;
       }
-
+      
       return true;
     },
 
@@ -373,49 +373,49 @@ export default {
         this.exibirMensagem("Quilometragem de saída deve ser um número válido", 'erro');
         return false;
       }
-
+      
       if (this.ChegadaKM && isNaN(parseFloat(this.ChegadaKM))) {
         this.exibirMensagem("Quilometragem de chegada deve ser um número válido", 'erro');
         return false;
       }
-
+      
       if (this.Litros && isNaN(parseFloat(this.Litros))) {
         this.exibirMensagem("Litros deve ser um número válido", 'erro');
         return false;
       }
-
+      
       if (this.Valor && isNaN(parseFloat(this.Valor))) {
         this.exibirMensagem("Valor deve ser um número válido", 'erro');
         return false;
       }
-
+      
       return true;
     },
-
+    
 
     validarDatas() {
       if (this.dataSaida && !this.validarData(this.dataSaida)) {
         this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
-
+      
       if (this.dataChegada && !this.validarData(this.dataChegada)) {
         this.exibirMensagem("Data de chegada inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
-
+      
       return true;
     },
-
+    
     validarData(data) {
       const regex = /^\d{2}\/\d{2}\/\d{4}$/;
       if (!regex.test(data)) return false;
-
+      
       const [dia, mes, ano] = data.split('/').map(Number);
       const dataObj = new Date(ano, mes - 1, dia);
-
-      return dataObj.getFullYear() === ano &&
-             dataObj.getMonth() === mes - 1 &&
+      
+      return dataObj.getFullYear() === ano && 
+             dataObj.getMonth() === mes - 1 && 
              dataObj.getDate() === dia;
     },
  resetarFormulario() {
@@ -438,3 +438,7 @@ export default {
 };
 
 </script>
+
+<style scoped>
+
+</style>
