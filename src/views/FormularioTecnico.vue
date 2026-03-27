@@ -1,15 +1,17 @@
 <template>
-  <div class="formulario-container">
 
-    <Sidebar 
+  <div class="tela">
+     <Sidebar 
       nome="Karthi Madesh"
       cargo="Técnico"
       @abrirFormulario="acaoFormulario"
     />
+
+  <div class="formulario-container">
     <header class="header">
       <h1></h1>
     </header>
-
+    
     <div class="identificacaoViatura">
       <h2 class="identificacao-titulo">IDENTIFICAÇÃO</h2>
 
@@ -223,6 +225,7 @@
 </div>
     
   </div> 
+  </div>
 </template>
 
 <script>
@@ -453,11 +456,11 @@ computed: {
 
 <style scoped>
 
-.formulario{
+.formulario-container{
   max-width: 900px;
-  margin: auto;
+  margin: 0;
   background: #ffffff;
-  padding: 30px;
+  padding: 10px;
   border-radius: 10px;
 }
 
@@ -563,6 +566,5 @@ textArea {
     grid-template-columns: 1fr;
   }
 }
-
 
 </style>
