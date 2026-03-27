@@ -98,7 +98,7 @@
             <option value="Potim">Potim</option>
             <option value="Queluz">Queluz</option>
             <option value="Redenção da Serra">Redenção da Serra</option>
-            <option value="Roseira"></option>
+            <option value="Roseira">Roseira</option>
             <option value="Salesópolis">Salesópolis</option>
             <option value="Santa Branca">Santa Branca</option>
             <option value="Santo Antônio do Pinhal">Santo Antônio do Pinhal</option>
@@ -442,28 +442,46 @@ computed: {
 
 <style scoped>
 .formulario{
-
+  max-width: 900px;
+  margin: auto;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 10px;
 }
 
 .identificacao-titulo,
 .Planejamento-titulo,
 .Medicao-titulo {
-
+  font-size: 14px;
+  color: #003366;
+  margin-bottom: 15px;
+  margin-top: 20px;
 }
 
 
 .dropdown-label,
 .campo-label {
-
+  display: block;
+  font-size: 13px;
+  margin-bottom: 5px;
+  color: #333;
 }
 
 .dropdown-select,
 .campo-input,
 textarea {
-
+ width: 100%;
+  padding: 10px;
+  border: 1px solid #697179;
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 14px;
 }
 
 textArea {
-
+   resize: none;
+   min-height: 70px;
 }
+
 </style>
