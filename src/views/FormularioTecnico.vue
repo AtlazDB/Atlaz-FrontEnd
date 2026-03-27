@@ -1,6 +1,11 @@
 <template>
   <div class="formulario-container">
-    
+
+    <Sidebar 
+      nome="Karthi Madesh"
+      cargo="Técnico"
+      @abrirFormulario="acaoFormulario"
+    />
     <header class="header">
       <h1></h1>
     </header>
@@ -222,9 +227,13 @@
 
 <script>
 
-import api from '@/services/api'
+import Sidebar from "@/views/Sidebar.vue";
+
 
 export default {
+   components: {
+    Sidebar
+  },
   data() {
     return {
       viaturaSelecionada: "", 
@@ -273,7 +282,9 @@ computed: {
   },
   
   methods: {
+    acaoFormulario() {
 
+    },
      async carregarViaturas() {
       try {
         this.viaturas = await viaturaService.listar();
@@ -552,5 +563,6 @@ textArea {
     grid-template-columns: 1fr;
   }
 }
+
 
 </style>
