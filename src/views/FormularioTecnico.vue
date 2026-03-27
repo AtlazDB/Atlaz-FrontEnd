@@ -6,7 +6,9 @@
       cargo="Técnico"
       @abrirFormulario="acaoFormulario"
     />
+     <div class="main-content">
 
+        <div class="form-box">
   <div class="formulario-container">
     <header class="header">
       <h1></h1>
@@ -222,10 +224,11 @@
   >
     Enviar
    </button>
-</div>
-    
-  </div> 
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -456,11 +459,25 @@ computed: {
 
 <style scoped>
 
+.tela {
+  display: flex;
+}
+
+.main-content {
+  flex: 1;  
+  display: flex;
+  justify-content: center;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 900px;
+  padding: 30px;
+}
+
 .formulario-container{
   max-width: 900px;
-  margin: 0;
   background: #ffffff;
-  padding: 10px;
   border-radius: 10px;
 }
 
@@ -468,17 +485,17 @@ computed: {
 .Planejamento-titulo,
 .Medicao-titulo,
 .Abastecimento-titulo{
-  font-size: 14px;
+  font-size: 18px;
   color: #003366;
   margin-bottom: 15px;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 
 .dropdown-label,
 .campo-label {
   display: block;
-  font-size: 13px;
+  font-size: 16px;
   margin-bottom: 5px;
   color: #333;
 }
@@ -566,5 +583,4 @@ textArea {
     grid-template-columns: 1fr;
   }
 }
-
 </style>
