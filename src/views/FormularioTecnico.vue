@@ -470,7 +470,7 @@ computed: {
 .dropdown-select,
 .campo-input,
 textarea {
- width: 100%;
+  width: 95%;
   padding: 10px;
   border: 1px solid #697179;
   border-radius: 10px;
@@ -483,5 +483,14 @@ textArea {
    resize: none;
    min-height: 70px;
 }
+
+.identificacaoViatura,
+.PlanejamentoViagem,
+.Medicao,
+.Abastecimento {
+  margin-bottom: 20px;
+}
+
+
 
 </style>
