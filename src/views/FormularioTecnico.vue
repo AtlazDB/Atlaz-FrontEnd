@@ -246,7 +246,8 @@ export default {
       notaFiscal: ""
   }
 },
-  computed: {
+
+computed: {
     kmPercorrido() {
       if (this.SaidaKM && this.ChegadaKM) {
         const saida = parseFloat(this.SaidaKM);
@@ -270,7 +271,7 @@ export default {
   async mounted() {
     await this.carregarViaturas();
   },
-
+  
   methods: {
 
      async carregarViaturas() {
@@ -440,5 +441,29 @@ export default {
 </script>
 
 <style scoped>
+.formulario{
 
+}
+
+.identificacao-titulo,
+.Planejamento-titulo,
+.Medicao-titulo {
+
+}
+
+
+.dropdown-label,
+.campo-label {
+
+}
+
+.dropdown-select,
+.campo-input,
+textarea {
+
+}
+
+textArea {
+
+}
 </style>
