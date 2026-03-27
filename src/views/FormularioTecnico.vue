@@ -174,7 +174,7 @@
     </div>
     
     <div class="Abastecimento">
-
+    <h2 class="Abastecimento-titulo">ABASTECIMENTO</h2>
        <div class="campo-Litros">
         <label class="campo-label">Litros</label>
         <input 
@@ -441,6 +441,7 @@ computed: {
 </script>
 
 <style scoped>
+
 .formulario{
   max-width: 900px;
   margin: auto;
@@ -451,7 +452,8 @@ computed: {
 
 .identificacao-titulo,
 .Planejamento-titulo,
-.Medicao-titulo {
+.Medicao-titulo,
+.Abastecimento-titulo{
   font-size: 14px;
   color: #003366;
   margin-bottom: 15px;
@@ -470,7 +472,7 @@ computed: {
 .dropdown-select,
 .campo-input,
 textarea {
-  width: 95%;
+  width: 100%;
   padding: 10px;
   border: 1px solid #697179;
   border-radius: 10px;
@@ -491,6 +493,64 @@ textArea {
   margin-bottom: 20px;
 }
 
+.Medicao {
+  display:list-item;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
 
+.Datas {
+  grid-column: span 2;
+  display: flex;
+  gap: 15px;
+}
+
+.campo-data {
+  flex: 1;
+}
+
+.Abastecimento {
+  display: list-item;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+}
+
+.campo-justificativa textarea {
+  border: 2px dashed #003366;
+}
+
+.botao-enviar {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-enviar {
+  background: #003366;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.btn-enviar:hover {
+  background: #002244;
+}
+
+@media (max-width: 768px) {
+  .Medicao {
+    grid-template-columns: 1fr;
+  }
+
+  .Datas {
+    flex-direction: column;
+  }
+
+  .Abastecimento {
+    grid-template-columns: 1fr;
+  }
+}
 
 </style>
