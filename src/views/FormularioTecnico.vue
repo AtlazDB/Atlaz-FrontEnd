@@ -232,7 +232,6 @@
 </template>
 
 <script>
-
 import Sidebar from "@/views/Sidebar.vue";
 
 
@@ -338,7 +337,7 @@ computed: {
     };
 
     try {
-        const response = await viagemService.salvar(dados);
+        const response = await ordemDeServicoService.salvar(dados);
         
         console.log('Dados salvos com sucesso:', response);
         this.exibirMensagem('Dados salvos com sucesso!', 'sucesso');
