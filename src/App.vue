@@ -1,10 +1,12 @@
 <script setup>
+import { ref } from "vue";
 import HomeAdministrador from './views/HomeAdministrador.vue'
 import AppSidebar from './components/AppSidebar.vue'
+
+const tabela = ref("")
 </script>
 
 <template>
-  <header></header>
   <body>
     <aside class="container">
       <AppSidebar />
@@ -15,34 +17,23 @@ import AppSidebar from './components/AppSidebar.vue'
   </body>
 </template>
 
-<style scoped>
+<style>
 body {
+  margin: 0;
+}
+</style>
+<style scoped>
+* {
   display: flex;
   background-color: #f4f6f9;
+  font-family: Arial, serif;
+  border: none;
 }
 .container {
-  width: 30%;
+  width: 15%;
   height: max-content;
 }
 .wrapper {
-  width: 400px;
-}
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+  display: flex;
 }
 </style>

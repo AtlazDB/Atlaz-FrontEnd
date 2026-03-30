@@ -11,5 +11,6 @@
 <style scoped>
   .side {
     background-color: #003366;
+    height: 100vh;
   }
 </style>
