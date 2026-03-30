@@ -1,20 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import FormularioTecnico from '../views/FormularioTecnico.vue'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
+const routes = [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-   path: '/formulario-tecnico',
-    name: 'formulario-tecnico',
-    component: () => import('../views/FormularioTecnico.vue')
-    },
-  ],
+      name: 'formulario-tecnico',
+      component: FormularioTecnico
+    }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
 })
 
 export default router

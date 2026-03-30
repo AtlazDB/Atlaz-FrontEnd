@@ -1,10 +1,19 @@
 <template>
-  <div class="formulario-container">
 
+  <div class="tela">
+     <Sidebar 
+      nome="Karthi Madesh"
+      cargo="Técnico"
+      @abrirFormulario="acaoFormulario"
+    />
+     <div class="main-content">
+
+        <div class="form-box">
+  <div class="formulario-container">
     <header class="header">
       <h1></h1>
     </header>
-
+    
     <div class="identificacaoViatura">
       <h2 class="identificacao-titulo">IDENTIFICAÇÃO</h2>
 
@@ -50,73 +59,12 @@
       </div>
 
       <div class="PlanejamentoRequisitante">
-
+      
       <div class="campo-requisitante">
         <label class="campo-label">Requisitante</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="requisitante"
-          placeholder="Ex: Indústrias e Comércios"
-        >
-<template>
-  <div class="formulario-container">
-
-    <header class="header">
-      <h1></h1>
-    </header>
-
-    <div class="identificacaoViatura">
-      <h2 class="identificacao-titulo">IDENTIFICAÇÃO</h2>
-
-      <div class="dropdown-viatura">
-        <label class="dropdown-label">Viatura</label>
-        <select class="dropdown-select" v-model="viaturaSelecionada">
-          <option value="">Selecione...</option>
-          <option value="L746">L746 - HYUNDAI HB20</option>
-          <option value="L747">L747 - FIAT ARGO</option>
-          <option value="L748">L748 - VW GOL</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div class="PlanejamentoViagem">
-      <h2 class="Planejamento-titulo">PLANEJAMENTO</h2>
-
-      <div class="dropdown-planejamento-viagem">
-
-        <label class="dropdown-label">Tipo de Ocorrência</label>
-
-        <select class="dropdown-select" v-model="ocorrenciaSelecionada">
-            <option value="">Selecione...</option>
-            <option value="Administrativo">Administrativo</option>
-            <option value="Auditoria">Auditoria</option>
-            <option value="Ensaio">Ensaio</option>
-            <option value="Fiscalização">Fiscalização</option>
-            <option value="Inspeção">Inspeção</option>
-            <option value="Inspetoria">Inspetoria</option>
-            <option value="Juridico">Juridico</option>
-            <option value="Oficina">Oficina</option>
-            <option value="Supervisão">Supervisão</option>
-            <option value="Translado">Translado</option>
-            <option value="Verificação">Verificação</option>
-        </select>
-
-        <div class="campo-justificativa">
-           <label class="campo-label">Justificativa</label>
-            <textarea v-model="justificativa" rows="3" placeholder="Informações adicionais..."></textarea>
-        </div>
-
-      </div>
-
-      <div class="PlanejamentoRequisitante">
-
-      <div class="campo-requisitante">
-        <label class="campo-label">Requisitante</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="requisitante"
           placeholder="Ex: Indústrias e Comércios"
         >
@@ -159,7 +107,7 @@
             <option value="Potim">Potim</option>
             <option value="Queluz">Queluz</option>
             <option value="Redenção da Serra">Redenção da Serra</option>
-            <option value="Roseira"></option>
+            <option value="Roseira">Roseira</option>
             <option value="Salesópolis">Salesópolis</option>
             <option value="Santa Branca">Santa Branca</option>
             <option value="Santo Antônio do Pinhal">Santo Antônio do Pinhal</option>
@@ -172,7 +120,7 @@
             <option value="Tremembé">Tremembé</option>
             <option value="Ubatuba">Ubatuba</option>
           </select>
-
+        
       </div>
       </div>
     </div>
@@ -182,36 +130,36 @@
 
        <div class="campo-Saida">
         <label class="campo-label">Saída(KM)</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="SaidaKM"
         >
       </div>
 
       <div class="campo-Chegada">
         <label class="campo-label">Chegada(KM)</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="ChegadaKM"
         >
       </div>
 
       <div class="campo-Horario-Saida">
         <label class="campo-label">Hora de Saída</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="HorarioSaida"
         >
       </div>
 
       <div class="campo-Horario-Chegada">
         <label class="campo-label">Hora de Chegada</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="HorarioChegada"
         >
       </div>
@@ -225,7 +173,7 @@
         v-model="dataSaida"
         placeholder="DD/MM/YYYY">
         </div>
-
+  
        <div class="campo-data">
         <label class="campo-label">Data Chegada</label>
         <input type="text" v-model="dataChegada" placeholder="DD/MM/YYYY">
@@ -233,14 +181,14 @@
       </div>
 
     </div>
-
+    
     <div class="Abastecimento">
-
+    <h2 class="Abastecimento-titulo">ABASTECIMENTO</h2>
        <div class="campo-Litros">
         <label class="campo-label">Litros</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="Litros"
           placeholder="0,00"
         >
@@ -248,9 +196,9 @@
 
        <div class="campo-Valor">
         <label class="campo-label">Valor Total (R$)</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="Valor"
           placeholder="R$ 0,00"
         >
@@ -258,9 +206,9 @@
 
       <div class="campo-NotaFiscal">
         <label class="campo-label">N° Nota Fiscal</label>
-        <input
-          type="text"
-          class="campo-input"
+        <input 
+          type="text" 
+          class="campo-input" 
           v-model="notaFiscal"
           placeholder="000.000.000"
         >
@@ -268,18 +216,36 @@
 
     </div>
 
+    <div class="botao-enviar">
+     <button 
+    type="button" 
+    class="btn-enviar" 
+    @click="salvarDados"
+  >
+    Enviar
+   </button>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 </template>
 
 <script>
+import Sidebar from "@/views/Sidebar.vue";
+
 
 export default {
+   components: {
+    Sidebar
+  },
   data() {
     return {
-      viaturaSelecionada: "",
+      viaturaSelecionada: "", 
 
-      ocorrenciaSelecionada: "",
-      requisitante: "",
+      ocorrenciaSelecionada: "",  
+      justificativa: "",
+      requisitante: "",            
       destinoSelecionado: "",
 
       SaidaKM: "",
@@ -287,14 +253,15 @@ export default {
       HorarioSaida: "",
       HorarioChegada: "",
       dataSaida: "",
-      dataChegada: "",
+      dataChegada: "", 
 
       Litros: "",
       Valor: "",
       notaFiscal: ""
   }
 },
-  computed: {
+
+computed: {
     kmPercorrido() {
       if (this.SaidaKM && this.ChegadaKM) {
         const saida = parseFloat(this.SaidaKM);
@@ -303,7 +270,7 @@ export default {
       }
       return 0;
     },
-
+    
     valorFormatado() {
       if (this.Valor) {
         return new Intl.NumberFormat('pt-BR', {
@@ -314,9 +281,91 @@ export default {
       return 'R$ 0,00';
     }
   },
-
+   
+  async mounted() {
+    await this.carregarViaturas();
+  },
+  
   methods: {
-    validarFormulario() {
+    acaoFormulario() {
+
+    },
+     async carregarViaturas() {
+      try {
+        this.viaturas = await viaturaService.listar();
+        console.log('✅ Viaturas carregadas:', this.viaturas);
+      } catch (error) {
+        console.error('❌ Erro ao carregar viaturas:', error);
+        this.exibirMensagem('Erro ao carregar lista de viaturas', 'erro');
+      }
+    },
+
+    async salvarDados(){
+      if (!this.validarFormulario()) return;
+      if (!this.validarNumeros()) return;
+      if (!this.validarDatas()) return;
+
+      const viaturaSelecionadaObj = this.viaturas.find(v => v.id == this.viaturaSelecionada);
+
+      const dados = {
+        identificacao: {
+          viatura: this.viaturaSelecionada
+        },
+
+        planejamento: {
+          ocorrencia: this.ocorrenciaSelecionada,
+          justificativa: this.justificativa,
+          requisitante: this.requisitante,
+          destino: this.destinoSelecionado
+        },
+
+        medicao: {
+          kmSaida: this.saidaKM,
+          Kmchegada: this.ChegadaKM,
+          horarioSaida: this.HorarioSaida,
+          horarioChegada:this.HorarioChegada,
+          dataSaida: this.dataSaida,
+          dataChegada: this.dataChegada
+        },
+
+        abastecimento: {
+          litros: this.Litros,
+          valorTotal: this.valor,
+          notaFiscal:this.notaFiscal
+        },
+         dataRegistro: new Date().toISOString()
+    };
+
+    try {
+        const response = await ordemDeServicoService.salvar(dados);
+        
+        console.log('Dados salvos com sucesso:', response);
+        this.exibirMensagem('Dados salvos com sucesso!', 'sucesso');
+        this.resetarFormulario();
+        
+      } catch (error) {
+        console.error('Erro ao salvar dados:', error);
+        
+       if (error.response) {
+        const status = error.response.status;
+  
+      if (status === 400) {
+         this.exibirMensagem('Erro de validação. Verifique os dados informados.', 'erro');
+      } else if (status === 500) {
+         this.exibirMensagem('Erro no servidor. Tente novamente mais tarde.', 'erro');
+      } else {
+         this.exibirMensagem(`Erro ${status} ao salvar dados.`, 'erro');
+      }
+      } else if (error.request) {
+        this.exibirMensagem(`Erro: ${error.message}`, 'erro');
+      }
+
+      } finally {
+        this.carregando = false;
+      }
+    },
+
+  validarFormulario() {
       const camposObrigatorios = [
         { campo: this.viaturaSelecionada, nome: "Viatura" },
         { campo: this.ocorrenciaSelecionada, nome: "Tipo de Ocorrência" },
@@ -325,67 +374,212 @@ export default {
         { campo: this.SaidaKM, nome: "Quilometragem de Saída" }
       ];
 
-           const camposVazios = camposObrigatorios.filter(item => !item.campo);
-
+      const camposVazios = camposObrigatorios.filter(item => !item.campo);
+      
       if (camposVazios.length > 0) {
         const mensagem = `Preencha os campos obrigatórios: ${camposVazios.map(item => item.nome).join(", ")}`;
-        alert(mensagem);
+        this.exibirMensagem(mensagem, 'erro');
         return false;
       }
-
+      
       return true;
     },
 
-    validarNumeros() {
+ validarNumeros() {
       if (this.SaidaKM && isNaN(parseFloat(this.SaidaKM))) {
-        alert("Quilometragem de saída deve ser um número válido");
+        this.exibirMensagem("Quilometragem de saída deve ser um número válido", 'erro');
         return false;
       }
-
+      
       if (this.ChegadaKM && isNaN(parseFloat(this.ChegadaKM))) {
-        alert("Quilometragem de chegada deve ser um número válido");
+        this.exibirMensagem("Quilometragem de chegada deve ser um número válido", 'erro');
         return false;
       }
-
+      
       if (this.Litros && isNaN(parseFloat(this.Litros))) {
-        alert("Litros deve ser um número válido");
+        this.exibirMensagem("Litros deve ser um número válido", 'erro');
         return false;
       }
-
+      
       if (this.Valor && isNaN(parseFloat(this.Valor))) {
-        alert("Valor deve ser um número válido");
+        this.exibirMensagem("Valor deve ser um número válido", 'erro');
         return false;
       }
-
+      
       return true;
     },
+    
 
     validarDatas() {
       if (this.dataSaida && !this.validarData(this.dataSaida)) {
-        alert("Data de saída inválida. Use o formato DD/MM/YYYY");
+        this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
-
+      
       if (this.dataChegada && !this.validarData(this.dataChegada)) {
-        alert("Data de chegada inválida. Use o formato DD/MM/YYYY");
+        this.exibirMensagem("Data de chegada inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
-
+      
       return true;
     },
-
+    
     validarData(data) {
       const regex = /^\d{2}\/\d{2}\/\d{4}$/;
       if (!regex.test(data)) return false;
-
+      
       const [dia, mes, ano] = data.split('/').map(Number);
       const dataObj = new Date(ano, mes - 1, dia);
-
-      return dataObj.getFullYear() === ano &&
-             dataObj.getMonth() === mes - 1 &&
+      
+      return dataObj.getFullYear() === ano && 
+             dataObj.getMonth() === mes - 1 && 
              dataObj.getDate() === dia;
     },
-
+ resetarFormulario() {
+      this.viaturaSelecionada = "";
+      this.ocorrenciaSelecionada = "";
+      this.justificativa = "";
+      this.requisitante = "";
+      this.destinoSelecionado = "";
+      this.SaidaKM = "";
+      this.ChegadaKM = "";
+      this.HorarioSaida = "";
+      this.HorarioChegada = "";
+      this.dataSaida = "";
+      this.dataChegada = "";
+      this.Litros = "";
+      this.Valor = "";
+      this.notaFiscal = "";
     }
-}
+  }
+};
+
 </script>
+
+<style scoped>
+
+.tela {
+  display: flex;
+}
+
+.main-content {
+  flex: 1;  
+  display: flex;
+  justify-content: center;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 900px;
+  padding: 30px;
+}
+
+.formulario-container{
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.identificacao-titulo,
+.Planejamento-titulo,
+.Medicao-titulo,
+.Abastecimento-titulo{
+  font-size: 18px;
+  color: #003366;
+  margin-bottom: 15px;
+  margin-top: 10px;
+}
+
+
+.dropdown-label,
+.campo-label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.dropdown-select,
+.campo-input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #697179;
+  border-radius: 10px;
+  outline: none;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+textArea {
+   resize: none;
+   min-height: 70px;
+}
+
+.identificacaoViatura,
+.PlanejamentoViagem,
+.Medicao,
+.Abastecimento {
+  margin-bottom: 20px;
+}
+
+.Medicao {
+  display:list-item;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.Datas {
+  grid-column: span 2;
+  display: flex;
+  gap: 15px;
+}
+
+.campo-data {
+  flex: 1;
+}
+
+.Abastecimento {
+  display: list-item;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+}
+
+.campo-justificativa textarea {
+  border: 2px dashed #003366;
+}
+
+.botao-enviar {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.btn-enviar {
+  background: #003366;
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.btn-enviar:hover {
+  background: #002244;
+}
+
+@media (max-width: 768px) {
+  .Medicao {
+    grid-template-columns: 1fr;
+  }
+
+  .Datas {
+    flex-direction: column;
+  }
+
+  .Abastecimento {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
