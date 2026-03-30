@@ -1,9 +1,6 @@
 <script setup>
-import { ref } from "vue";
 import HomeAdministrador from './views/HomeAdministrador.vue'
 import AppSidebar from './components/AppSidebar.vue'
-
-const tabela = ref("")
 </script>
 
 <template>

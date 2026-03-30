@@ -1,18 +1,22 @@
 <script setup>
+import{ ref } from 'vue'
 import AppVisualizador from '../components/AppVisualizador.vue'
 import AppSeletorMes from '../components/AppSeletorMes.vue'
+
+const tabela = ref("")
 </script>
 <template>
   <div class="visualizador">
-    <AppVisualizador />
+    <AppVisualizador :tabela="tabela" />
   </div>
   <div class="seletor">
-    <AppSeletorMes />
+    <AppSeletorMes @data_selecionada="tabela = $event" />
   </div>
 </template>
 
 <style scoped>
-.visualizador, .seletor {
+.visualizador,
+.seletor {
   margin: 20px 20px 40px;
   background-color: #ffffff;
   border-radius: 20px;

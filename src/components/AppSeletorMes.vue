@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 const itens_seletor = ref([
-  { titulo: 'Janeiro', data: '01/01/2025' },
-  { titulo: 'Feveiro', data: '01/02/2025' },
-  { titulo: 'Março', data: '01/03/2025' },
-  { titulo: 'Abril', data: '01/04/2025' },
+  { titulo: 'Janeiro', data: '2025' },
+  { titulo: 'Fevereiro', data: '2025' },
+  { titulo: 'Março', data: '2025' },
+  { titulo: 'Abril', data: '2025' },
 ])
+const emit = defineEmits(['data_selecionada'])
+const selecionado = ref(null)
 </script>
 
 <template>
@@ -17,7 +19,16 @@ const itens_seletor = ref([
   </select>
   -->
   <div class="meses">
-    <div class="container" v-for="item in itens_seletor" :key="item.data" v-on:click="">
+    <div
+      class="container"
+      v-for="item in itens_seletor"
+      :key="item.titulo + item.data"
+      v-on:click="() => {
+          selecionado = item.titulo + item.data
+          emit('data_selecionada', item.titulo + item.data)
+        }"
+      :class="{ ativo: selecionado === item.titulo + item.data }"
+    >
       <h1>{{ item.titulo }}</h1>
       <p>{{ item.data }}</p>
     </div>
@@ -45,6 +56,16 @@ const itens_seletor = ref([
   border-bottom: 1px solid #ddd;
   padding-bottom: 5px;
   width: 130px;
+  cursor: pointer;
+}
+.container:hover {
+  color: #003366;
+  opacity: 0.7;
+}
+.container.ativo {
+  color: #ffffff;
+  background: #003366;
+  transition: 0.3s;
 }
 h1 {
   font-size: 16px;

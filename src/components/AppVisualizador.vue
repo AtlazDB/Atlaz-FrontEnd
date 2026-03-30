@@ -1,13 +1,47 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-const data = ref("janeiro_2025")
-const corpo_tabela = ref([
-  { id: 1, viatura: 'City', ocorrencia: 'Nenhuma' },
-  { id: 2, viatura: 'Onix', ocorrencia: 'Alguma' },
-  { id: 3, viatura: 'Kwid', ocorrencia: 'Sem nada' },
-  { id: 4, viatura: 'Porche', ocorrencia: '' },
-  { id: 5, viatura: 'Picape', ocorrencia: 'Vazio' },
-])
+import { ref, watch } from 'vue'
+
+const { tabela } = defineProps(['tabela'])
+const corpo_tabela = ref([])
+const nome_tabela = ref(null)
+
+function mudarTabela(valor) {
+  if (valor === 'Janeiro2025') {
+    corpo_tabela.value = [
+      { id: 1, viatura: 'City', ocorrencia: 'Nenhuma' },
+      { id: 2, viatura: 'Onix', ocorrencia: 'Alguma' },
+    ]
+  } else if (valor === 'Fevereiro2025') {
+    corpo_tabela.value = [
+      { id: 3, viatura: 'Kwid', ocorrencia: 'Sem nada' },
+      { id: 4, viatura: 'Porche', ocorrencia: '' },
+    ]
+  } else if (valor === 'Março2025') {
+    corpo_tabela.value = [{ id: 5, viatura: 'Picape', ocorrencia: 'Vazio' }]
+  } else {
+    corpo_tabela.value = []
+  }
+}
+function exportarTabela() {
+  const csv = 'nome,idade\nJoão,20\nMaria,25'
+
+  const blob = new Blob([csv], { type: 'text/csv' })
+
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = nome_tabela.value + '.csv'
+
+  link.click()
+}
+watch(
+  () => tabela,
+  (novoValor) => {
+    mudarTabela(novoValor)
+    nome_tabela.value = novoValor
+  },
+  { immediate: true },
+)
+
 /* Para quando tiver o metodo http
 onMounted(async () => {
   try {
@@ -19,15 +53,12 @@ onMounted(async () => {
   }
 })
  */
-function mudarTabela() {
-  data.value =
-}
 </script>
 
 <template>
   <div class="tabela">
-    <button>Exportar tabela</button>
-    <table>
+    <button v-if="corpo_tabela.length > 0" v-on:click="exportarTabela">Exportar tabela</button>
+    <table v-if="corpo_tabela.length > 0">
       <tr>
         <!-- Veículo -->
         <th>Viatura</th>
@@ -69,10 +100,19 @@ function mudarTabela() {
         <!-- ... -->
       </tr>
     </table>
+    <p class="info" v-else>Sem informação</p>
   </div>
 </template>
 
 <style scoped>
+.tabela {
+  display: flex;
+  flex-direction: column;
+  width: 821px;
+}
+.info {
+  align-self: center;
+}
 button {
   padding: 10px;
   margin: 10px;
@@ -80,15 +120,15 @@ button {
   border: none;
   background-color: #003366;
   color: #ffffff;
+  width: fit-content;
+  cursor: pointer;
 }
 table {
   border-collapse: collapse;
 }
 td,
 th {
-  border-bottom: 1px solid #ddd;
-  border-right: 1px solid #ddd;
-  border-left: 1px solid #ddd;
+  border: 1px solid #ddd;
   font-size: 12px;
   padding-right: 3px;
   padding-left: 3px;
