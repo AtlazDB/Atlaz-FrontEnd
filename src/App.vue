@@ -1,17 +1,14 @@
 <script setup>
 import HomeAdministrador from './views/HomeAdministrador.vue'
-import AppSidebar from './components/AppSidebar.vue'
 </script>
 
 <template>
   <body>
-    <aside class="container">
-      <AppSidebar />
-    </aside>
     <div class="wrapper">
       <HomeAdministrador />
     </div>
   </body>
+  <router-view />
 </template>
 
 <style>
@@ -34,3 +31,9 @@ body {
   display: flex;
 }
 </style>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>

@@ -1,11 +1,15 @@
 <script setup>
-import{ ref } from 'vue'
+import { ref } from 'vue'
 import AppVisualizador from '../components/AppVisualizador.vue'
 import AppSeletorMes from '../components/AppSeletorMes.vue'
+import Sidebar from '@/views/Sidebar.vue'
 
-const tabela = ref("")
+const tabela = ref('')
 </script>
 <template>
+  <aside>
+    <Sidebar nome="Stjepan Hasan" cargo="Administrador" @abrirFormulario="acaoFormulario" />
+  </aside>
   <div class="visualizador">
     <AppVisualizador :tabela="tabela" />
   </div>

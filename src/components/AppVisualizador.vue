@@ -22,8 +22,22 @@ function mudarTabela(valor) {
     corpo_tabela.value = []
   }
 }
+watch(
+  () => tabela,
+  (novoValor) => {
+    mudarTabela(novoValor)
+    nome_tabela.value = novoValor
+  },
+  { immediate: true },
+)
+/*
 function exportarTabela() {
-  const csv = 'nome,idade\nJoão,20\nMaria,25'
+  let csv = "id,viatura,ocorrencia"
+  for (const linha in corpo_tabela.value) {
+    console.log(corpo_tabela[linha[linha]])
+    const id_str = toString(corpo_tabela[linha.id])
+    csv = csv + "\n" + id_str + corpo_tabela[linha.viatura] + corpo_tabela[linha.ocorrencia]
+  }
 
   const blob = new Blob([csv], { type: 'text/csv' })
 
@@ -33,20 +47,12 @@ function exportarTabela() {
 
   link.click()
 }
-watch(
-  () => tabela,
-  (novoValor) => {
-    mudarTabela(novoValor)
-    nome_tabela.value = novoValor
-  },
-  { immediate: true },
-)
-
+*/
 /* Para quando tiver o metodo http
 onMounted(async () => {
   try {
     //Colocar o link para requisição
-    const response = await fetch('')
+    const response = await fetch('http/')
     corpo_tabela.value = await response.json()
   } catch (error) {
     console.error('Erro ao buscar dados:', error)
@@ -57,6 +63,7 @@ onMounted(async () => {
 
 <template>
   <div class="tabela">
+    <h1 class="titulo">Tabela</h1>
     <button v-if="corpo_tabela.length > 0" v-on:click="exportarTabela">Exportar tabela</button>
     <table v-if="corpo_tabela.length > 0">
       <tr>
@@ -105,6 +112,11 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.titulo {
+  font-size: 30px;
+  border-left: 5px #003366 solid;
+  padding-left: 5px;
+}
 .tabela {
   display: flex;
   flex-direction: column;

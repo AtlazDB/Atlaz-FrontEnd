@@ -49,11 +49,12 @@ const selecionado = ref(null)
 }
 .titulo {
   font-size: 24px;
-  border-left: 3px #003366 solid;
+  border-left: 5px #003366 solid;
   padding-left: 5px;
 }
 .container {
   border-bottom: 1px solid #ddd;
+  padding-left: 5px;
   padding-bottom: 5px;
   width: 130px;
   cursor: pointer;
