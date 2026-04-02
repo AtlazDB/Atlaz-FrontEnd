@@ -27,9 +27,15 @@
             <span class="cargo">{{ cargo }}</span>
         </div>
 
-        <button class="menu"  @click="handleMenuClick">
+        <button v-if="userType === 'tecnico'"  class="menu" @click="handleMenuClick('formulario')">
+          
             <span class="icon" >📄</span>
             <span class="text_btn" :class="{hidden: isMinimized && !isMobile}">Formulário</span>
+        </button>
+
+        <button v-if="userType === 'admin'" class="menu menu-principal"  @click="handleMenuClick('principal')">
+            <span class="icon" >📄</span>
+            <span class="text_btn" :class="{hidden: isMinimized && !isMobile}">Principal</span>
         </button>
     </div>
 </div>
@@ -46,6 +52,11 @@ export default {
     cargo: {
       type: String,
       default: "Cargo"
+    },
+    userType: {
+      type: String,
+      default: "tecnico",
+      validador:(value)=> ['tecnico', 'admin'].includes(values)
     }
   },
 
@@ -60,16 +71,21 @@ export default {
       this.isSidebarOpen = true;
       document.body.style.overflow = 'hidden';
     },
+
     closeSidebar() {
       this.isSidebarOpen = false;
       document.body.style.overflow = '';
     },
-    handleMenuClick() {
+
+    handleMenuClick(tipo) {
+
+      if(tipo === 'formulario'){
       this.$emit('abrirFormulario');
-      if (this.isMobile && this.isSidebarOpen) {
-        this.toggleSidebar();
-      }
-    },
+      } else if(tipo === 'principal') {
+        this.toggleSidebar()
+        this.$emit('abrirPrincipal');
+    }
+  },
     checkMobile() {
     const wasMobile = this.isMobile;
       this.isMobile = window.innerWidth <= 768;

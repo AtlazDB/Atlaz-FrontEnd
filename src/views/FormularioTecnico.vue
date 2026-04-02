@@ -1,12 +1,14 @@
 <template>
 
   <div class="tela">
+
      <Sidebar 
       nome="Karthi Madesh"
       cargo="Técnico"
+      userType="tecnico"
       @abrirFormulario="abrirFormulario"
-      @sidebar-btn="handleSidebarToggle"
     />
+
      <div class="main-content">
 
         <div class="form-box">
@@ -288,9 +290,10 @@ computed: {
   },
   
   methods: {
-    abrirFormulario() {
+    abrirFormulario(){
 
     },
+    
      async carregarViaturas() {
       try {
         this.viaturas = await viaturaService.listar();
