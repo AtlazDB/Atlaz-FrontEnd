@@ -1,7 +1,7 @@
 <template>
 
   <div class="tela">
-     <Sidebar 
+     <Sidebar
       nome="Karthi Madesh"
       cargo="Técnico"
       @abrirFormulario="acaoFormulario"
@@ -13,7 +13,7 @@
     <header class="header">
       <h1></h1>
     </header>
-    
+
     <div class="identificacaoViatura">
       <h2 class="identificacao-titulo">IDENTIFICAÇÃO</h2>
 
@@ -21,9 +21,11 @@
         <label class="dropdown-label">Viatura</label>
         <select class="dropdown-select" v-model="viaturaSelecionada">
           <option value="">Selecione...</option>
-          <option value="L746">L746 - HYUNDAI HB20</option>
-          <option value="L747">L747 - FIAT ARGO</option>
-          <option value="L748">L748 - VW GOL</option>
+          <option
+            v-for="viatura in viaturas"
+            :key="viatura.id"
+            :value="viatura.id"
+            > {{ viatura.prefixo }} - {{ viatura.modelo.nomeModelo}}</option>
         </select>
       </div>
 
@@ -38,17 +40,11 @@
 
         <select class="dropdown-select" v-model="ocorrenciaSelecionada">
             <option value="">Selecione...</option>
-            <option value="Administrativo">Administrativo</option>
-            <option value="Auditoria">Auditoria</option>
-            <option value="Ensaio">Ensaio</option>
-            <option value="Fiscalização">Fiscalização</option>
-            <option value="Inspeção">Inspeção</option>
-            <option value="Inspetoria">Inspetoria</option>
-            <option value="Juridico">Juridico</option>
-            <option value="Oficina">Oficina</option>
-            <option value="Supervisão">Supervisão</option>
-            <option value="Translado">Translado</option>
-            <option value="Verificação">Verificação</option>
+            <option v-for="tipo in tiposOcorrencia"
+                    :key="tipo"
+                    :value="tipo">
+              {{ labelOcorrencia[tipo] || tipo }}
+            </option>
         </select>
 
         <div class="campo-justificativa">
@@ -59,12 +55,12 @@
       </div>
 
       <div class="PlanejamentoRequisitante">
-      
+
       <div class="campo-requisitante">
         <label class="campo-label">Requisitante</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="requisitante"
           placeholder="Ex: Indústrias e Comércios"
         >
@@ -120,7 +116,7 @@
             <option value="Tremembé">Tremembé</option>
             <option value="Ubatuba">Ubatuba</option>
           </select>
-        
+
       </div>
       </div>
     </div>
@@ -130,36 +126,36 @@
 
        <div class="campo-Saida">
         <label class="campo-label">Saída(KM)</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="SaidaKM"
         >
       </div>
 
       <div class="campo-Chegada">
         <label class="campo-label">Chegada(KM)</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="ChegadaKM"
         >
       </div>
 
       <div class="campo-Horario-Saida">
         <label class="campo-label">Hora de Saída</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="HorarioSaida"
         >
       </div>
 
       <div class="campo-Horario-Chegada">
         <label class="campo-label">Hora de Chegada</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="HorarioChegada"
         >
       </div>
@@ -173,7 +169,7 @@
         v-model="dataSaida"
         placeholder="DD/MM/YYYY">
         </div>
-  
+
        <div class="campo-data">
         <label class="campo-label">Data Chegada</label>
         <input type="text" v-model="dataChegada" placeholder="DD/MM/YYYY">
@@ -181,14 +177,14 @@
       </div>
 
     </div>
-    
+
     <div class="Abastecimento">
     <h2 class="Abastecimento-titulo">ABASTECIMENTO</h2>
        <div class="campo-Litros">
         <label class="campo-label">Litros</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="Litros"
           placeholder="0,00"
         >
@@ -196,9 +192,9 @@
 
        <div class="campo-Valor">
         <label class="campo-label">Valor Total (R$)</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="Valor"
           placeholder="R$ 0,00"
         >
@@ -206,9 +202,9 @@
 
       <div class="campo-NotaFiscal">
         <label class="campo-label">N° Nota Fiscal</label>
-        <input 
-          type="text" 
-          class="campo-input" 
+        <input
+          type="text"
+          class="campo-input"
           v-model="notaFiscal"
           placeholder="000.000.000"
         >
@@ -217,9 +213,9 @@
     </div>
 
     <div class="botao-enviar">
-     <button 
-    type="button" 
-    class="btn-enviar" 
+     <button
+    type="button"
+    class="btn-enviar"
     @click="salvarDados"
   >
     Enviar
@@ -233,6 +229,9 @@
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
+import { viaturaService } from '@/services/viaturaService.js'
+import { ordemDeServicoService } from '@/services/ordemDeServico.js'
+import { abastecimentoService } from '@/services/abastecimentoService.js'
 
 
 export default {
@@ -241,19 +240,35 @@ export default {
   },
   data() {
     return {
-      viaturaSelecionada: "", 
+      viaturas: [],
+      viaturaSelecionada: "",
 
-      ocorrenciaSelecionada: "",  
+      ocorrenciaSelecionada: "",
+      tiposOcorrencia: [],
+      labelOcorrencia: {
+        ADMINISTRATIVO: 'Administrativo',
+        AUDITORIA: 'Auditoria',
+        ENSAIO: 'Ensaio',
+        FISCALIZACAO: 'Fiscalização',
+        INSPECAO: 'Inspeção',
+        INSPETORIA: 'Inspetoria',
+        JURIDICO: 'Jurídico',
+        OFICINA: 'Oficina',
+        SUPERVISAO: 'Supervisão',
+        TRANSLADO: 'Translado',
+        VERIFICACAO: 'Verificação'
+      },
       justificativa: "",
-      requisitante: "",            
+      requisitante: "",
       destinoSelecionado: "",
+
 
       SaidaKM: "",
       ChegadaKM: "",
       HorarioSaida: "",
       HorarioChegada: "",
       dataSaida: "",
-      dataChegada: "", 
+      dataChegada: "",
 
       Litros: "",
       Valor: "",
@@ -270,7 +285,7 @@ computed: {
       }
       return 0;
     },
-    
+
     valorFormatado() {
       if (this.Valor) {
         return new Intl.NumberFormat('pt-BR', {
@@ -281,90 +296,80 @@ computed: {
       return 'R$ 0,00';
     }
   },
-   
+
   async mounted() {
     await this.carregarViaturas();
+    this.tiposOcorrencia = await ordemDeServicoService.listaTipos();
   },
-  
+
   methods: {
     acaoFormulario() {
 
     },
-     async carregarViaturas() {
+    async carregarViaturas() {
       try {
         this.viaturas = await viaturaService.listar();
         console.log('✅ Viaturas carregadas:', this.viaturas);
       } catch (error) {
         console.error('❌ Erro ao carregar viaturas:', error);
-        this.exibirMensagem('Erro ao carregar lista de viaturas', 'erro');
       }
     },
 
-    async salvarDados(){
+    async salvarDados() {
       if (!this.validarFormulario()) return;
       if (!this.validarNumeros()) return;
       if (!this.validarDatas()) return;
 
-      const viaturaSelecionadaObj = this.viaturas.find(v => v.id == this.viaturaSelecionada);
-
-      const dados = {
-        identificacao: {
-          viatura: this.viaturaSelecionada
-        },
-
-        planejamento: {
-          ocorrencia: this.ocorrenciaSelecionada,
+      try {
+        // 1. Salva a Ordem de Serviço
+        const dadosOs = {
+          tipoServico: this.ocorrenciaSelecionada,
+          localDestino: this.destinoSelecionado,
           justificativa: this.justificativa,
           requisitante: this.requisitante,
-          destino: this.destinoSelecionado
-        },
+          kmSaida: parseFloat(this.SaidaKM),
+          kmChegada: parseFloat(this.ChegadaKM),
+          dataSaida: this.converterDataHora(this.dataSaida, this.HorarioSaida),
+          dataRetorno: this.converterDataHora(this.dataChegada, this.HorarioChegada),
+          idUsuario: 1, // fixo por enquanto, depois vem do login
+          idViatura: this.viaturaSelecionada
+        };
 
-        medicao: {
-          kmSaida: this.saidaKM,
-          Kmchegada: this.ChegadaKM,
-          horarioSaida: this.HorarioSaida,
-          horarioChegada:this.HorarioChegada,
-          dataSaida: this.dataSaida,
-          dataChegada: this.dataChegada
-        },
+        const os = await ordemDeServicoService.salvar(dadosOs);
 
-        abastecimento: {
-          litros: this.Litros,
-          valorTotal: this.valor,
-          notaFiscal:this.notaFiscal
-        },
-         dataRegistro: new Date().toISOString()
-    };
+        // 2. Salva o abastecimento, apenas se houver
+        if (this.Litros||this.Valor||this.notaFiscal) {
+          const dadosAbastecimento = {
+            dataHora: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
+            litros: parseFloat(this.Litros),
+            valorTotal: parseFloat(this.Valor),
+            numeroNotaFiscal: this.notaFiscal,
+            idUsuario: 1, // fixo, substituir quando houver login
+            idViatura: this.viaturaSelecionada,
+            idCidade: 1, // fixo por enquanto, depois vem do destino
+            idOs: os.id
+          };
 
-    try {
-        const response = await ordemDeServicoService.salvar(dados);
-        
-        console.log('Dados salvos com sucesso:', response);
-        this.exibirMensagem('Dados salvos com sucesso!', 'sucesso');
+          await abastecimentoService.criar(dadosAbastecimento);
+        }
+
         this.resetarFormulario();
-        
-      } catch (error) {
-        console.error('Erro ao salvar dados:', error);
-        
-       if (error.response) {
-        const status = error.response.status;
-  
-      if (status === 400) {
-         this.exibirMensagem('Erro de validação. Verifique os dados informados.', 'erro');
-      } else if (status === 500) {
-         this.exibirMensagem('Erro no servidor. Tente novamente mais tarde.', 'erro');
-      } else {
-         this.exibirMensagem(`Erro ${status} ao salvar dados.`, 'erro');
-      }
-      } else if (error.request) {
-        this.exibirMensagem(`Erro: ${error.message}`, 'erro');
-      }
 
-      } finally {
-        this.carregando = false;
+      } catch (error) {
+        console.error('Erro ao salvar:', error);
       }
     },
 
+    converterDataHora(data, hora) {
+      if (!data) return null;
+      const [dia, mes, ano] = data.split('/');
+      const horaFormatada = hora || '00:00';
+      return `${ano}-${mes}-${dia}T${horaFormatada}:00`;
+    },
+
+    exibirMensagem(mensagem, tipo) {
+      alert(mensagem);
+    },
   validarFormulario() {
       const camposObrigatorios = [
         { campo: this.viaturaSelecionada, nome: "Viatura" },
@@ -375,13 +380,13 @@ computed: {
       ];
 
       const camposVazios = camposObrigatorios.filter(item => !item.campo);
-      
+
       if (camposVazios.length > 0) {
         const mensagem = `Preencha os campos obrigatórios: ${camposVazios.map(item => item.nome).join(", ")}`;
         this.exibirMensagem(mensagem, 'erro');
         return false;
       }
-      
+
       return true;
     },
 
@@ -390,49 +395,49 @@ computed: {
         this.exibirMensagem("Quilometragem de saída deve ser um número válido", 'erro');
         return false;
       }
-      
+
       if (this.ChegadaKM && isNaN(parseFloat(this.ChegadaKM))) {
         this.exibirMensagem("Quilometragem de chegada deve ser um número válido", 'erro');
         return false;
       }
-      
+
       if (this.Litros && isNaN(parseFloat(this.Litros))) {
         this.exibirMensagem("Litros deve ser um número válido", 'erro');
         return false;
       }
-      
+
       if (this.Valor && isNaN(parseFloat(this.Valor))) {
         this.exibirMensagem("Valor deve ser um número válido", 'erro');
         return false;
       }
-      
+
       return true;
     },
-    
+
 
     validarDatas() {
       if (this.dataSaida && !this.validarData(this.dataSaida)) {
         this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
-      
+
       if (this.dataChegada && !this.validarData(this.dataChegada)) {
         this.exibirMensagem("Data de chegada inválida. Use o formato DD/MM/YYYY", 'erro');
         return false;
       }
-      
+
       return true;
     },
-    
+
     validarData(data) {
       const regex = /^\d{2}\/\d{2}\/\d{4}$/;
       if (!regex.test(data)) return false;
-      
+
       const [dia, mes, ano] = data.split('/').map(Number);
       const dataObj = new Date(ano, mes - 1, dia);
-      
-      return dataObj.getFullYear() === ano && 
-             dataObj.getMonth() === mes - 1 && 
+
+      return dataObj.getFullYear() === ano &&
+             dataObj.getMonth() === mes - 1 &&
              dataObj.getDate() === dia;
     },
  resetarFormulario() {
@@ -463,7 +468,7 @@ computed: {
 }
 
 .main-content {
-  flex: 1;  
+  flex: 1;
   display: flex;
   justify-content: center;
 }
