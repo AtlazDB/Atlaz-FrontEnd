@@ -43,6 +43,7 @@ export default {
   flex-direction: column;
   align-items: center;
   padding-top: 40px;
+  height: 100vh;
 }
 
 .perfil {

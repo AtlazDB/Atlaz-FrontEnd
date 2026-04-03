@@ -23,12 +23,9 @@ body {
   font-family: Arial, serif;
   border: none;
 }
-.container {
-  width: 15%;
-  height: max-content;
-}
 .wrapper {
   display: flex;
+  width: 100vw;
 }
 </style>
 

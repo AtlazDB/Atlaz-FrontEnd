@@ -7,21 +7,32 @@ import Sidebar from '@/views/Sidebar.vue'
 const tabela = ref('')
 </script>
 <template>
-  <aside>
-    <Sidebar nome="Stjepan Hasan" cargo="Administrador" @abrirFormulario="acaoFormulario" />
-  </aside>
-  <div class="visualizador">
-    <AppVisualizador :tabela="tabela" />
-  </div>
-  <div class="seletor">
-    <AppSeletorMes @data_selecionada="tabela = $event" />
+  <div class="tela">
+    <!--
+
+    -->
+    <aside>
+      <Sidebar nome="William Hasan" cargo="Administrador" @abrirFormulario="acaoFormulario" />
+    </aside>
+    <div class="visualizador">
+      <AppVisualizador :tabela="tabela" />
+    </div>
+    <!--
+
+    -->
+    <div class="seletor">
+      <AppSeletorMes @data_selecionada="tabela = $event" />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.visualizador,
-.seletor {
-  margin: 20px 20px 40px;
+.tela {
+  display: flex;
+  width: 100vw;
+}
+.visualizador {
+  margin: 20px 10px 40px;
   background-color: #ffffff;
   border-radius: 20px;
   padding: 10px;
@@ -29,12 +40,7 @@ const tabela = ref('')
 .visualizador {
   height: fit-content;
   padding-bottom: 50px;
-}
-.seletor {
-  margin-bottom: 0;
-  height: fit-content;
-  padding-top: 20px;
-  padding-right: 10px;
-  padding-bottom: 20px;
+  justify-items: center;
+  flex-grow: 3;
 }
 </style>
