@@ -24,5 +24,9 @@ export const ordemDeServicoService = {
   async deletar(id) {
     const response = await api.delete(`/ordens-servico/${id}`);
     return response.data;
+  },
+  async listaTipos() {
+    const response = await api.get('/ordens-servico/tipos-ocorrencia');
+    return response.data;
   }
 };
