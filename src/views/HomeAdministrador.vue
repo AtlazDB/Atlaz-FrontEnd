@@ -12,18 +12,10 @@ const acaoFormulario = () => {
 
 <template>
   <div class="tela">
-    <!--
-
-    -->
-    <aside>
-      <Sidebar nome="William Hasan" cargo="Administrador" @abrirFormulario="acaoFormulario" />
-    </aside>
+    <Sidebar nome="William Hasan" cargo="Administrador" userType='admin' @abrirFormulario="acaoFormulario" />
     <div class="visualizador">
       <AppVisualizador :tabela="tabela" />
     </div>
-    <!--
-
-    -->
     <div class="seletor">
       <AppSeletorMes @data_selecionada="tabela = $event" />
     </div>
@@ -33,7 +25,8 @@ const acaoFormulario = () => {
 <style scoped>
 .tela {
   display: flex;
-  width: 100vw;
+  width: 100%;
+  height: 200vh;
 }
 .visualizador {
   margin: 20px 10px 40px;
