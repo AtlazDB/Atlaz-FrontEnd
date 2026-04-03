@@ -4,8 +4,10 @@
      <Sidebar
       nome="Karthi Madesh"
       cargo="Técnico"
-      @abrirFormulario="acaoFormulario"
+      userType="tecnico"
+      @abrirFormulario="abrirFormulario"
     />
+
      <div class="main-content">
 
         <div class="form-box">
@@ -303,7 +305,7 @@ computed: {
   },
 
   methods: {
-    acaoFormulario() {
+    abrirFormulario(){
 
     },
     async carregarViaturas() {
@@ -470,19 +472,22 @@ computed: {
 .main-content {
   flex: 1;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
 .form-box {
   width: 100%;
   max-width: 900px;
-  padding: 30px;
+  padding: 20px;
 }
 
 .formulario-container{
+  width: 100%;
   max-width: 900px;
   background: #ffffff;
   border-radius: 10px;
+  padding: 20px;
 }
 
 .identificacao-titulo,
@@ -493,6 +498,7 @@ computed: {
   color: #003366;
   margin-bottom: 15px;
   margin-top: 10px;
+  list-style: none;
 }
 
 
