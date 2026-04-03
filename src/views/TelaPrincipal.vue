@@ -12,8 +12,8 @@
       </header>
 
       <nav class="menu">
-        <button @click="irParaAdministrador"> Administrador </button>
-        <button> Técnico </button>
+        <button @click="irParaAdministrador">Administrador</button>
+        <button @click="irParaTecnico">Técnico</button>
       </nav>
 
     </section>
@@ -25,7 +25,11 @@
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const irParaFormulario = () => {
+const irParaAdministrador = () => {
+  router.push('/home-administrador')
+}
+
+const irParaTecnico = () => {
   router.push('/formulario-tecnico')
 }
 </script>
@@ -51,12 +55,11 @@ const irParaFormulario = () => {
 
 
 .conteudo {
-  .conteudo {
   position: relative;
   z-index: 1;
   height: 100%;
 }
-}
+
 
 
 .cabecalho {
