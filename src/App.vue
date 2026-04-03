@@ -1,31 +1,18 @@
-<script setup>
-import HomeAdministrador from './views/HomeAdministrador.vue'
-</script>
-
 <template>
-  <body>
-    <div class="wrapper">
-      <HomeAdministrador />
-    </div>
-  </body>
   <router-view />
 </template>
 
 <style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   margin: 0;
-}
-</style>
-<style scoped>
-* {
-  display: flex;
   background-color: #f4f6f9;
   font-family: Arial, serif;
-  border: none;
-}
-.wrapper {
-  display: flex;
-  width: 100vw;
 }
 </style>
 
