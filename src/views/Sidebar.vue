@@ -1,5 +1,22 @@
 <template>
-    <div class="sidebar">
+ <div>
+    <button class="mobile-menu-btn" @click="openSidebar" v-if="isMobile">
+      ☰
+    </button>
+
+    <div 
+      v-if="isMobile && isSidebarOpen" 
+      class="overlay" 
+      @click="closeSidebar"
+    ></div>
+
+<div class="sidebar" :class="{
+      'mobile-open': isMobile && isSidebarOpen,
+      'desktop-sidebar':!isMobile}">
+    
+       <button class="close-btn" @click="closeSidebar" v-if="isMobile">
+        ✕
+      </button>
 
         <div class="perfil">
             <img><svg width="77" height="81" viewBox="0 0 77 81" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -10,11 +27,18 @@
             <span class="cargo">{{ cargo }}</span>
         </div>
 
-        <button class="menu" @click="$emit('abrirFormulario')">
-            <span class="icon">📄</span>
-            Formulário
+        <button v-if="userType === 'tecnico'"  class="menu" @click="handleMenuClick('formulario')">
+          
+            <span class="icon" >📄</span>
+            <span class="text_btn" :class="{hidden: isMinimized && !isMobile}">Formulário</span>
+        </button>
+
+        <button v-if="userType === 'admin'" class="menu menu-principal"  @click="handleMenuClick('principal')">
+            <span class="icon" >📄</span>
+            <span class="text_btn" :class="{hidden: isMinimized && !isMobile}">Principal</span>
         </button>
     </div>
+</div>
 </template>
 
 <script>
@@ -28,14 +52,98 @@ export default {
     cargo: {
       type: String,
       default: "Cargo"
+    },
+    userType: {
+      type: String,
+      default: "tecnico",
+      validador:(value)=> ['tecnico', 'admin'].includes(values)
     }
+  },
+
+ data() {
+    return {
+      isSidebarOpen: false,
+      isMobile: false
+    };
+  },
+  methods: {
+    openSidebar() {
+      this.isSidebarOpen = true;
+      document.body.style.overflow = 'hidden';
+    },
+
+    closeSidebar() {
+      this.isSidebarOpen = false;
+      document.body.style.overflow = '';
+    },
+
+    handleMenuClick(tipo) {
+
+      if(tipo === 'formulario'){
+      this.$emit('abrirFormulario');
+      } else if(tipo === 'principal') {
+        this.toggleSidebar()
+        this.$emit('abrirPrincipal');
+    }
+  },
+    checkMobile() {
+    const wasMobile = this.isMobile;
+      this.isMobile = window.innerWidth <= 768;
+      
+      if (this.isMobile && !wasMobile) {
+        this.isSidebarOpen = false;
+        document.body.style.overflow = '';
+      }
+      
+      if (!this.isMobile && wasMobile) {
+        document.body.style.overflow = '';
+        }
+      }
+    },
+  mounted() {
+    this.checkMobile();
+    window.addEventListener('resize', this.checkMobile);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.checkMobile);
+    document.body.style.overflow = '';
   }
 };
 </script>
 
 <style scoped>
 
-.sidebar {
+.mobile-menu-btn {
+  position: fixed;
+  top: 5px;
+  left: 10px;
+  background-color: transparent;
+  color: #003366;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+.sidebar.desktop-sidebar {
   width: 240px;
   background-color: #003366;
   color: white;
@@ -43,20 +151,101 @@ export default {
   flex-direction: column;
   align-items: center;
   padding-top: 40px;
+  transition: none;
+  position: fixed;
+  overflow-y: auto;
+  height: 100vh;
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    background-color: #003366;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 60px;
+    z-index: 1000;
+    transition: left 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+    overflow-y: auto;
+  }
+
+  .sidebar.mobile-open {
+    left: 0;
+  }
+
+ .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+
+  .close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+  }
+
+ .perfil {
+   margin-top: 20px;
+ }
+
+.menu {
+ width: 90%;
+ justify-content: center;
+ margin-top: 30px;
+ }
+}
+
+@media (min-width: 769px){
+  .close-btn{
+    display: none;
+  }
+  .mobile-menu-btn {
+    display: none;
+  }
+  .overlay {
+    display: none;
+  }
 }
 
 .perfil {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .nome {
   margin-top: 20px;
   font-size: 15px;
+  white-space: nowrap;
 }
 
 .cargo {
   font-size: 13px;
   color: #b1bdc8;
+  white-space: nowrap;
 }
 
 .menu {
@@ -70,9 +259,12 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .menu:hover {
   background-color: #7aa6cc;
+  transform: translateY(-2px);
 }
 </style>
