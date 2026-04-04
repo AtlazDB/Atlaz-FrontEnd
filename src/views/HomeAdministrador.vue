@@ -4,7 +4,7 @@ import AppVisualizador from '../components/AppVisualizador.vue'
 import AppSeletorMes from '../components/AppSeletorMes.vue'
 import Sidebar from '../views/Sidebar.vue'
 
-const tabela = ref('')
+const filtro = ref(null)
 const acaoFormulario = () => {
   console.log('Abrir formulário')
 }
@@ -14,10 +14,10 @@ const acaoFormulario = () => {
   <div class="tela">
     <Sidebar nome="William Hasan" cargo="Administrador" userType='admin' @abrirFormulario="acaoFormulario" />
     <div class="visualizador">
-      <AppVisualizador :tabela="tabela" />
+      <AppVisualizador :filtro="filtro" />
     </div>
     <div class="seletor">
-      <AppSeletorMes @data_selecionada="tabela = $event" />
+      <AppSeletorMes @data_selecionada="filtro = $event" />
     </div>
   </div>
 </template>
