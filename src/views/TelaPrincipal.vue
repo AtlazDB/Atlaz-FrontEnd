@@ -1,10 +1,10 @@
 <template>
   <main class="container">
 
-    
+
     <section class="background"></section>
 
-    
+
     <section class="conteudo">
 
       <header class="cabecalho">
@@ -84,7 +84,7 @@ const irParaTecnico = () => {
   bottom: 40px;
   right: 10%;
   transform: translateX(-50%);
-  
+
   display: flex;
   gap: 150px;
 }
@@ -102,5 +102,43 @@ button {
 
 button:hover {
   background: #003366;
+}
+@media (max-width: 768px) {
+  .conteudo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* era space-between */
+    gap: 130px; /* controla a distância entre logo e botões */
+    padding: 40px 20px;
+  }
+
+  .cabecalho {
+    position: static;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .logo {
+    width: 70%;
+    margin: 0;
+  }
+
+  .menu {
+    position: static;
+    transform: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    right: auto;
+    bottom: auto;
+    padding-bottom: 20px;
+  }
+
+  button {
+    width: 80%;
+    min-width: 200px; /* garante espaço suficiente pro texto */
+    font-size: 13px;
+  }
 }
 </style>
