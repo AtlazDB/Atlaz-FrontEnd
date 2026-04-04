@@ -1,44 +1,25 @@
-# .
+# Client -  Sistema de Controle e Análise de Abastecimento
+Interface web desenvolvida em **Vue.js 3** e **Vite** para o [Sistema de Controle e Análise de Abastecimento](https://github.com/AtlazDB/Atlaz)
+# 🛠️ Pré-requisitos para rodar o projeto
+-  **Node.js 18+** - [Download](https://nodejs.org/pt-br)
+- **Git** - [Download](https://git-scm.com/downloads)
+# 🚀 Passos para executar a aplicação
 
-This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
-
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Recommended Browser Setup
-
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+1. <strong> Clone o repositório e navegue até o diretório do projeto </strong> 
+  
+```bash
+git clone https://github.com/AtlazDB/Atlaz-FrontEnd.git
+cd .\Atlaz-FrontEnd\
 ```
 
-### Compile and Hot-Reload for Development
+2. <strong> Executar o projeto.</strong>
 
-```sh
-npm run dev
+> [!IMPORTANT]
+> Para executar, certifique se o back-end está rodando, tem o passo a passo no repositório [BackEnd](https://github.com/AtlazDB/Atlaz-BackEnd)
+
+```bash
+npm install && npm run dev
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+# 🧪 Como rodar os testes 
