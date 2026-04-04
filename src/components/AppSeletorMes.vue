@@ -1,17 +1,41 @@
 <script setup>
-import { ref } from 'vue'
-const itens_seletor = ref([
-  { titulo: 'Janeiro', data: '2025' },
-  { titulo: 'Fevereiro', data: '2025' },
-  { titulo: 'Março', data: '2025' },
-  { titulo: 'Abril', data: '2025' },
-  { titulo: 'Maio', data: '2025' },
-  { titulo: 'Setembro', data: '2025' },
-  { titulo: 'Octubro', data: '2025' },
-])
+import { ref, onMounted } from 'vue'
+import { ordemDeServicoService } from '@/services/ordemDeServico.js'
+
 const emit = defineEmits(['data_selecionada'])
 const selecionado = ref(null)
 const minimizar = ref(true)
+const itens_seletor = ref([])
+
+const mesesNome = [
+  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+]
+onMounted(async () => {
+  try {
+    const ordens = await ordemDeServicoService.listar()
+
+    const vistos = new Set()
+    const itens = []
+
+    ordens.forEach(os => {
+      const data = new Date(os.dataSaida)
+      const mes = data.getMonth()
+      const ano = data.getFullYear()
+      const chave = `${mes}-${ano}`
+
+      if (!vistos.has(chave)) {
+        vistos.add(chave)
+        itens.push({ titulo: mesesNome[mes], mes, ano })
+      }
+    })
+
+    itens.sort((a, b) => a.ano - b.ano || a.mes - b.mes)
+    itens_seletor.value = itens
+  }catch (erro) {
+    console.error('Erro ao carregar meses:', erro)
+  }
+})
 </script>
 
 <template>
@@ -24,20 +48,28 @@ const minimizar = ref(true)
   </select>
   -->
     <div class="meses" v-if="minimizar">
+      <div class="card_mes"
+           v-on:click="() => {
+             selecionado = 'todos'
+             emit('data_selecionada', null)
+           }"
+           v-bind:class="{ ativo: selecionado === 'todos'}"
+      >
+           <h1>Todos</h1>
+      </div>
       <div
         class="card_mes"
         v-for="item in itens_seletor"
-        :key="item.titulo + item.data"
-        v-on:click="
-          () => {
-            selecionado = item.titulo + item.data
-            emit('data_selecionada', item.titulo + item.data)
-          }
-        "
-        v-bind:class="{ ativo: selecionado === item.titulo + item.data }"
+        :key="item.titulo + item.ano"
+        v-on:click="() => {
+        selecionado = item.titulo + item.ano
+        emit('data_selecionada', { mes: item.mes, ano: item.ano })
+        }"
+
+        v-bind:class="{ ativo: selecionado === item.titulo + item.ano }"
       >
         <h1>{{ item.titulo }}</h1>
-        <p>{{ item.data }}</p>
+        <p>{{ item.ano }}</p>
       </div>
     </div>
     <button class="minimizador" v-on:click="minimizar = !minimizar">
