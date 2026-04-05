@@ -45,6 +45,25 @@
       <span class="icon">📊</span>
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Principal</span>
     </button>
+
+    <RouterLink to="/" class="logout">
+      <svg
+        width="30"
+        height="30"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+        />
+      </svg>
+      Logout
+    </RouterLink>
   </div>
 </template>
 
@@ -272,5 +291,18 @@ export default {
 .menu:hover {
   background-color: #7aa6cc;
   transform: translateY(-2px);
+}
+
+.logout {
+  position: fixed;
+  bottom: 10vh;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
 }
 </style>
