@@ -8,8 +8,18 @@ const minimizar = ref(true)
 const itens_seletor = ref([])
 
 const mesesNome = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro',
 ]
 onMounted(async () => {
   try {
@@ -18,7 +28,7 @@ onMounted(async () => {
     const vistos = new Set()
     const itens = []
 
-    ordens.forEach(os => {
+    ordens.forEach((os) => {
       const data = new Date(os.dataSaida)
       const mes = data.getMonth()
       const ano = data.getFullYear()
@@ -32,7 +42,7 @@ onMounted(async () => {
 
     itens.sort((a, b) => a.ano - b.ano || a.mes - b.mes)
     itens_seletor.value = itens
-  }catch (erro) {
+  } catch (erro) {
     console.error('Erro ao carregar meses:', erro)
   }
 })
@@ -48,24 +58,28 @@ onMounted(async () => {
   </select>
   -->
     <div class="meses" v-if="minimizar">
-      <div class="card_mes"
-           v-on:click="() => {
-             selecionado = 'todos'
-             emit('data_selecionada', null)
-           }"
-           v-bind:class="{ ativo: selecionado === 'todos'}"
+      <div
+        class="card_mes"
+        v-on:click="
+          () => {
+            selecionado = 'todos'
+            emit('data_selecionada', null)
+          }
+        "
+        v-bind:class="{ ativo: selecionado === 'todos' }"
       >
-           <h1>Todos</h1>
+        <h1>Todos</h1>
       </div>
       <div
         class="card_mes"
         v-for="item in itens_seletor"
         :key="item.titulo + item.ano"
-        v-on:click="() => {
-        selecionado = item.titulo + item.ano
-        emit('data_selecionada', { mes: item.mes, ano: item.ano })
-        }"
-
+        v-on:click="
+          () => {
+            selecionado = item.titulo + item.ano
+            emit('data_selecionada', { mes: item.mes, ano: item.ano })
+          }
+        "
         v-bind:class="{ ativo: selecionado === item.titulo + item.ano }"
       >
         <h1>{{ item.titulo }}</h1>
