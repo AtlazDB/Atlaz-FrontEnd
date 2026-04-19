@@ -10,10 +10,12 @@
 
      <div class="main-content">
         <div class="form-box">
+          <h1>Ocorrências</h1>
 <div class="formulario-container">
 
           <div class="card-saida">
-            <div class="informacoes-ocorrencia">
+            <div class="card-body">
+
       <div class="dropdown-planejamento-viagem">
         <h3>Informações da ocorrência</h3>
         <select class="dropdown-select" v-model="ocorrenciaSelecionada">
@@ -95,11 +97,8 @@
             <option value="Ubatuba">Ubatuba</option>
           </select>
 
-      </div>
-      </div>
-    </div>
-    <div class="saida">
-      <h3>Saída</h3>
+              <div class="saida">
+             <h3>Saída</h3>
         <div class="dropdown-viatura">
         <label class="dropdown-label">Viatura</label>
         <select class="dropdown-select" v-model="viaturaSelecionada">
@@ -111,6 +110,7 @@
             > {{ viatura.prefixo }} - {{ viatura.modelo.nomeModelo}}</option>
         </select>
       </div>
+
       <div class="campo-Horario-Saida">
         <label class="campo-label">Hora de Saída</label>
         <input
@@ -119,13 +119,16 @@
           v-model="HorarioSaida"
         >
       </div>
+
         <div class="campo-data">
         <label class="campo-label">Data Saída</label>
        <input
         type="text"
+        class="campo-input"
         v-model="dataSaida"
         placeholder="DD/MM/YYYY">
         </div>
+
           <div class="botao-enviar">
             <button
                t ype="button"
@@ -136,10 +139,17 @@
             </button>
     </div>
   </div>
+      </div>
+      </div>
+    </div>
+
+
 </div>
 
     <div class="card-chegada">
-      <h3>Chegada</h3>
+
+       <div class="card-body">
+        <h3>Chegada</h3>
       <div class="kmChegada">
         <label class="campo-label">Chegada(KM)</label>
         <input
@@ -161,7 +171,10 @@
       <div class="Data-chegada">
        <div class="campo-data">
         <label class="campo-label">Data Chegada</label>
-        <input type="text" v-model="dataChegada" placeholder="DD/MM/YYYY">
+        <input type="text"
+          class="campo-input"
+          v-model="dataChegada"
+          placeholder="DD/MM/YYYY">
        </div>
     </div>
            <div class="botao-enviar">
@@ -173,6 +186,7 @@
                  Registrar Chegada
             </button>
       </div>
+    </div>
     </div>
     </div>
     </div>
@@ -478,32 +492,58 @@ computed: {
 .form-box {
   width: 100%;
   max-width: 900px;
-  padding: 20px;
+  padding: 30px;
+}
+.form-box > h1 {
+  color: #003366;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-weight: 600;
 }
 
 .formulario-container{
-  width: 100%;
-  max-width: 900px;
-  background: #ffffff;
-  border-radius: 10px;
-  padding: 20px;
+  display: grid;
+  
+  gap: 30px;
 }
 
-.identificacao-titulo,
-.Planejamento-titulo,
-.Medicao-titulo,
-.Abastecimento-titulo{
-  font-size: 18px;
+
+.card-saida, 
+.card-chegada{
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-chegada:hover, .card-saida:hover{
+  transform: translateY(-5px);
+  box-shadow: 0 25 50px rgba(0,0,0,0.15);
+}
+
+.card-saida h3, 
+.card-chegada h3{
   color: #003366;
-  margin-bottom: 15px;
-  margin-top: 10px;
-  list-style: none;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #e1e5e9;
+}
+
+
+.card-body {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
 }
 
 
 .dropdown-label,
 .campo-label {
-  display: block;
+  display: flex;
   font-size: 16px;
   margin-bottom: 5px;
   color: #333;
@@ -526,19 +566,6 @@ textArea {
    min-height: 70px;
 }
 
-.identificacaoViatura,
-.PlanejamentoViagem,
-.Medicao,
-.Abastecimento {
-  margin-bottom: 20px;
-}
-
-.Medicao {
-  display:list-item;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
 .Datas {
   grid-column: span 2;
   display: flex;
@@ -547,12 +574,6 @@ textArea {
 
 .campo-data {
   flex: 1;
-}
-
-.Abastecimento {
-  display: list-item;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 15px;
 }
 
 .campo-justificativa textarea {
@@ -576,7 +597,7 @@ textArea {
 }
 
 .btn-enviar:hover {
-  background: #002244;
+  background: #003366;
 }
 
 @media (max-width: 768px) {
