@@ -9,39 +9,15 @@
     />
 
      <div class="main-content">
-
         <div class="form-box">
-  <div class="formulario-container">
-    <header class="header">
-      <h1></h1>
-    </header>
+<div class="formulario-container">
 
-    <div class="identificacaoViatura">
-      <h2 class="identificacao-titulo">IDENTIFICAÇÃO</h2>
-
-      <div class="dropdown-viatura">
-        <label class="dropdown-label">Viatura</label>
-        <select class="dropdown-select" v-model="viaturaSelecionada">
-          <option value="">Selecione...</option>
-          <option
-            v-for="viatura in viaturas"
-            :key="viatura.id"
-            :value="viatura.id"
-            > {{ viatura.prefixo }} - {{ viatura.modelo.nomeModelo}}</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div class="PlanejamentoViagem">
-      <h2 class="Planejamento-titulo">PLANEJAMENTO</h2>
-
+          <div class="card-saida">
+            <div class="informacoes-ocorrencia">
       <div class="dropdown-planejamento-viagem">
-
-        <label class="dropdown-label">Tipo de Ocorrência</label>
-
+        <h3>Informações da ocorrência</h3>
         <select class="dropdown-select" v-model="ocorrenciaSelecionada">
-            <option value="">Selecione...</option>
+            <option value="">Tipo de Ocorrência</option>
             <option v-for="tipo in tiposOcorrencia"
                     :key="tipo"
                     :value="tipo">
@@ -122,28 +98,19 @@
       </div>
       </div>
     </div>
-
-    <div class="Medicao">
-       <h2 class="Medicao-titulo">MEDIÇÃO</h2>
-
-       <div class="campo-Saida">
-        <label class="campo-label">Saída(KM)</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="SaidaKM"
-        >
+    <div class="saida">
+      <h3>Saída</h3>
+        <div class="dropdown-viatura">
+        <label class="dropdown-label">Viatura</label>
+        <select class="dropdown-select" v-model="viaturaSelecionada">
+          <option value="">Selecione...</option>
+          <option
+            v-for="viatura in viaturas"
+            :key="viatura.id"
+            :value="viatura.id"
+            > {{ viatura.prefixo }} - {{ viatura.modelo.nomeModelo}}</option>
+        </select>
       </div>
-
-      <div class="campo-Chegada">
-        <label class="campo-label">Chegada(KM)</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="ChegadaKM"
-        >
-      </div>
-
       <div class="campo-Horario-Saida">
         <label class="campo-label">Hora de Saída</label>
         <input
@@ -152,8 +119,37 @@
           v-model="HorarioSaida"
         >
       </div>
+        <div class="campo-data">
+        <label class="campo-label">Data Saída</label>
+       <input
+        type="text"
+        v-model="dataSaida"
+        placeholder="DD/MM/YYYY">
+        </div>
+          <div class="botao-enviar">
+            <button
+               t ype="button"
+               class="btn-enviar"
+               @click="salvarDados"
+            >
+                 Registrar Saída
+            </button>
+    </div>
+  </div>
+</div>
 
-      <div class="campo-Horario-Chegada">
+    <div class="card-chegada">
+      <h3>Chegada</h3>
+      <div class="kmChegada">
+        <label class="campo-label">Chegada(KM)</label>
+        <input
+          type="text"
+          class="campo-input"
+          v-model="ChegadaKM"
+        >
+      </div>
+
+      <div class="Horario-Chegada">
         <label class="campo-label">Hora de Chegada</label>
         <input
           type="text"
@@ -162,25 +158,28 @@
         >
       </div>
 
-      <div class="Datas">
-
-       <div class="campo-data">
-        <label class="campo-label">Data Saída</label>
-       <input
-        type="text"
-        v-model="dataSaida"
-        placeholder="DD/MM/YYYY">
-        </div>
-
+      <div class="Data-chegada">
        <div class="campo-data">
         <label class="campo-label">Data Chegada</label>
         <input type="text" v-model="dataChegada" placeholder="DD/MM/YYYY">
        </div>
-      </div>
-
     </div>
+           <div class="botao-enviar">
+            <button
+               t ype="button"
+               class="btn-enviar"
+               @click="salvarDados"
+            >
+                 Registrar Chegada
+            </button>
+      </div>
+    </div>
+    </div>
+    </div>
+    </div>
+  </div>
 
-    <div class="Abastecimento">
+    <!-- <div class="Abastecimento">
     <h2 class="Abastecimento-titulo">ABASTECIMENTO</h2>
        <div class="campo-Litros">
         <label class="campo-label">Litros</label>
@@ -226,8 +225,8 @@
       </div>
     </div>
   </div>
-</div>
-</template>
+</div>-->
+</template> 
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
@@ -557,7 +556,7 @@ textArea {
 }
 
 .campo-justificativa textarea {
-  border: 2px dashed #003366;
+  border: 2px line #003366;
 }
 
 .botao-enviar {
