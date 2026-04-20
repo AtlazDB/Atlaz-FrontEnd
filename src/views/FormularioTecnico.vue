@@ -18,8 +18,9 @@
 
       <div class="dropdown-planejamento-viagem">
         <h3>Informações da ocorrência</h3>
+        <label class="dropdown-label">Tipo de Ocorrência</label>
         <select class="dropdown-select" v-model="ocorrenciaSelecionada">
-            <option value="">Tipo de Ocorrência</option>
+            <option value="">Selecione...</option>
             <option v-for="tipo in tiposOcorrencia"
                     :key="tipo"
                     :value="tipo">
@@ -133,8 +134,7 @@
             <button
                t ype="button"
                class="btn-enviar"
-               @click="salvarDados"
-            >
+               @click="salvarSaida">
                  Registrar Saída
             </button>
     </div>
@@ -181,8 +181,7 @@
             <button
                t ype="button"
                class="btn-enviar"
-               @click="salvarDados"
-            >
+               @click="salvarChegada">
                  Registrar Chegada
             </button>
       </div>
@@ -246,8 +245,6 @@
 import Sidebar from "@/views/Sidebar.vue";
 import { viaturaService } from '@/services/viaturaService.js'
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
-import { abastecimentoService } from '@/services/abastecimentoService.js'
-
 
 export default {
    components: {
@@ -321,58 +318,127 @@ computed: {
     abrirFormulario(){
 
     },
-    async carregarViaturas() {
-      try {
-        this.viaturas = await viaturaService.listar();
-        console.log('✅ Viaturas carregadas:', this.viaturas);
-      } catch (error) {
-        console.error('❌ Erro ao carregar viaturas:', error);
+
+    async salvarSaida() {
+      if(!this.viaturaSelecionada){
+        this.exibirMensagem("Selecione uma viatura.");
+        return;
       }
-    },
 
-    async salvarDados() {
-      if (!this.validarFormulario()) return;
-      if (!this.validarNumeros()) return;
-      if (!this.validarDatas()) return;
+      if(!this.ocorrenciaSelecionada){
+        this.exibirMensagem("Selecione o tipo de ocorrência.");
+        return;
+      }
+
+      if(!this.requisitante){
+        this.exibirMensagem("Informe o requisitante.");
+        return;
+      }
+
+      if (!this.destinoSelecionado) {
+        this.exibirMensagem("Selecione o destino.");
+        return;
+      }
+
+      if(!this.HorarioSaida){
+        this.exibirMensagem("Informe o horário de saída.");
+        return;
+      }
+
+      if (!this.validarHorario(this.HorarioSaida)) {
+        this.exibirMensagem("Horário de saída inválido. Use o formato HH:MM.");
+        return;
+      }
+
+      if(!this.dataSaida){
+        this.exibirMensagem("Informe a data de saída.");
+        return;
+      }
+
+      if (!this.validarData(this.dataSaida)) {
+        this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY.");
+        return;
+      }
 
       try {
-        // 1. Salva a Ordem de Serviço
         const dadosOs = {
           tipoServico: this.ocorrenciaSelecionada,
           localDestino: this.destinoSelecionado,
           justificativa: this.justificativa,
           requisitante: this.requisitante,
           kmSaida: parseFloat(this.SaidaKM),
-          kmChegada: parseFloat(this.ChegadaKM),
           dataSaida: this.converterDataHora(this.dataSaida, this.HorarioSaida),
-          dataRetorno: this.converterDataHora(this.dataChegada, this.HorarioChegada),
-          idUsuario: 1, // fixo por enquanto, depois vem do login
+          idUsuario: 1, 
           idViatura: this.viaturaSelecionada
         };
 
         const os = await ordemDeServicoService.salvar(dadosOs);
+        this.osId = os.id;
 
-        // 2. Salva o abastecimento, apenas se houver
-        if (this.Litros||this.Valor||this.notaFiscal) {
-          const dadosAbastecimento = {
-            dataHora: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, -1),
-            litros: parseFloat(this.Litros),
-            valorTotal: parseFloat(this.Valor),
-            numeroNotaFiscal: this.notaFiscal,
-            idUsuario: 1, // fixo, substituir quando houver login
-            idViatura: this.viaturaSelecionada,
-            idCidade: 1, // fixo por enquanto, depois vem do destino
-            idOs: os.id
-          };
+        this.limparCamposSaida();
 
-          await abastecimentoService.criar(dadosAbastecimento);
+        } catch (error) {
+          console.error('Erro ao registrar saída:', error);
         }
+      },
 
-        this.resetarFormulario();
-
-      } catch (error) {
-        console.error('Erro ao salvar:', error);
+    async salvarChegada(){
+      if(!this.osId){
+        this.exibirMensagem("Nenhuma saída foi registrada.");
+        return;
       }
+
+      if (!this.ChegadaKM) {
+        this.exibirMensagem("Informe a quilometragem de chegada.");
+        return;
+      }
+
+      if(!this.HorarioChegada){
+        this.exibirMensagem("Informe o horário de chegada.");
+        return;
+      }
+
+      if (!this.validarQuilometragem(this.ChegadaKM)) {
+        this.exibirMensagem("Quilometragem de chegada inválida.");
+        return;
+      }
+
+      if (!this.validarHorario(this.HorarioChegada)) {
+        this.exibirMensagem("Horário de chegada inválido. Use o formato HH:MM.");
+        return;
+      }
+
+      if(!this.dataChegada){
+        this.exibirMensagem("Informe a data de chegada.");
+        return;
+      }
+
+      if (!this.validarData(this.dataChegada)) {
+        this.exibirMensagem("Data de chegada inválida. Use o formato DD/MM/YYYY.");
+        return;
+      }
+
+      try {
+        const dadosAtualizacao = {
+        kmChegada: parseFloat(this.ChegadaKM),
+        dataRetorno: this.converterDataHora(this.dataChegada, this.HorarioChegada)
+    };
+    
+    await ordemDeServicoService.atualizar(this.osId, dadosAtualizacao);
+    
+    } catch (error) {
+        console.error('Erro ao registrar chegada:', error);
+    }
+  },
+
+    validarQuilometragem(km) {
+      const kmNum = parseFloat(km);
+      return !isNaN(kmNum) && kmNum > 0;
+    },
+
+    validarHorario(horario) {
+      const regex = /^([0-1][0-9]|2[0-3]):[0-5][0-9]$/;
+      return regex.test(horario);
     },
 
     converterDataHora(data, hora) {
@@ -385,6 +451,7 @@ computed: {
     exibirMensagem(mensagem, tipo) {
       alert(mensagem);
     },
+
   validarFormulario() {
       const camposObrigatorios = [
         { campo: this.viaturaSelecionada, nome: "Viatura" },
@@ -405,39 +472,15 @@ computed: {
       return true;
     },
 
- validarNumeros() {
-      if (this.SaidaKM && isNaN(parseFloat(this.SaidaKM))) {
-        this.exibirMensagem("Quilometragem de saída deve ser um número válido", 'erro');
-        return false;
-      }
-
-      if (this.ChegadaKM && isNaN(parseFloat(this.ChegadaKM))) {
-        this.exibirMensagem("Quilometragem de chegada deve ser um número válido", 'erro');
-        return false;
-      }
-
-      if (this.Litros && isNaN(parseFloat(this.Litros))) {
-        this.exibirMensagem("Litros deve ser um número válido", 'erro');
-        return false;
-      }
-
-      if (this.Valor && isNaN(parseFloat(this.Valor))) {
-        this.exibirMensagem("Valor deve ser um número válido", 'erro');
-        return false;
-      }
-
-      return true;
-    },
-
 
     validarDatas() {
       if (this.dataSaida && !this.validarData(this.dataSaida)) {
-        this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY", 'erro');
+        this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY");
         return false;
       }
 
       if (this.dataChegada && !this.validarData(this.dataChegada)) {
-        this.exibirMensagem("Data de chegada inválida. Use o formato DD/MM/YYYY", 'erro');
+        this.exibirMensagem("Data de chegada inválida. Use o formato DD/MM/YYYY");
         return false;
       }
 
@@ -455,6 +498,7 @@ computed: {
              dataObj.getMonth() === mes - 1 &&
              dataObj.getDate() === dia;
     },
+
  resetarFormulario() {
       this.viaturaSelecionada = "";
       this.ocorrenciaSelecionada = "";
@@ -503,7 +547,6 @@ computed: {
 
 .formulario-container{
   display: grid;
-  
   gap: 30px;
 }
 
@@ -531,6 +574,8 @@ computed: {
   display: flex;
   align-items: center;
   border-bottom: 2px solid #e1e5e9;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 
@@ -540,24 +585,27 @@ computed: {
   flex-direction: column;
 }
 
-
 .dropdown-label,
 .campo-label {
   display: flex;
   font-size: 16px;
   margin-bottom: 5px;
   color: #333;
+  max-width: 600px;
+  margin: 0 auto 15px;;
 }
 
 .dropdown-select,
 .campo-input,
 textarea {
   width: 100%;
+  max-width: 600px;
   padding: 10px;
+  display: block;
   border: 1px solid #697179;
   border-radius: 10px;
   outline: none;
-  margin-bottom: 15px;
+  margin: 0 auto 15px;;
   font-size: 14px;
 }
 
@@ -594,23 +642,5 @@ textArea {
   cursor: pointer;
   font-size: 14px;
   transition: 0.3s;
-}
-
-.btn-enviar:hover {
-  background: #003366;
-}
-
-@media (max-width: 768px) {
-  .Medicao {
-    grid-template-columns: 1fr;
-  }
-
-  .Datas {
-    flex-direction: column;
-  }
-
-  .Abastecimento {
-    grid-template-columns: 1fr;
-  }
 }
 </style>

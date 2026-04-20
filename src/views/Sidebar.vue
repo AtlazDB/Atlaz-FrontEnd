@@ -34,7 +34,7 @@
 
     <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('formulario')">
       <span class="icon">📄</span>
-      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Formulário</span>
+      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Ocorrência</span>
     </button>
 
     <button
