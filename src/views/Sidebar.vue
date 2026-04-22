@@ -46,6 +46,8 @@
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Principal</span>
     </button>
 
+    <RouterLink :to="{ name: 'viaturas' }" v-if="userType === 'admin'">Viaturas</RouterLink>
+
     <RouterLink to="/" class="logout">
       <svg
         width="30"

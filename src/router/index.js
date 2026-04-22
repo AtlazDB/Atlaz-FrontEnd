@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import FormularioTecnico from '../views/FormularioTecnico.vue'
 import HomeAdministrador from '../views/HomeAdministrador.vue'
 import TelaPrincipal from '../views/TelaPrincipal.vue'
+import AppVisualizadorViatura from '../components/AppVisualizadorViatura.vue'
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: '/home-administrador',
     name: 'administrador',
     component: HomeAdministrador
+  },
+  {
+    path: '/tabela-viaturas',
+    name: 'viaturas',
+    component: AppVisualizadorViatura
   }
 ]
 

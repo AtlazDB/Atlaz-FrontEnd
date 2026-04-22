@@ -95,6 +95,12 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+@import '@/assets/style.css';
+
+.titulo {
+  width: 130px;
+  font-size: 24px;
+}
 .seletor {
   height: 400px;
   width: fit-content;
@@ -137,12 +143,6 @@ svg.fechado {
 }
 .meses:hover {
   overflow-y: auto;
-}
-.titulo {
-  font-size: 24px;
-  border-left: 5px #003366 solid;
-  padding-left: 5px;
-  width: 130px;
 }
 .card_mes {
   border-bottom: 1px solid #ddd;

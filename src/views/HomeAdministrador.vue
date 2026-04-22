@@ -12,7 +12,13 @@ const acaoFormulario = () => {
 
 <template>
   <div class="tela">
-    <Sidebar nome="William Hasan" cargo="Administrador" userType='admin' @abrirFormulario="acaoFormulario" />
+    <Sidebar
+      nome="William Hasan"
+      cargo="Administrador"
+      userType="admin"
+      @abrirFormulario="acaoFormulario"
+    />
+    <router-view />
     <div class="visualizador">
       <AppVisualizador :filtro="filtro" />
     </div>
