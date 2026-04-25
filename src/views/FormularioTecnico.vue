@@ -5,13 +5,12 @@
       nome="Karthi Madesh"
       cargo="Técnico"
       userType="tecnico"
-      @abrirFormulario="abrirFormulario"
     />
 
      <div class="main-content">
         <div class="form-box">
           <h1>Ocorrências</h1>
-<div class="formulario-container">
+      <div class="formulario-container">
 
           <div class="card-saida">
             <div class="card-body">
@@ -132,7 +131,7 @@
 
           <div class="botao-enviar">
             <button
-               t ype="button"
+               type="button"
                class="btn-enviar"
                @click="salvarSaida">
                  Registrar Saída
@@ -179,7 +178,7 @@
     </div>
            <div class="botao-enviar">
             <button
-               t ype="button"
+               type="button"
                class="btn-enviar"
                @click="salvarChegada">
                  Registrar Chegada
@@ -191,59 +190,10 @@
     </div>
     </div>
   </div>
-
-    <!-- <div class="Abastecimento">
-    <h2 class="Abastecimento-titulo">ABASTECIMENTO</h2>
-       <div class="campo-Litros">
-        <label class="campo-label">Litros</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="Litros"
-          placeholder="0,00"
-        >
-      </div>
-
-       <div class="campo-Valor">
-        <label class="campo-label">Valor Total (R$)</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="Valor"
-          placeholder="R$ 0,00"
-        >
-      </div>
-
-      <div class="campo-NotaFiscal">
-        <label class="campo-label">N° Nota Fiscal</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="notaFiscal"
-          placeholder="000.000.000"
-        >
-      </div>
-
-    </div>
-
-    <div class="botao-enviar">
-     <button
-    type="button"
-    class="btn-enviar"
-    @click="salvarDados"
-  >
-    Enviar
-   </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>-->
 </template> 
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
-import { viaturaService } from '@/services/viaturaService.js'
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
 
 export default {
@@ -252,6 +202,7 @@ export default {
   },
   data() {
     return {
+      osId: null,
       viaturas: [],
       viaturaSelecionada: "",
 
@@ -315,9 +266,6 @@ computed: {
   },
 
   methods: {
-    abrirFormulario(){
-
-    },
 
     async salvarSaida() {
       if(!this.viaturaSelecionada){
@@ -375,10 +323,11 @@ computed: {
         const os = await ordemDeServicoService.salvar(dadosOs);
         this.osId = os.id;
 
-        this.limparCamposSaida();
+        this.resetarFormulario();
 
         } catch (error) {
           console.error('Erro ao registrar saída:', error);
+          this.exibirMensagem('Erro ao registrar. Tente novamente.');
         }
       },
 
@@ -428,6 +377,7 @@ computed: {
     
     } catch (error) {
         console.error('Erro ao registrar chegada:', error);
+        this.exibirMensagem('Erro ao registrar. Tente novamente.');
     }
   },
 
@@ -562,7 +512,7 @@ computed: {
 
 .card-chegada:hover, .card-saida:hover{
   transform: translateY(-5px);
-  box-shadow: 0 25 50px rgba(0,0,0,0.15);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.15);
 }
 
 .card-saida h3, 

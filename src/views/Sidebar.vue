@@ -37,6 +37,11 @@
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Ocorrência</span>
     </button>
 
+     <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('abastecimento')">
+      <span class="icon">⛽</span>
+      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Abastecimento</span>
+    </button>
+
     <button
       v-if="userType === 'admin'"
       class="menu menu-principal"
@@ -105,12 +110,17 @@ export default {
 
     handleMenuClick(tipo) {
       if (tipo === 'formulario') {
-        this.$emit('abrirFormulario')
-      } else if (tipo === 'principal') {
+        this.$router.push('/formulario-tecnico')
+      } 
+      else if (tipo === 'abastecimento') {
+        this.$router.push('/abastecimento')
+      }
+      else if (tipo === 'principal') {
         this.toggleSidebar()
-        this.$emit('abrirPrincipal')
+        this.$router.push('/home-administrador')
       }
     },
+
     checkMobile() {
       const wasMobile = this.isMobile
       this.isMobile = window.innerWidth <= 768
@@ -286,6 +296,8 @@ export default {
   gap: 8px;
   transition: all 0.3s ease;
   white-space: nowrap;
+  width: 170px; 
+  justify-content: center; 
 }
 
 .menu:hover {
