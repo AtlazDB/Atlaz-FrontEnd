@@ -2,8 +2,8 @@
 import { onMounted, ref, computed } from 'vue'
 import { viaturaService } from '@/services/viaturaService.js'
 
-const carregando = ref(true)
-const registros = ref([
+const carregando = ref(false)
+const registros = ref([/*
   {
     id: 1,
     prefixo: 'AAA',
@@ -48,7 +48,7 @@ const registros = ref([
       nomeMarca: 'Fiat',
     },
   },
-])
+*/])
 const busca_filtro = ref('')
 const marca_filtro = ref('')
 const tipo_filtro = ref('')
@@ -86,6 +86,9 @@ function refinarPalavra(palavra) {
     case 'DISPONIVEL':
       palavra = 'DISPONÍVEL'
       break
+    case 'MANUTENCAO':
+      palavra = 'MANUTENÇÃO'
+      break
   }
   palavra = palavra.replace('_', ' ')
   palavra = palavra.toLowerCase()
@@ -109,29 +112,49 @@ const registrosFiltrados = computed(() => {
   })
 })
 
-//onMounted(() => carregarTodos())
+onMounted(() => carregarTodos())
 </script>
 
 <template>
   <div class="container">
     <div class="searchHeader">
       <div class="searchBar">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+          height="20"
+          width="20"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
         <input type="search" placeholder="Buscar pelo prefixo" v-model="busca_filtro" />
       </div>
+      <div
+        style="width: 1px; height: max(100%); border-left: 1px solid #cccc; margin: 0 10px 0 10px"
+      />
       <select v-model="tipo_filtro">
-        <option value="">Selecionar</option>
+        <option value="">Tipo</option>
         <option value="UTILITARIO">Utilitário</option>
         <option value="PASSEIO">Passeio</option>
       </select>
       <select v-model="status_filtro">
-        <option value="">Selecionar</option>
+        <option value="">Status</option>
         <option value="DISPONIVEL">Disponível</option>
         <option value="MANUTENCAO">Manutenção</option>
         <option value="EM_USO">Em uso</option>
         <option value="DESATIVADA">Desativada</option>
       </select>
     </div>
-    <table v-if="registros.length > 0">
+    <p style="align-self: center" v-if="registrosFiltrados.length === 0">Sem informação</p>
+    <table v-else>
       <thead>
         <tr>
           <th>Prefixo</th>
@@ -148,7 +171,11 @@ const registrosFiltrados = computed(() => {
           <td>{{ reg.modelo.nomeMarca }} {{ reg.modelo.nomeModelo }}</td>
           <td>{{ refinarPalavra(reg.tipo) }}</td>
           <td>(Combustível)</td>
-          <td :class="reg.viaturaStatus">{{ refinarPalavra(reg.viaturaStatus) }}</td>
+          <td>
+            <div :class="reg.viaturaStatus">
+              {{ refinarPalavra(reg.viaturaStatus) }}
+            </div>
+          </td>
           <td>
             <svg
               width="20"
@@ -176,30 +203,44 @@ const registrosFiltrados = computed(() => {
 <style scoped>
 @import '@/assets/style.css';
 
-.visualizadorViatura {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  overflow-x: auto;
-}
-.searchHeader {
-  display: flex;
-  height: 20px;
-  background: #003366;
-  margin-bottom: 10px;
-}
-.searchBar {
-  width: 150px;
-  background: #b1bdc8;
-}
-button {
-  width: 150px;
-}
 .container {
   width: 100%;
   background-color: #ffffff;
   padding: 5px;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.searchHeader {
+  display: flex;
+  height: 25px;
+  margin-bottom: 10px;
+}
+.searchBar {
+  display: flex;
+  align-items: center;
+}
+.searchBar svg {
+  background-color: #f4f6f9;
+  border-radius: 5px 0 0 5px;
+  cursor: default;
+}
+.searchBar input {
+  width: 150px;
+  background-color: #f4f6f9;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+  height: 100%;
+}
+.searchBar input:focus {
+  outline: none;
+}
+select {
+  border: 2px solid #003366;
+  color: #003366;
+  border-radius: 15px;
+  margin: 0 10px 0 10px;
 }
 table {
   width: 100%;
@@ -208,12 +249,30 @@ th,
 td {
   text-align: center;
   vertical-align: center;
-  border: 1px solid #ccc;
+  height: 30px;
+}
+/*Tags de status*/
+th:nth-child(1) {
+  width: max(200px);
+}
+/*Tags de status*/
+th:nth-child(2) {
+  width: max(200px);
+}
+/*Tags de status*/
+th:nth-child(3) {
+  width: max(200px);
+}
+/*Tags de status*/
+th:nth-child(4) {
+  width: max(200px);
 }
 /*Tags de status*/
 td:nth-child(5) {
+  width: max(100px);
+}
+td:nth-child(5) div {
   border-radius: 10px;
-  border: 1px solid #ccc;
   width: 100px;
 }
 .DISPONIVEL {

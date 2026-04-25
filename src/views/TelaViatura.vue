@@ -25,10 +25,29 @@ import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
 
 .tela {
   display: flex;
-  background-color: #dddddd;
+  background-color: #f4f6f9;
 }
 .visualizadorViatura {
   width: max(100%);
   padding: 10px;
+}
+h1 {
+  margin-bottom: 10px;
+}
+button {
+  background-color: #7AA6CC;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 7px;
+  margin-bottom: 30px;
+}
+button:hover {
+  background-color: #457aad;
+}
+button:active {
+  transform: scale(0.95);
+  transition-duration: 0.1s;
 }
 </style>
