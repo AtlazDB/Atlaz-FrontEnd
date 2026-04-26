@@ -178,12 +178,57 @@ th, td {
   z-index: 999;
 }
 
+.modal {
+  background: white;
+  border-radius: 12% ;
+  padding: 40px;
+  width: 500px;
+  position: relative;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.campo label{
+  margin-top: 6px;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.campo input {
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.botao-enviar {
+  width: 100%;
+  padding: 14px;
+  background-color: #003366;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.botao-fechar {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 18px;
+}
+
 @media (max-width:600px)  {
   .main {
     padding: 40px 16px;
   }
 
-  .botao-cadastrar{
+  .botao-cadastrar {
     width: 100%;
     font-size: 12px;
     padding: 10px 8px;
@@ -191,7 +236,7 @@ th, td {
     text-overflow: ellipsis;
   }
 
-  table{
+  table {
     min-width: unset;
     width: 100%;
   }
@@ -202,5 +247,4 @@ th, td {
   }
 
 }
-
 </style>
