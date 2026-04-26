@@ -6,6 +6,7 @@ import TelaPrincipal from '../views/TelaPrincipal.vue'
 import AppVisualizadorViatura from '../components/AppVisualizadorViatura.vue'
 import TelaViatura from '@/views/TelaViatura.vue'
 
+
 const routes = [
   {
     path: '/',
