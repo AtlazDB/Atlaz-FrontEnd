@@ -18,6 +18,7 @@
       <div class="dropdown-planejamento-viagem">
         <h3>Informações da ocorrência</h3>
         <label class="dropdown-label">Tipo de Ocorrência</label>
+
         <select class="dropdown-select" v-model="ocorrenciaSelecionada">
             <option value="">Selecione...</option>
             <option v-for="tipo in tiposOcorrencia"
@@ -97,10 +98,12 @@
             <option value="Ubatuba">Ubatuba</option>
           </select>
 
-              <div class="saida">
-             <h3>Saída</h3>
-        <div class="dropdown-viatura">
+  <div class="saida">
+          <h3>Saída</h3>
+
+      <div class="dropdown-viatura">
         <label class="dropdown-label">Viatura</label>
+
         <select class="dropdown-select" v-model="viaturaSelecionada">
           <option value="">Selecione...</option>
           <option
@@ -109,6 +112,7 @@
             :value="viatura.id"
             > {{ viatura.prefixo }} - {{ viatura.modelo.nomeModelo}}</option>
         </select>
+
       </div>
 
       <div class="campo-Horario-Saida">
@@ -221,6 +225,7 @@ export default {
         TRANSLADO: 'Translado',
         VERIFICACAO: 'Verificação'
       },
+      
       justificativa: "",
       requisitante: "",
       destinoSelecionado: "",

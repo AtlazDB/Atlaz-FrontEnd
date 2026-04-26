@@ -149,6 +149,7 @@ h1 {
   overflow-x: auto; 
   margin-top: 30px;
 }
+
 table {
   width: 80%;
   min-width: 400px; 
@@ -159,5 +160,47 @@ table {
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
+th, td {
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height:100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+@media (max-width:600px)  {
+  .main {
+    padding: 40px 16px;
+  }
+
+  .botao-cadastrar{
+    width: 100%;
+    font-size: 12px;
+    padding: 10px 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  table{
+    min-width: unset;
+    width: 100%;
+  }
+
+  th, td {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+
+}
 
 </style>
