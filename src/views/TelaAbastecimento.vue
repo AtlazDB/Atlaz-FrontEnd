@@ -88,6 +88,7 @@
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
+import { abastecimentoService } from "@/services/abastecimentoService";
 
 export default {
   name: "TelaAbastecimento",
@@ -105,8 +106,34 @@ export default {
       litros: ''
     }
   }
-}
+},
+  async created() {
+    await this.carregarRegistros();
+  },
+  methods:{
+    async carregarRegistros(){
+      try {
+        const response = await abastecimentoService.listar();
+        this.registros = response.data;
+      } catch (error) {
+        console.error("Erro ao carregar abastecimentos:", error);
+      }
+    },
+
+    async enviarFormulario(){
+      try {
+        await abastecimentoService.criar(this.form);
+
+        await this.carregarRegistros();
+
+        this.form = { viatura: '', quilometragem: '', notaFiscal: '', litros: '' };
+        this.mostrarFormulario = false;
+      } catch (error) {
+        console.error("Erro ao cadastrar abastecimentos:", error);
+    }
   }
+}
+}
 </script>
 
 <style scoped>
