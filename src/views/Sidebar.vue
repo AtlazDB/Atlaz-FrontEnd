@@ -48,7 +48,7 @@
     <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
       🚙 Viaturas
     </button>
-    <RouterLink to="/" class="logout">
+    <button @click="handleMenuClick('home')" class="logout">
       <svg
         width="30"
         height="30"
@@ -65,7 +65,7 @@
         />
       </svg>
       Logout
-    </RouterLink>
+    </button>
   </div>
 </template>
 
@@ -116,6 +116,8 @@ export default {
         this.$emit('abrirPrincipal')
       } else if (tipo === 'viaturas') {
         this.$router.push({ name: 'viaturas' })
+      } else if (tipo === 'home') {
+        this.$router.push({name: 'home'})
       }
     },
     checkMobile() {
@@ -311,5 +313,8 @@ export default {
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 </style>

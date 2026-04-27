@@ -2,4 +2,12 @@
   font-size: 30px;
   border-left: 5px #003366 solid;
   padding-left: 5px;
+  margin: 10px;
+}
+.tela {
+  display: flex;
+  background-color: #f4f6f9;
+}
+.componente {
+  width: 100%;
 }

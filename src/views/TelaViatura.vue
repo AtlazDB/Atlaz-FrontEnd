@@ -12,10 +12,12 @@ import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
       @abrirFormulario="acaoFormulario"
     />
     <router-view />
-    <div class="visualizadorViatura">
+    <div class="componente">
       <h1 class="titulo">Viaturas cadastradas</h1>
-      <button>Cadastrar nova viatura</button>
-      <AppVisualizadorViatura />
+      <div class="visualizadorViatura">
+        <button>Cadastrar nova viatura</button>
+        <AppVisualizadorViatura />
+      </div>
     </div>
   </div>
 </template>
@@ -23,19 +25,12 @@ import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
 <style scoped>
 @import '@/assets/style.css';
 
-.tela {
-  display: flex;
-  background-color: #f4f6f9;
-}
 .visualizadorViatura {
   width: max(100%);
   padding: 10px;
 }
-h1 {
-  margin-bottom: 10px;
-}
 button {
-  background-color: #7AA6CC;
+  background-color: #7aa6cc;
   color: white;
   border: none;
   cursor: pointer;

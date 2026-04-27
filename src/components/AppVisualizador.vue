@@ -83,7 +83,6 @@ watch(
 
 <template>
   <div class="tabela">
-    <h1 class="titulo">Registros</h1>
     <button
       v-if="registrosFiltrados.length > 0"
       @click="ordemDeServicoService.exportarCsv(props.filtro?.mes, props.filtro?.ano)"
@@ -191,6 +190,7 @@ button {
   cursor: pointer;
 }
 table {
+  margin-top: 20px;
   border-collapse: collapse;
   max-width: 100%;
   table-layout: fixed;
