@@ -112,7 +112,7 @@ onMounted(async () => {
 }
 .seletor.fechado {
   position: absolute;
-  top: 0;
+  top: 53px;
   right: 0;
 }
 .minimizador {
