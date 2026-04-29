@@ -108,8 +108,8 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* era space-between */
-    gap: 130px; /* controla a distância entre logo e botões */
+    justify-content: center; 
+    gap: 130px;
     padding: 40px 20px;
   }
 
@@ -137,7 +137,7 @@ button:hover {
 
   button {
     width: 80%;
-    min-width: 200px; /* garante espaço suficiente pro texto */
+    min-width: 200px; 
     font-size: 13px;
   }
 }
