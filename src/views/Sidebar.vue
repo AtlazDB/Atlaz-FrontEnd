@@ -45,8 +45,10 @@
       <span class="icon">📊</span>
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Principal</span>
     </button>
-
-    <RouterLink to="/" class="logout">
+    <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
+      🚙 Viaturas
+    </button>
+    <button @click="handleMenuClick('home')" class="logout">
       <svg
         width="30"
         height="30"
@@ -63,11 +65,14 @@
         />
       </svg>
       Logout
-    </RouterLink>
+    </button>
   </div>
 </template>
 
 <script>
+//import { useRouter } from 'vue-router'
+//const router = useRouter()
+
 export default {
   name: 'Sidebar',
   props: {
@@ -107,8 +112,12 @@ export default {
       if (tipo === 'formulario') {
         this.$emit('abrirFormulario')
       } else if (tipo === 'principal') {
-        this.toggleSidebar()
+        this.$router.push({ name: 'administrador' })
         this.$emit('abrirPrincipal')
+      } else if (tipo === 'viaturas') {
+        this.$router.push({ name: 'viaturas' })
+      } else if (tipo === 'home') {
+        this.$router.push({name: 'home'})
       }
     },
     checkMobile() {
@@ -304,5 +313,8 @@ export default {
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 </style>
