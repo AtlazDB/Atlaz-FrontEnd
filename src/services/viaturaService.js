@@ -1,29 +1,29 @@
 import api from './api';
 
-export const viaturaService = {
+export const vehicleService = {
 
-  async listar() {
-    const response = await api.get('/viaturas');
+  async list() {
+    const response = await api.get('/vehicles');
     return response.data;
   },
   
-  async buscarPorId(id) {
-    const response = await api.get(`/viaturas/${id}`);
+  async findById(id) {
+    const response = await api.get(`/vehicles/${id}`);
     return response.data;
   },
 
-  async criar(viatura) {
-    const response = await api.post('/viaturas', viatura);
+  async create(vehicle) {
+    const response = await api.post('/vehicles', vehicle);
     return response.data;
   },
 
-  async atualizar(id, viatura) {
-    const response = await api.put(`/viaturas/${id}`, viatura);
+  async update(id, vehicle) {
+    const response = await api.put(`/vehicles/${id}`, vehicle);
     return response.data;
   },
 
-  async deletar(id) {
-    const response = await api.delete(`/viaturas/${id}`);
+  async delete(id) {
+    const response = await api.delete(`/vehicles/${id}`);
     return response.data;
   }
 };

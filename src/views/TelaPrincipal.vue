@@ -1,19 +1,17 @@
 <template>
   <main class="container">
 
-
     <section class="background"></section>
 
+    <section class="content">
 
-    <section class="conteudo">
-
-      <header class="cabecalho">
+      <header class="header">
         <img src="../assets/logo-ipem.png" class="logo" />
       </header>
 
       <nav class="menu">
-        <button @click="irParaAdministrador">Administrador</button>
-        <button @click="irParaTecnico">Técnico</button>
+        <button @click="goToAdmin">Administrador</button>
+        <button @click="goToTechnician">Tecnico</button>
       </nav>
 
     </section>
@@ -23,14 +21,15 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
 
-const irParaAdministrador = () => {
-  router.push('/home-administrador')
+const goToAdmin = () => {
+  router.push('/admin-home')
 }
 
-const irParaTecnico = () => {
-  router.push('/formulario-tecnico')
+const goToTechnician = () => {
+  router.push('/technical-form')
 }
 </script>
 
@@ -42,7 +41,6 @@ const irParaTecnico = () => {
   position: relative;
 }
 
-
 .background {
   position: absolute;
   width: 100%;
@@ -53,16 +51,13 @@ const irParaTecnico = () => {
   filter: brightness(0.5);
 }
 
-
-.conteudo {
+.content {
   position: relative;
   z-index: 1;
   height: 100%;
 }
 
-
-
-.cabecalho {
+.header {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -77,7 +72,6 @@ const irParaTecnico = () => {
   margin-top: 100px;
   margin-left: 110px;
 }
-
 
 .menu {
   position: absolute;
@@ -103,17 +97,18 @@ button {
 button:hover {
   background: #003366;
 }
+
 @media (max-width: 768px) {
-  .conteudo {
+  .content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* era space-between */
-    gap: 130px; /* controla a distância entre logo e botões */
+    justify-content: center;
+    gap: 130px;
     padding: 40px 20px;
   }
 
-  .cabecalho {
+  .header {
     position: static;
     justify-content: center;
     width: 100%;
@@ -137,7 +132,7 @@ button:hover {
 
   button {
     width: 80%;
-    min-width: 200px; /* garante espaço suficiente pro texto */
+    min-width: 200px;
     font-size: 13px;
   }
 }

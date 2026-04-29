@@ -1,118 +1,131 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { viaturaService } from '@/services/viaturaService.js'
+import { vehicleService } from '@/services/vehicleService.js'
 
-const carregando = ref(false)
-const registros = ref([/*
+const loading = ref(false)
+
+const records = ref([
+  /*
   {
     id: 1,
-    prefixo: 'AAA',
-    tipo: 'UTILITARIO',
-    viaturaStatus: 'DISPONIVEL',
-    modelo: {
+    prefix: 'AAA',
+    type: 'UTILITY',
+    vehicleStatus: 'AVAILABLE',
+    model: {
       id: 1,
-      nomeModelo: 'Civic',
-      nomeMarca: 'Honda',
+      modelName: 'Civic',
+      brandName: 'Honda',
     },
   },
   {
     id: 2,
-    prefixo: 'AAB',
-    tipo: 'PASSEIO',
-    viaturaStatus: 'EM_USO',
-    modelo: {
+    prefix: 'AAB',
+    type: 'PASSENGER',
+    vehicleStatus: 'IN_USE',
+    model: {
       id: 2,
-      nomeModelo: 'Uno',
-      nomeMarca: 'Fiat',
+      modelName: 'Uno',
+      brandName: 'Fiat',
     },
   },
   {
     id: 3,
-    prefixo: 'AAC',
-    tipo: 'UTILITARIO',
-    viaturaStatus: 'MANUTENCAO',
-    modelo: {
+    prefix: 'AAC',
+    type: 'UTILITY',
+    vehicleStatus: 'MAINTENANCE',
+    model: {
       id: 3,
-      nomeModelo: 'HB20',
-      nomeMarca: 'Hyundai',
+      modelName: 'HB20',
+      brandName: 'Hyundai',
     },
   },
   {
     id: 4,
-    prefixo: 'AAD',
-    tipo: 'PASSEIO',
-    viaturaStatus: 'DESATIVADA',
-    modelo: {
+    prefix: 'AAD',
+    type: 'PASSENGER',
+    vehicleStatus: 'DISABLED',
+    model: {
       id: 4,
-      nomeModelo: 'Celta',
-      nomeMarca: 'Fiat',
+      modelName: 'Celta',
+      brandName: 'Fiat',
     },
   },
-*/])
-const busca_filtro = ref('')
-const marca_filtro = ref('')
-const tipo_filtro = ref('')
-const status_filtro = ref('')
+*/
+])
 
-async function carregarTodos() {
-  carregando.value = true
+const search_filter = ref('')
+const brand_filter = ref('')
+const type_filter = ref('')
+const status_filter = ref('')
+
+async function loadAll() {
+  loading.value = true
+
   try {
-    registros.value = await viaturaService.listar()
-    /*Retorna uma lista JSON da seguinte forma:
+    records.value = await vehicleService.list()
+
+    /* Returns a JSON list in the following format:
     {
       "id": 0,
-      "prefixo": "string",
-      "tipo": "UTILITARIO",
-      "viaturaStatus": "ATIVO",
-      "modelo": {
+      "prefix": "string",
+      "type": "UTILITY",
+      "vehicleStatus": "ACTIVE",
+      "model": {
         "id": 0,
-        "nomeModelo": "string",
-        "nomeMarca": "string"
+        "modelName": "string",
+        "brandName": "string"
       }
     }
     */
-  } catch (erro) {
-    console.error('Erro: ' + erro)
+  } catch (error) {
+    console.error('Error: ' + error)
   } finally {
-    carregando.value = false
+    loading.value = false
   }
 }
 
-function refinarPalavra(palavra) {
-  switch (palavra) {
-    case 'UTILITARIO':
-      palavra = 'UTILITÁRIO'
+function refineWord(word) {
+  switch (word) {
+    case 'UTILITY':
+      word = 'UTILITY'
       break
-    case 'DISPONIVEL':
-      palavra = 'DISPONÍVEL'
+
+    case 'AVAILABLE':
+      word = 'AVAILABLE'
       break
-    case 'MANUTENCAO':
-      palavra = 'MANUTENÇÃO'
+
+    case 'MAINTENANCE':
+      word = 'MAINTENANCE'
       break
   }
-  palavra = palavra.replace('_', ' ')
-  palavra = palavra.toLowerCase()
-  return palavra[0].toUpperCase() + palavra.substring(1)
+
+  word = word.replace('_', ' ')
+  word = word.toLowerCase()
+
+  return word[0].toUpperCase() + word.substring(1)
 }
 
-const registrosFiltrados = computed(() => {
-  return registros.value.filter((r) => {
-    const encontrarBusca =
-      !busca_filtro.value || r.prefixo.toLowerCase().includes(busca_filtro.value.toLowerCase())
+const filteredRecords = computed(() => {
+  return records.value.filter((r) => {
+    const findSearch =
+      !search_filter.value ||
+      r.prefix.toLowerCase().includes(search_filter.value.toLowerCase())
 
-    const encontrarStatus = !status_filtro.value || r.viaturaStatus === status_filtro.value
+    const findStatus =
+      !status_filter.value || r.vehicleStatus === status_filter.value
 
-    const encontrarTipo = !tipo_filtro.value || r.tipo === tipo_filtro.value
+    const findType =
+      !type_filter.value || r.type === type_filter.value
 
-    const encontrarMarca =
-      !marca_filtro.value ||
-      r.modelo.nomeMarca.toLowerCase().includes(marca_filtro.value.toLowerCase())
+    const findBrand =
+      !brand_filter.value ||
+      r.model.brandName.toLowerCase().includes(brand_filter.value.toLowerCase())
 
-    return encontrarStatus && encontrarBusca && encontrarMarca && encontrarTipo
+    return findStatus && findSearch && findBrand && findType
   })
 })
 
-onMounted(() => carregarTodos())
+onMounted(() => loadAll())
 </script>
 
 <template>
@@ -135,47 +148,61 @@ onMounted(() => carregarTodos())
             d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
           />
         </svg>
-        <input type="search" placeholder="Buscar pelo prefixo" v-model="busca_filtro" />
+
+        <input type="search" placeholder="Search by prefix" v-model="search_filter" />
       </div>
+
       <div
         style="width: 1px; height: max(100%); border-left: 1px solid #cccc; margin: 0 10px 0 10px"
       />
-      <select v-model="tipo_filtro">
-        <option value="">Tipo</option>
-        <option value="UTILITARIO">Utilitário</option>
-        <option value="PASSEIO">Passeio</option>
+
+      <select v-model="type_filter">
+        <option value="">Type</option>
+        <option value="UTILITY">Utility</option>
+        <option value="PASSENGER">Passenger</option>
       </select>
-      <select v-model="status_filtro">
+
+      <select v-model="status_filter">
         <option value="">Status</option>
-        <option value="DISPONIVEL">Disponível</option>
-        <option value="MANUTENCAO">Manutenção</option>
-        <option value="EM_USO">Em uso</option>
-        <option value="DESATIVADA">Desativada</option>
+        <option value="AVAILABLE">Available</option>
+        <option value="MAINTENANCE">Maintenance</option>
+        <option value="IN_USE">In use</option>
+        <option value="DISABLED">Disabled</option>
       </select>
     </div>
-    <p style="align-self: center" v-if="registrosFiltrados.length === 0">Sem informação</p>
+
+    <p style="align-self: center" v-if="filteredRecords.length === 0">
+      No information
+    </p>
+
     <table v-else>
       <thead>
         <tr>
-          <th>Prefixo</th>
-          <th>Modelo</th>
-          <th>Tipo</th>
-          <th>Combustível</th>
+          <th>Prefix</th>
+          <th>Model</th>
+          <th>Type</th>
+          <th>Fuel</th>
           <th>Status</th>
-          <th>Editar</th>
+          <th>Edit</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr v-for="reg in registrosFiltrados" :key="reg.id">
-          <td>{{ reg.prefixo }}</td>
-          <td>{{ reg.modelo.nomeMarca }} {{ reg.modelo.nomeModelo }}</td>
-          <td>{{ refinarPalavra(reg.tipo) }}</td>
-          <td>(Combustível)</td>
+        <tr v-for="reg in filteredRecords" :key="reg.id">
+          <td>{{ reg.prefix }}</td>
+
+          <td>{{ reg.model.brandName }} {{ reg.model.modelName }}</td>
+
+          <td>{{ refineWord(reg.type) }}</td>
+
+          <td>(Fuel)</td>
+
           <td>
-            <div :class="reg.viaturaStatus">
-              {{ refinarPalavra(reg.viaturaStatus) }}
+            <div :class="reg.vehicleStatus">
+              {{ refineWord(reg.vehicleStatus) }}
             </div>
           </td>
+
           <td>
             <svg
               width="20"
@@ -211,20 +238,24 @@ onMounted(() => carregarTodos())
   display: flex;
   flex-direction: column;
 }
+
 .searchHeader {
   display: flex;
   height: 25px;
   margin-bottom: 10px;
 }
+
 .searchBar {
   display: flex;
   align-items: center;
 }
+
 .searchBar svg {
   background-color: #f4f6f9;
   border-radius: 5px 0 0 5px;
   cursor: default;
 }
+
 .searchBar input {
   width: 150px;
   background-color: #f4f6f9;
@@ -233,66 +264,81 @@ onMounted(() => carregarTodos())
   margin-right: 10px;
   height: 100%;
 }
+
 .searchBar input:focus {
   outline: none;
 }
+
 select {
   border: 2px solid #003366;
   color: #003366;
   border-radius: 15px;
   margin: 0 10px 0 10px;
 }
+
 table {
   width: 100%;
 }
+
 th,
 td {
   text-align: center;
   vertical-align: center;
   height: 30px;
 }
-/*Tags de status*/
+
+/* Status tags */
 th:nth-child(1) {
   width: max(200px);
 }
-/*Tags de status*/
+
+/* Status tags */
 th:nth-child(2) {
   width: max(200px);
 }
-/*Tags de status*/
+
+/* Status tags */
 th:nth-child(3) {
   width: max(200px);
 }
-/*Tags de status*/
+
+/* Status tags */
 th:nth-child(4) {
   width: max(200px);
 }
-/*Tags de status*/
+
+/* Status tags */
 td:nth-child(5) {
   width: max(100px);
 }
+
 td:nth-child(5) div {
   border-radius: 10px;
   width: 100px;
 }
-.DISPONIVEL {
+
+.AVAILABLE {
   background-color: #ebf9f1;
   color: #1f9254;
 }
-.EM_USO,
-.MANUTENCAO {
+
+.IN_USE,
+.MAINTENANCE {
   background-color: #fef2e5;
   color: #cd6200;
 }
-.DESATIVADA {
+
+.DISABLED {
   background-color: #fbe7e8;
   color: #a30d11;
 }
-/*Ícone de editar*/
+
+/* Edit icon */
 td:nth-child(6) {
   color: #624de3;
   padding-top: 2px;
 }
+
 svg {
   cursor: pointer;
 }

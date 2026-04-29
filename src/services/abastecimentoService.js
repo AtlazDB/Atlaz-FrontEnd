@@ -1,9 +1,13 @@
 import api from './api.js'
 
-export const abastecimentoService = {
+export const fuelingService = {
 
-  criar: (dados) => api.post('/abastecimentos', dados),
+  create: (data) => api.post('/fuelings', data),
 
-  listar: () => api.get('/abastecimentos').then(dados => dados.data),
-  listarPorMes: (mes, ano) => api.get('/abastecimentos/por-mes', { params: { mes, ano } }).then(r => r.data)
+  list: () => api.get('/fuelings').then(data => data.data),
+
+  listByMonth: (month, year) =>
+    api
+      .get('/fuelings/by-month', { params: { month, year } })
+      .then(r => r.data)
 }

@@ -1,47 +1,61 @@
 import api from './api';
 
-export const ordemDeServicoService = {
-  async salvar(dados) {
-    const response = await api.post('/ordens-servico', dados);
+export const workOrderService = {
+  async save(data) {
+    const response = await api.post('/work-orders', data);
     return response.data;
   },
 
-  async listar() {
-    const response = await api.get('/ordens-servico');
+  async list() {
+    const response = await api.get('/work-orders');
     return response.data;
   },
 
-  async buscarPorId(id) {
-    const response = await api.get(`/ordens-servico/${id}`);
+  async findById(id) {
+    const response = await api.get(`/work-orders/${id}`);
     return response.data;
   },
 
-  async atualizar(id, dados) {
-    const response = await api.put(`/ordens-servico/${id}`, dados);
+  async update(id, data) {
+    const response = await api.put(`/work-orders/${id}`, data);
     return response.data;
   },
 
-  async deletar(id) {
-    const response = await api.delete(`/ordens-servico/${id}`);
-    return response.data;
-  },
-  async listaTipos() {
-    const response = await api.get('/ordens-servico/tipos-ocorrencia');
+  async delete(id) {
+    const response = await api.delete(`/work-orders/${id}`);
     return response.data;
   },
 
-  listarPorMes: (mes, ano) => api.get('/ordens-servico/por-mes', { params: { mes, ano } }).then(r => r.data),
+  async listTypes() {
+    const response = await api.get('/work-orders/occurrence-types');
+    return response.data;
+  },
 
-  exportarCsv: async (mes, ano) => {
-    const params = mes != null ? `?mes=${mes + 1}&ano=${ano}` : ''
-    const nomeMes = mes != null ? `_${ano}_${String(mes + 1).padStart(2, '0')}` : ''
-    const response = await api.get(`/ordens-servico/csv${params}`, { responseType: 'blob' })
+  listByMonth: (month, year) =>
+    api
+      .get('/work-orders/by-month', { params: { month, year } })
+      .then(r => r.data),
+
+  exportCsv: async (month, year) => {
+    const params =
+      month != null ? `?month=${month + 1}&year=${year}` : ''
+
+    const monthName =
+      month != null
+        ? `_${year}_${String(month + 1).padStart(2, '0')}`
+        : ''
+
+    const response = await api.get(`/work-orders/csv${params}`, {
+      responseType: 'blob'
+    })
 
     const url = URL.createObjectURL(response.data)
+
     const link = document.createElement('a')
     link.href = url
-    link.download = `registros${nomeMes}.csv`
+    link.download = `records${monthName}.csv`
     link.click()
+
     URL.revokeObjectURL(url)
   }
 };

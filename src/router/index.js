@@ -1,34 +1,33 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import FormularioTecnico from '../views/FormularioTecnico.vue'
-import HomeAdministrador from '../views/HomeAdministrador.vue'
-import TelaPrincipal from '../views/TelaPrincipal.vue'
-import AppVisualizadorViatura from '../components/AppVisualizadorViatura.vue'
-import TelaViatura from '@/views/TelaViatura.vue'
+import TechnicalForm from '../views/TechnicalForm.vue'
+import AdminHome from '../views/AdminHome.vue'
+import MainScreen from '../views/MainScreen.vue'
+import AppVehicleViewer from '../components/AppVehicleViewer.vue'
+import VehicleScreen from '@/views/VehicleScreen.vue'
 
 const routes = [
   {
     path: '/',
     name: 'home',
-    component: TelaPrincipal
+    component: MainScreen
   },
   {
-    path: '/formulario-tecnico',
-    name: 'formulario',
-    component: FormularioTecnico
+    path: '/technical-form',
+    name: 'form',
+    component: TechnicalForm
   },
   {
-    path: '/home-administrador',
-    name: 'administrador',
-    component: HomeAdministrador
+    path: '/admin-home',
+    name: 'admin',
+    component: AdminHome
   },
   {
-    path: '/tabela-viaturas',
-    name: 'viaturas',
-    component: TelaViatura
+    path: '/vehicle-table',
+    name: 'vehicles',
+    component: VehicleScreen
   }
 ]
-
 
 const router = createRouter({
   history: createWebHistory(),
