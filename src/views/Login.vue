@@ -2,36 +2,70 @@
 
 <div class="main">
     <div class="card-login">
+
+      <header class="cabecalho">
+        <img src="../assets/logo-ipem.png" class="logo" />
+      </header>
+
      <label class="email-label">Email</label>
      <input
+          v-model="email"
           type="text"
           class="campo-input"
-          placeholder="Informe se email"
+          placeholder="Informe seu email"
         >
      <label class="campo-label">Senha</label>
      <input
-          type="text"
+          v-model="senha"
+          type="password"
           class="campo-input"
           placeholder="Informe sua senha"
         >
             <button
                type="button"
-               class="btn-entrar">
+               class="btn-entrar"
+               @click="handleLogin">
                  Entrar
             </button>
-          <p>Esqueceu sua senha? <a href="#">Redefinir Senha</a></p>
+
 </div>
 </div>
 </template>
 
+<script setup>
+
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const email = ref('')
+const senha = ref('')
+
+const usuarios = [
+  { email: 'tecnico@ipem.br', senha: '123', rota: '/formulario-tecnico' },
+  { email: 'admin@ipem.br',   senha: '123', rota: '/home-administrador' },
+]
+
+function handleLogin() {
+  const usuario = usuarios.find(
+    u => u.email === email.value && u.senha === senha.value
+  )
+  if (usuario) {
+    router.push(usuario.rota)
+  } else {
+    alert('Credenciais inválidas')
+  }
+}
+</script>
+
 <style scoped>
 
 .main {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0b2359, #8ba9cc);
+  background: linear-gradient(135deg, #003366, #8ba9cc);
 }
 
 .card-login {
@@ -46,9 +80,9 @@
 }
 
 .btn-entrar{
-    background: #003366;
-    color:white;
-    border: none;
+   background: #003366;
+   color:white;
+   border: none;
    border-radius: 8px;
    padding: 15px;
    width: 100%;
@@ -56,7 +90,7 @@
 }
 
 .campo-input{
-     width: 100%;
+  width: 100%;
   max-width: 600px;
   padding: 10px;
   display: block;
@@ -65,5 +99,11 @@
   outline: none;
   margin: 0 auto 15px;;
   font-size: 14px;
+}
+
+.logo {
+  width: 60%;
+  margin-top: 10px;
+  margin-left: 70px;
 }
 </style>

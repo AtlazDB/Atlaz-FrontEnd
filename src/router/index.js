@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import FormularioTecnico from '../views/FormularioTecnico.vue'
 import HomeAdministrador from '../views/HomeAdministrador.vue'
-import TelaPrincipal from '../views/TelaPrincipal.vue'
 import Login from '@/views/Login.vue'
 
 const routes = [
