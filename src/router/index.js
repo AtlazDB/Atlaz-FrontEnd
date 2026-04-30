@@ -6,7 +6,8 @@ import Login from '@/views/Login.vue'
 import TelaPrincipal from '../views/TelaPrincipal.vue'
 import AppVisualizadorViatura from '../components/AppVisualizadorViatura.vue'
 import TelaViatura from '@/views/TelaViatura.vue'
-
+import DashboardView from '../views/DashboardView.vue'
+import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
 
 const routes = [
   {
@@ -21,16 +22,26 @@ const routes = [
   },
   {
     path: '/home-administrador',
-    name: 'administrador',
-    component: HomeAdministrador
+    component: HomeAdministrador,
+    children: [
+      {
+        path: '', 
+        name: 'dashboard',
+        component: DashboardView
+      }
+    ]
   },
   {
     path: '/tabela-viaturas',
     name: 'viaturas',
     component: TelaViatura
+  },
+    {
+    path: '/relatorios',
+    name: 'relatorios',
+    component: RelatoriosAdmin
   }
 ]
-
 
 const router = createRouter({
   history: createWebHistory(),
