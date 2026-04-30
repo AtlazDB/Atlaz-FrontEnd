@@ -112,7 +112,7 @@ onMounted(async () => {
 }
 .seletor.fechado {
   position: absolute;
-  top: 53px;
+  top: 64px;
   right: 0;
 }
 .minimizador {
@@ -121,6 +121,9 @@ onMounted(async () => {
   border: 0;
   cursor: pointer;
   margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 svg {
   transition: 0.2s;

@@ -3,56 +3,67 @@ import { onMounted, ref, computed } from 'vue'
 import { viaturaService } from '@/services/viaturaService.js'
 
 const carregando = ref(false)
-const registros = ref([/*
+
+const registros = ref([
   {
     id: 1,
-    prefixo: 'AAA',
-    tipo: 'UTILITARIO',
-    viaturaStatus: 'DISPONIVEL',
-    modelo: {
-      id: 1,
-      nomeModelo: 'Civic',
-      nomeMarca: 'Honda',
-    },
+    prefix: 'H1AN',
+    brand: 'Fiat',
+    model: 'Uno',
+    type: 'UTILITARIO',
+    status: 'DISPONIVEL',
+    fuelType: 'GASOLINA',
+    km: 45230,
   },
   {
     id: 2,
-    prefixo: 'AAB',
-    tipo: 'PASSEIO',
-    viaturaStatus: 'EM_USO',
-    modelo: {
-      id: 2,
-      nomeModelo: 'Uno',
-      nomeMarca: 'Fiat',
-    },
+    prefix: 'K9XZ',
+    brand: 'Chevrolet',
+    model: 'Onix',
+    type: 'UTILITARIO',
+    status: 'EM_USO',
+    fuelType: 'FLEX',
+    km: 28910,
   },
   {
     id: 3,
-    prefixo: 'AAC',
-    tipo: 'UTILITARIO',
-    viaturaStatus: 'MANUTENCAO',
-    modelo: {
-      id: 3,
-      nomeModelo: 'HB20',
-      nomeMarca: 'Hyundai',
-    },
+    prefix: 'P3TR',
+    brand: 'Volkswagen',
+    model: 'Gol',
+    type: 'PASSEIO',
+    status: 'MANUTENCAO',
+    fuelType: 'GNV',
+    km: 67300,
   },
   {
     id: 4,
-    prefixo: 'AAD',
-    tipo: 'PASSEIO',
-    viaturaStatus: 'DESATIVADA',
-    modelo: {
-      id: 4,
-      nomeModelo: 'Celta',
-      nomeMarca: 'Fiat',
-    },
+    prefix: 'Z7LM',
+    brand: 'Toyota',
+    model: 'Hilux',
+    type: 'PASSEIO',
+    status: 'DESATIVADA',
+    fuelType: 'DIESEL',
+    km: 112450,
   },
-*/])
+  {
+    id: 5,
+    prefix: 'Q2WE',
+    brand: 'Renault',
+    model: 'Kwid',
+    type: 'UTILITARIO',
+    status: 'EM_USO',
+    fuelType: 'FLEX',
+    km: 15870,
+  },
+])
+
 const busca_filtro = ref('')
 const marca_filtro = ref('')
 const tipo_filtro = ref('')
 const status_filtro = ref('')
+const combustivel_filtro = ref('')
+
+const emit = defineEmits(['editar'])
 
 async function carregarTodos() {
   carregando.value = true
@@ -61,14 +72,13 @@ async function carregarTodos() {
     /*Retorna uma lista JSON da seguinte forma:
     {
       "id": 0,
-      "prefixo": "string",
-      "tipo": "UTILITARIO",
-      "viaturaStatus": "ATIVO",
-      "modelo": {
-        "id": 0,
-        "nomeModelo": "string",
-        "nomeMarca": "string"
-      }
+      "prefix": "string",
+      "brand": "string",
+      "model": "string",
+      "type": "UTILITARIO",
+      "status": "DISPONIVEL",
+      "fuelType": "GASOLINA",
+      "km": 0.1
     }
     */
   } catch (erro) {
@@ -89,6 +99,8 @@ function refinarPalavra(palavra) {
     case 'MANUTENCAO':
       palavra = 'MANUTENÇÃO'
       break
+    case 'GNV': //É uma sigla
+      return 'GNV'
   }
   palavra = palavra.replace('_', ' ')
   palavra = palavra.toLowerCase()
@@ -98,19 +110,27 @@ function refinarPalavra(palavra) {
 const registrosFiltrados = computed(() => {
   return registros.value.filter((r) => {
     const encontrarBusca =
-      !busca_filtro.value || r.prefixo.toLowerCase().includes(busca_filtro.value.toLowerCase())
+      !busca_filtro.value || r.prefix.toLowerCase().includes(busca_filtro.value.toLowerCase())
 
-    const encontrarStatus = !status_filtro.value || r.viaturaStatus === status_filtro.value
+    const encontrarStatus = !status_filtro.value || r.status === status_filtro.value
 
-    const encontrarTipo = !tipo_filtro.value || r.tipo === tipo_filtro.value
+    const encontrarTipo = !tipo_filtro.value || r.type === tipo_filtro.value
 
     const encontrarMarca =
-      !marca_filtro.value ||
-      r.modelo.nomeMarca.toLowerCase().includes(marca_filtro.value.toLowerCase())
+      !marca_filtro.value || r.brand.toLowerCase().includes(marca_filtro.value.toLowerCase())
 
-    return encontrarStatus && encontrarBusca && encontrarMarca && encontrarTipo
+    const encontrarCombustivel =
+      !combustivel_filtro.value || r.fuelType === combustivel_filtro.value
+
+    return (
+      encontrarStatus && encontrarBusca && encontrarMarca && encontrarTipo && encontrarCombustivel
+    )
   })
 })
+
+function edit(viatura) {
+  emit('editar', viatura, 'edicao')
+}
 
 onMounted(() => carregarTodos())
 </script>
@@ -141,16 +161,24 @@ onMounted(() => carregarTodos())
         style="width: 1px; height: max(100%); border-left: 1px solid #cccc; margin: 0 10px 0 10px"
       />
       <select v-model="tipo_filtro">
-        <option value="">Tipo</option>
+        <option value="" selected>Tipo</option>
         <option value="UTILITARIO">Utilitário</option>
         <option value="PASSEIO">Passeio</option>
       </select>
       <select v-model="status_filtro">
-        <option value="">Status</option>
+        <option value="" selected>Status</option>
         <option value="DISPONIVEL">Disponível</option>
         <option value="MANUTENCAO">Manutenção</option>
         <option value="EM_USO">Em uso</option>
         <option value="DESATIVADA">Desativada</option>
+      </select>
+      <select v-model="combustivel_filtro">
+        <option value="" selected>Combustível</option>
+        <option value="DIESEL">Diesel</option>
+        <option value="ETANOL">Etanol</option>
+        <option value="GASOLINA">Gasolina</option>
+        <option value="GNV">GNV</option>
+        <option value="FLEX">Flex</option>
       </select>
     </div>
     <p style="align-self: center" v-if="registrosFiltrados.length === 0">Sem informação</p>
@@ -161,38 +189,43 @@ onMounted(() => carregarTodos())
           <th>Modelo</th>
           <th>Tipo</th>
           <th>Combustível</th>
+          <th>Quilometragem</th>
           <th>Status</th>
           <th>Editar</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="reg in registrosFiltrados" :key="reg.id">
-          <td>{{ reg.prefixo }}</td>
-          <td>{{ reg.modelo.nomeMarca }} {{ reg.modelo.nomeModelo }}</td>
-          <td>{{ refinarPalavra(reg.tipo) }}</td>
-          <td>(Combustível)</td>
+          <td>{{ reg.prefix }}</td>
+          <td>{{ reg.brand }} {{ reg.model }}</td>
+          <td>{{ refinarPalavra(reg.type) }}</td>
+          <td>{{ refinarPalavra(reg.fuelType) }}</td>
+          <td>{{ reg.km }}</td>
           <td>
-            <div :class="reg.viaturaStatus">
-              {{ refinarPalavra(reg.viaturaStatus) }}
+            <div :class="reg.status">
+              {{ refinarPalavra(reg.status) }}
             </div>
           </td>
           <td>
-            <svg
-              width="20"
-              height="20"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-              />
-            </svg>
+            <div class="editar-btn">
+              <svg
+                @click="edit(reg)"
+                width="20"
+                height="20"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                />
+              </svg>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -226,7 +259,7 @@ onMounted(() => carregarTodos())
   cursor: default;
 }
 .searchBar input {
-  width: 150px;
+  width: 160px;
   background-color: #f4f6f9;
   border: none;
   border-radius: 5px;
@@ -243,35 +276,28 @@ select {
   margin: 0 10px 0 10px;
 }
 table {
-  width: 100%;
+  width: 90%;
+  align-self: center;
 }
 th,
 td {
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   height: 30px;
 }
-/*Tags de status*/
-th:nth-child(1) {
+/*Prefixo, modelo, tipo, combustível, quilometragem*/
+th:nth-child(1),
+th:nth-child(2),
+th:nth-child(3),
+th:nth-child(4),
+th:nth-child(5) {
   width: max(200px);
 }
 /*Tags de status*/
-th:nth-child(2) {
-  width: max(200px);
-}
-/*Tags de status*/
-th:nth-child(3) {
-  width: max(200px);
-}
-/*Tags de status*/
-th:nth-child(4) {
-  width: max(200px);
-}
-/*Tags de status*/
-td:nth-child(5) {
+td:nth-child(6) {
   width: max(100px);
 }
-td:nth-child(5) div {
+td:nth-child(6) div {
   border-radius: 10px;
   width: 100px;
 }
@@ -289,9 +315,15 @@ td:nth-child(5) div {
   color: #a30d11;
 }
 /*Ícone de editar*/
-td:nth-child(6) {
+td:nth-child(7) {
   color: #624de3;
   padding-top: 2px;
+  width: 100px;
+}
+.editar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 svg {
   cursor: pointer;
