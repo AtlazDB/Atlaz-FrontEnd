@@ -9,13 +9,13 @@ const showForm = ref(false)
 
 const vehicle = ref({
   id: 0,
-  prefixo: '',
-  marca: '',
-  modelo: '',
-  tipo: 'UTILITARIO',
+  prefix: '',
+  brand: '',
+  model: '',
+  type: 'UTILITARIO',
   status: 'ATIVO',
-  tipoCombustivel: 'GASOLINA',
-  quilometragem: 0,
+  fuelType: 'GASOLINA',
+  km: 0,
 })
 const id = ref(0)
 const prefixo = ref('')
@@ -45,12 +45,12 @@ function openForm(dados = null, tipoAlt = 'cadastro') {
   //Caso seja uma edição atribui os dados passados
   if (dados != null) {
     id.value = dados.id
-    prefixo.value = dados.prefixo
-    tipo.value = dados.tipo
-    marca.value = dados.marca
-    modelo.value = dados.modelo
-    combustivel.value = dados.tipoCombustivel
-    quilometragem.value = dados.quilometragem
+    prefixo.value = dados.prefix
+    tipo.value = dados.type
+    marca.value = dados.brand
+    modelo.value = dados.model
+    combustivel.value = dados.fuelType
+    quilometragem.value = dados.km
     status.value = dados.status
   }
   tipoAlteracao.value = tipoAlt
@@ -85,13 +85,13 @@ function submitForm() {
   } else {
     //Criação do objeto para POST ou PUT
     vehicle.value.id = id.value
-    vehicle.value.prefixo = prefixo.value
-    vehicle.value.marca = marca.value
-    vehicle.value.modelo = modelo.value
-    vehicle.value.tipo = tipo.value
+    vehicle.value.prefix = prefixo.value
+    vehicle.value.brand = marca.value
+    vehicle.value.model = modelo.value
+    vehicle.value.type = tipo.value
     vehicle.value.status = status.value
-    vehicle.value.tipoCombustivel = combustivel.value
-    vehicle.value.quilometragem = quilometragem.value
+    vehicle.value.fuelType = combustivel.value
+    vehicle.value.km = quilometragem.value
 
     //Caso seja um cadastro
     if (tipoAlteracao.value === 'cadastro') {

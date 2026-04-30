@@ -3,56 +3,57 @@ import { onMounted, ref, computed } from 'vue'
 import { viaturaService } from '@/services/viaturaService.js'
 
 const carregando = ref(false)
+
 const registros = ref([
   {
     id: 1,
-    prefixo: 'H1AN',
-    marca: 'Fiat',
-    modelo: 'Uno',
-    tipo: 'UTILITARIO',
+    prefix: 'H1AN',
+    brand: 'Fiat',
+    model: 'Uno',
+    type: 'UTILITARIO',
     status: 'DISPONIVEL',
-    tipoCombustivel: 'GASOLINA',
-    quilometragem: 45230,
+    fuelType: 'GASOLINA',
+    km: 45230,
   },
   {
     id: 2,
-    prefixo: 'K9XZ',
-    marca: 'Chevrolet',
-    modelo: 'Onix',
-    tipo: 'UTILITARIO',
+    prefix: 'K9XZ',
+    brand: 'Chevrolet',
+    model: 'Onix',
+    type: 'UTILITARIO',
     status: 'EM_USO',
-    tipoCombustivel: 'FLEX',
-    quilometragem: 28910,
+    fuelType: 'FLEX',
+    km: 28910,
   },
   {
     id: 3,
-    prefixo: 'P3TR',
-    marca: 'Volkswagen',
-    modelo: 'Gol',
-    tipo: 'PASSEIO',
+    prefix: 'P3TR',
+    brand: 'Volkswagen',
+    model: 'Gol',
+    type: 'PASSEIO',
     status: 'MANUTENCAO',
-    tipoCombustivel: 'GNV',
-    quilometragem: 67300,
+    fuelType: 'GNV',
+    km: 67300,
   },
   {
     id: 4,
-    prefixo: 'Z7LM',
-    marca: 'Toyota',
-    modelo: 'Hilux',
-    tipo: 'PASSEIO',
+    prefix: 'Z7LM',
+    brand: 'Toyota',
+    model: 'Hilux',
+    type: 'PASSEIO',
     status: 'DESATIVADA',
-    tipoCombustivel: 'DIESEL',
-    quilometragem: 112450,
+    fuelType: 'DIESEL',
+    km: 112450,
   },
   {
     id: 5,
-    prefixo: 'Q2WE',
-    marca: 'Renault',
-    modelo: 'Kwid',
-    tipo: 'UTILITARIO',
+    prefix: 'Q2WE',
+    brand: 'Renault',
+    model: 'Kwid',
+    type: 'UTILITARIO',
     status: 'EM_USO',
-    tipoCombustivel: 'FLEX',
-    quilometragem: 15870,
+    fuelType: 'FLEX',
+    km: 15870,
   },
 ])
 
@@ -71,13 +72,13 @@ async function carregarTodos() {
     /*Retorna uma lista JSON da seguinte forma:
     {
       "id": 0,
-      "prefixo": "string",
-      "marca": "string",
-      "modelo": "string",
-      "tipo": "UTILITARIO",
-      "status": "ATIVO",
-      "tipoCombustivel": "GASOLINA",
-      "quilometragem": 0
+      "prefix": "string",
+      "brand": "string",
+      "model": "string",
+      "type": "UTILITARIO",
+      "status": "DISPONIVEL",
+      "fuelType": "GASOLINA",
+      "km": 0.1
     }
     */
   } catch (erro) {
@@ -109,17 +110,17 @@ function refinarPalavra(palavra) {
 const registrosFiltrados = computed(() => {
   return registros.value.filter((r) => {
     const encontrarBusca =
-      !busca_filtro.value || r.prefixo.toLowerCase().includes(busca_filtro.value.toLowerCase())
+      !busca_filtro.value || r.prefix.toLowerCase().includes(busca_filtro.value.toLowerCase())
 
     const encontrarStatus = !status_filtro.value || r.status === status_filtro.value
 
-    const encontrarTipo = !tipo_filtro.value || r.tipo === tipo_filtro.value
+    const encontrarTipo = !tipo_filtro.value || r.type === tipo_filtro.value
 
     const encontrarMarca =
-      !marca_filtro.value || r.marca.toLowerCase().includes(marca_filtro.value.toLowerCase())
+      !marca_filtro.value || r.brand.toLowerCase().includes(marca_filtro.value.toLowerCase())
 
     const encontrarCombustivel =
-      !combustivel_filtro.value || r.tipoCombustivel === combustivel_filtro.value
+      !combustivel_filtro.value || r.fuelType === combustivel_filtro.value
 
     return (
       encontrarStatus && encontrarBusca && encontrarMarca && encontrarTipo && encontrarCombustivel
@@ -127,7 +128,7 @@ const registrosFiltrados = computed(() => {
   })
 })
 
-function editar(viatura) {
+function edit(viatura) {
   emit('editar', viatura, 'edicao')
 }
 
@@ -195,34 +196,36 @@ onMounted(() => carregarTodos())
       </thead>
       <tbody>
         <tr v-for="reg in registrosFiltrados" :key="reg.id">
-          <td>{{ reg.prefixo }}</td>
-          <td>{{ reg.marca }} {{ reg.modelo }}</td>
-          <td>{{ refinarPalavra(reg.tipo) }}</td>
-          <td>{{ refinarPalavra(reg.tipoCombustivel) }}</td>
-          <td>{{ reg.quilometragem }}</td>
+          <td>{{ reg.prefix }}</td>
+          <td>{{ reg.brand }} {{ reg.model }}</td>
+          <td>{{ refinarPalavra(reg.type) }}</td>
+          <td>{{ refinarPalavra(reg.fuelType) }}</td>
+          <td>{{ reg.km }}</td>
           <td>
             <div :class="reg.status">
               {{ refinarPalavra(reg.status) }}
             </div>
           </td>
           <td>
-            <svg
-              @click="editar(reg)"
-              width="20"
-              height="20"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-6"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-              />
-            </svg>
+            <div class="editar-btn">
+              <svg
+                @click="edit(reg)"
+                width="20"
+                height="20"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                />
+              </svg>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -256,7 +259,7 @@ onMounted(() => carregarTodos())
   cursor: default;
 }
 .searchBar input {
-  width: 150px;
+  width: 160px;
   background-color: #f4f6f9;
   border: none;
   border-radius: 5px;
@@ -279,7 +282,7 @@ table {
 th,
 td {
   text-align: center;
-  vertical-align: center;
+  vertical-align: middle;
   height: 30px;
 }
 /*Prefixo, modelo, tipo, combustível, quilometragem*/
@@ -316,6 +319,11 @@ td:nth-child(7) {
   color: #624de3;
   padding-top: 2px;
   width: 100px;
+}
+.editar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 svg {
   cursor: pointer;
