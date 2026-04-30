@@ -1,74 +1,206 @@
 <script setup>
 import Sidebar from '@/views/Sidebar.vue'
 import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
+import { viaturaService } from '@/services/viaturaService.js'
 
 import { ref } from 'vue'
 
 const showForm = ref(false)
 
-const openForm = () => {
+const vehicle = ref({
+  id: 0,
+  prefixo: '',
+  marca: '',
+  modelo: '',
+  tipo: 'UTILITARIO',
+  status: 'ATIVO',
+  tipoCombustivel: 'GASOLINA',
+  quilometragem: 0,
+})
+const id = ref(0)
+const prefixo = ref('')
+const tipo = ref('')
+const marca = ref('')
+const modelo = ref('')
+const combustivel = ref('')
+const quilometragem = ref(0)
+const status = ref('')
+const tipoAlteracao = ref('')
+
+const erros = ref({})
+
+//Padrão para cadastro
+function openForm(dados = null, tipoAlt = 'cadastro') {
+  //Reset dos dados
+  erros.value = {}
+  id.value = 0
+  prefixo.value = ''
+  tipo.value = 'UTILITARIO'
+  marca.value = ''
+  modelo.value = ''
+  combustivel.value = 'GASOLINA'
+  quilometragem.value = 0
+  status.value = 'DISPONIVEL'
+
+  //Caso seja uma edição atribui os dados passados
+  if (dados != null) {
+    id.value = dados.id
+    prefixo.value = dados.prefixo
+    tipo.value = dados.tipo
+    marca.value = dados.marca
+    modelo.value = dados.modelo
+    combustivel.value = dados.tipoCombustivel
+    quilometragem.value = dados.quilometragem
+    status.value = dados.status
+  }
+  tipoAlteracao.value = tipoAlt
   showForm.value = true
 }
 
-const closeForm = () => {
+function closeForm() {
   showForm.value = false
 }
 
-const vehicles = ref([])
-const id = ref('')
-const modelo = ref('')
-const combustivel = ref('')
+function validateForm() {
+  const e = {}
+
+  //Verifica se todos os valores foram preenchidos
+  if (!prefixo.value?.trim()) e.prefixo = true
+  if (!tipo.value) e.tipo = true
+  if (!marca.value?.trim()) e.marca = true
+  if (!modelo.value?.trim()) e.modelo = true
+  if (!combustivel.value) e.combustivel = true
+  if (quilometragem.value === '') e.quilometragem = true
+  if (!status.value) e.status = true
+
+  erros.value = e
+  console.log('erros:', erros.value)
+  return Object.keys(e).length === 0 // true = sem erros
+}
+
+function submitForm() {
+  if (!validateForm()) {
+    alert('Todos os campos precisam ser preenchidos')
+    return
+  } else {
+    //Criação do objeto para POST ou PUT
+    vehicle.value.id = id.value
+    vehicle.value.prefixo = prefixo.value
+    vehicle.value.marca = marca.value
+    vehicle.value.modelo = modelo.value
+    vehicle.value.tipo = tipo.value
+    vehicle.value.status = status.value
+    vehicle.value.tipoCombustivel = combustivel.value
+    vehicle.value.quilometragem = quilometragem.value
+
+    //Caso seja um cadastro
+    if (tipoAlteracao.value === 'cadastro') {
+      criarViatura(vehicle.value)
+    } else if (tipoAlteracao.value === 'edicao') {
+      editarViatura(vehicle.value)
+    }
+    closeForm()
+  }
+}
+
+async function criarViatura(viatura) {
+  try {
+    await viaturaService.criar(viatura)
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+async function editarViatura(viatura) {
+  try {
+    await viaturaService.atualizar(viatura.id, viatura)
+  } catch (e) {
+    console.log(e)
+  }
+}
 </script>
 
 <template>
   <div class="tela">
-    <Sidebar
-      nome="William Hasan"
-      cargo="Administrador"
-      userType="admin"
-      @openForm="actionForm"
-    />
+    <Sidebar nome="William Hasan" cargo="Administrador" userType="admin" @openForm="actionForm" />
     <router-view />
     <div class="componente">
       <h1 class="titulo">Viaturas cadastradas</h1>
-    <div class="visualizadorViatura">
-      <button @click="openForm">Cadastrar nova viatura</button>
-      <AppVisualizadorViatura />
-    </div>
+      <div class="visualizadorViatura">
+        <button @click="openForm()">Cadastrar nova viatura</button>
+        <AppVisualizadorViatura @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)" />
+        <!-- chama a função com o parâmetro -->
+      </div>
     </div>
   </div>
 
   <div v-if="showForm" class="overlay" @click="closeForm">
     <div class="modal" @click.stop>
-
       <h2 class="titulo-modal">Cadastrar nova Viatura</h2>
 
-      <div class="campo">
-        <label>ID da Viatura</label>
-        <input type="text" />
+      <div class="linha">
+        <div class="campo">
+          <label>Prefixo da Viatura</label>
+          <input type="text" v-model="prefixo" :class="{ erro: erros.prefixo }" />
+        </div>
+
+        <div class="campo">
+          <label>Tipo de uso</label>
+          <div class="select-wrapper">
+            <select v-model="tipo" :class="{ erro: erros.tipo }">
+              <option disabled value="">Selecione...</option>
+              <option value="UTILITARIO">Utilitário</option>
+              <option value="PASSEIO">Passeio</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      <div class="campo">
-        <label>Modelo</label>
-        <input type="text" />
+      <div class="linha">
+        <div class="campo">
+          <label>Marca</label>
+          <input type="text" v-model="marca" :class="{ erro: erros.marca }" />
+        </div>
+
+        <div class="campo">
+          <label>Modelo</label>
+          <input type="text" v-model="modelo" :class="{ erro: erros.modelo }" />
+        </div>
       </div>
 
       <div class="campo">
         <label>Tipo de combustível</label>
         <div class="select-wrapper">
-          <select>
-            <option disabled selected>Selecione...</option>
-            <option>Diesel</option>
-            <option>Etanol</option>
-            <option>Gasolina</option>
-            <option>Álcool</option>
-            <option>Flex</option>
+          <select v-model="combustivel" :class="{ erro: erros.combustivel }">
+            <option disabled value="">Selecione...</option>
+            <option value="DIESEL">Diesel</option>
+            <option value="ETANOL">Etanol</option>
+            <option value="GASOLINA">Gasolina</option>
+            <option value="GNV">GNV</option>
+            <option value="FLEX">Flex</option>
           </select>
         </div>
       </div>
 
-      <button class="btn-enviar">Enviar</button>
+      <div class="campo">
+        <label>Quilometragem do veículo</label>
+        <input type="number" v-model="quilometragem" :class="{ erro: erros.quilometragem }" />
+      </div>
 
+      <div class="campo">
+        <label>Status do veículo</label>
+        <div class="select-wrapper">
+          <select v-model="status" :class="{ erro: erros.status }">
+            <option disabled value="">Selecione...</option>
+            <option value="DISPONIVEL">Disponível</option>
+            <option value="EM_USO">Em uso</option>
+            <option value="MANUTENCAO">Manutenção</option>
+            <option value="DESATIVADA">Desativada</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="button" class="btn-enviar" @click="submitForm()">Enviar</button>
     </div>
   </div>
 </template>
@@ -102,7 +234,7 @@ button:active {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: max(100%);
   background: rgba(0, 0, 0, 0.35);
 
   display: flex;
@@ -119,11 +251,11 @@ button:active {
   background: #f8f9fb;
   border-radius: 20px;
   padding: 30px 40px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .titulo-modal {
@@ -133,6 +265,13 @@ button:active {
   padding-left: 10px;
 }
 
+.linha {
+  display: flex;
+  gap: 10px;
+}
+.linha .campo {
+  width: 50%;
+}
 .campo {
   display: flex;
   flex-direction: column;
@@ -147,13 +286,17 @@ button:active {
 .campo input {
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #6a5acd;
   outline: none;
   background: #fff;
 }
 
 .campo input:focus {
-  border-color: #6a5acd;
+  border-color: #2f12d1;
+}
+.campo input.erro,
+.campo select.erro {
+  border-color: #ff0000;
 }
 
 .select-wrapper {
@@ -172,7 +315,7 @@ button:active {
 }
 
 .select-wrapper::after {
-  content: "▼";
+  content: '▼';
   position: absolute;
   right: 12px;
   top: 50%;
@@ -183,7 +326,7 @@ button:active {
 }
 
 .btn-enviar {
-  margin-top: 160px;
+  margin-top: 20px;
   align-self: center;
 
   background: #003366;
