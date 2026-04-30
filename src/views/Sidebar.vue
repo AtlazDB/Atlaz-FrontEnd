@@ -48,7 +48,10 @@
     <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
       🚙 Viaturas
     </button>
-    <button @click="handleMenuClick('home')" class="logout">
+        <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
+      📈 Relatorios
+    </button>
+    <button @click="handleMenuClick('Login')" class="logout">
       <svg
         width="30"
         height="30"
@@ -112,12 +115,13 @@ export default {
       if (tipo === 'formulario') {
         this.$emit('abrirFormulario')
       } else if (tipo === 'principal') {
-        this.$router.push({ name: 'administrador' })
-        this.$emit('abrirPrincipal')
+        this.$router.push({ name: 'dashboard' })
       } else if (tipo === 'viaturas') {
         this.$router.push({ name: 'viaturas' })
-      } else if (tipo === 'home') {
-        this.$router.push({name: 'home'})
+      } else if (tipo === 'relatorios') {
+        this.$router.push({ name: 'relatorios' })  
+      } else if (tipo === 'Login') {
+        this.$router.push({name: 'Login'})
       }
     },
     checkMobile() {
