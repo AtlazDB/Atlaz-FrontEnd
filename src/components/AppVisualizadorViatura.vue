@@ -113,6 +113,8 @@ const registrosFiltrados = computed(() => {
       !busca_filtro.value || r.prefix.toLowerCase().includes(busca_filtro.value.toLowerCase())
 
     const encontrarStatus = !status_filtro.value || r.status === status_filtro.value
+    // Impossibilita que o usuário visualize viaturas com a tag DESATIVADA, a não ser que ele selecione ela no filtro.
+    const ocultarStatus = status_filtro.value === 'DESATIVADA' || r.status !== 'DESATIVADA'
 
     const encontrarTipo = !tipo_filtro.value || r.type === tipo_filtro.value
 
@@ -123,7 +125,12 @@ const registrosFiltrados = computed(() => {
       !combustivel_filtro.value || r.fuelType === combustivel_filtro.value
 
     return (
-      encontrarStatus && encontrarBusca && encontrarMarca && encontrarTipo && encontrarCombustivel
+      encontrarStatus &&
+      encontrarBusca &&
+      encontrarMarca &&
+      encontrarTipo &&
+      encontrarCombustivel &&
+      ocultarStatus
     )
   })
 })
@@ -283,7 +290,7 @@ th,
 td {
   text-align: center;
   vertical-align: middle;
-  height: 30px;
+  height: 40px;
 }
 /*Prefixo, modelo, tipo, combustível, quilometragem*/
 th:nth-child(1),
