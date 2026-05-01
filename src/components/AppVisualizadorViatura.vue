@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { viaturaService } from '@/services/viaturaService.js'
+import { vehicleService } from '@/services/vehicleService.js'
 
 const carregando = ref(false)
 
@@ -68,7 +68,7 @@ const emit = defineEmits(['editar'])
 async function carregarTodos() {
   carregando.value = true
   try {
-    registros.value = await viaturaService.listar()
+    registros.value = await vehicleService.listar()
     /*Retorna uma lista JSON da seguinte forma:
     {
       "id": 0,

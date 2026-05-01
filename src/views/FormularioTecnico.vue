@@ -239,11 +239,11 @@
     </div>
   </div>
 </div>-->
-</template> 
+</template>
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
-import { viaturaService } from '@/services/viaturaService.js'
+import { vehicleService } from '@/services/vehicleService.js'
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
 
 export default {
@@ -311,7 +311,7 @@ computed: {
 
   async mounted() {
     await this.carregarViaturas();
-    this.tiposOcorrencia = await ordemDeServicoService.listaTipos();
+    this.tiposOcorrencia = await ordemDeServicoService.listTypes();
   },
 
   methods: {
@@ -368,7 +368,7 @@ computed: {
           requisitante: this.requisitante,
           kmSaida: parseFloat(this.SaidaKM),
           dataSaida: this.converterDataHora(this.dataSaida, this.HorarioSaida),
-          idUsuario: 1, 
+          idUsuario: 1,
           idViatura: this.viaturaSelecionada
         };
 
@@ -423,9 +423,9 @@ computed: {
         kmChegada: parseFloat(this.ChegadaKM),
         dataRetorno: this.converterDataHora(this.dataChegada, this.HorarioChegada)
     };
-    
-    await ordemDeServicoService.atualizar(this.osId, dadosAtualizacao);
-    
+
+    await ordemDeServicoService.update(this.osId, dadosAtualizacao);
+
     } catch (error) {
         console.error('Erro ao registrar chegada:', error);
     }
@@ -551,7 +551,7 @@ computed: {
 }
 
 
-.card-saida, 
+.card-saida,
 .card-chegada{
   background: white;
   border-radius: 20px;
@@ -565,7 +565,7 @@ computed: {
   box-shadow: 0 25 50px rgba(0,0,0,0.15);
 }
 
-.card-saida h3, 
+.card-saida h3,
 .card-chegada h3{
   color: #003366;
   margin: 0;

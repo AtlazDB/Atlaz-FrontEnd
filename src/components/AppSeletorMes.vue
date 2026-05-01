@@ -23,7 +23,7 @@ const mesesNome = [
 ]
 onMounted(async () => {
   try {
-    const ordens = await ordemDeServicoService.listar()
+    const ordens = await ordemDeServicoService.list()
 
     const vistos = new Set()
     const itens = []

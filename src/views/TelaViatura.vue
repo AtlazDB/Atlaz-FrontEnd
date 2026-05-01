@@ -1,7 +1,7 @@
 <script setup>
 import Sidebar from '@/views/Sidebar.vue'
 import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
-import { viaturaService } from '@/services/viaturaService.js'
+import { vehicleService } from '@/services/vehicleService.js'
 
 import { ref } from 'vue'
 
@@ -105,7 +105,7 @@ function submitForm() {
 
 async function criarViatura(viatura) {
   try {
-    await viaturaService.criar(viatura)
+    await vehicleService.criar(viatura)
   } catch (e) {
     console.log(e)
   }
@@ -113,7 +113,7 @@ async function criarViatura(viatura) {
 
 async function editarViatura(viatura) {
   try {
-    await viaturaService.atualizar(viatura.id, viatura)
+    await vehicleService.atualizar(viatura.id, viatura)
   } catch (e) {
     console.log(e)
   }

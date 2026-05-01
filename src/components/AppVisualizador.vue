@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { abastecimentoService } from '@/services/abastecimentoService.js'
+import { refuelingService } from '@/services/refuelingService.js'
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
 
 const registros = ref([])
@@ -18,8 +18,8 @@ async function carregarTodos() {
   carregando.value = true
   try {
     const [ordens, abastecimentos] = await Promise.all([
-      ordemDeServicoService.listar(),
-      abastecimentoService.listar(),
+      ordemDeServicoService.list(),
+      refuelingService.list(),
     ])
     registros.value = ordens.map((os) => {
       const abastecimento = abastecimentos.find((a) => a.ordemServico?.id == os.id)
@@ -64,8 +64,8 @@ watch(
     carregando.value = true
     try {
       const [ordens, abastecimentos] = await Promise.all([
-        ordemDeServicoService.listarPorMes(filtro.mes + 1, filtro.ano),
-        abastecimentoService.listarPorMes(filtro.mes + 1, filtro.ano),
+        ordemDeServicoService.listByMonth(filtro.mes + 1, filtro.ano),
+        refuelingService.listByMonth(filtro.mes + 1, filtro.ano),
       ])
 
       registros.value = ordens.map((os) => {
@@ -85,7 +85,7 @@ watch(
   <div class="tabela">
     <button
       v-if="registrosFiltrados.length > 0"
-      @click="ordemDeServicoService.exportarCsv(props.filtro?.mes, props.filtro?.ano)"
+      @click="ordemDeServicoService.exportCsv(props.filtro?.mes, props.filtro?.ano)"
     >
       Exportar tabela
     </button>

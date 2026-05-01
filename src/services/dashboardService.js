@@ -1,5 +1,5 @@
 // src/services/dashboardService.js
-import api from './api'; 
+import api from './api';
 
 export const dashboardService = {
   async getResumoMock() {
@@ -21,7 +21,7 @@ export const dashboardService = {
                 nomeTecnico: "William Hasan",
                 descricao: "Jacareí → S. José dos Campos",
                 status: "CONCLUÍDO",
-                corStatus: "EMERALD" 
+                corStatus: "EMERALD"
               },
               {
                 id: 1046,
@@ -35,11 +35,11 @@ export const dashboardService = {
             ]
           }
         });
-      }, 800); // 800ms 
+      }, 800); // 800ms
     });
   },
 
-  async getResumoReal() {
+  async getTrueResume() {
     return await api.get('/dashboard/resumo');
   }
 };
