@@ -1,43 +1,39 @@
 <script setup>
 import { ref } from 'vue'
-import AppVisualizador from '../components/AppVisualizador.vue'
-import AppSeletorMes from '../components/AppSeletorMes.vue'
-import Sidebar from '../views/Sidebar.vue'
+import Sidebar from '../views/Sidebar.vue' 
 
-const filtro = ref(null)
 const acaoFormulario = () => {
   console.log('Abrir formulário')
 }
 </script>
 
 <template>
-  <div class="tela">
-    <Sidebar nome="William Hasan" cargo="Administrador" userType='admin' @abrirFormulario="acaoFormulario" />
-    <div class="visualizador">
-      <AppVisualizador :filtro="filtro" />
-    </div>
-    <div class="seletor">
-      <AppSeletorMes @data_selecionada="filtro = $event" />
-    </div>
+  <div class="tela-admin">
+    <Sidebar
+      nome="William Hasan"
+      cargo="Administrador"
+      userType="admin"
+      @abrirFormulario="acaoFormulario"
+    />
+
+    <main class="conteudo">
+      <router-view />
+    </main>
   </div>
 </template>
 
 <style scoped>
-.tela {
+.tela-admin {
   display: flex;
   width: 100%;
-  height: 200vh;
+  height: 100vh;
+  overflow: hidden; /* Evita scroll duplo com a sidebar */
+  background-color: #F8FAFC;
 }
-.visualizador {
-  margin: 20px 10px 40px;
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 10px;
-}
-.visualizador {
-  height: fit-content;
-  padding-bottom: 50px;
-  justify-items: center;
-  flex-grow: 3;
+
+.conteudo {
+  flex-grow: 1;
+  overflow-y: auto; /* Permite scroll apenas no conteúdo do Dashboard */
+  padding: 20px;
 }
 </style>

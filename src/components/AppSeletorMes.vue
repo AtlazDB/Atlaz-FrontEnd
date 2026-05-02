@@ -95,6 +95,12 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+@import '@/assets/style.css';
+
+.titulo {
+  width: 130px;
+  font-size: 24px;
+}
 .seletor {
   height: 400px;
   width: fit-content;
@@ -106,7 +112,7 @@ onMounted(async () => {
 }
 .seletor.fechado {
   position: absolute;
-  top: 0;
+  top: 64px;
   right: 0;
 }
 .minimizador {
@@ -115,6 +121,9 @@ onMounted(async () => {
   border: 0;
   cursor: pointer;
   margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 svg {
   transition: 0.2s;
@@ -137,12 +146,6 @@ svg.fechado {
 }
 .meses:hover {
   overflow-y: auto;
-}
-.titulo {
-  font-size: 24px;
-  border-left: 5px #003366 solid;
-  padding-left: 5px;
-  width: 130px;
 }
 .card_mes {
   border-bottom: 1px solid #ddd;
