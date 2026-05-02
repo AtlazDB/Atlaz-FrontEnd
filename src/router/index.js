@@ -8,6 +8,8 @@ import AppVisualizadorViatura from '../components/AppVisualizadorViatura.vue'
 import TelaViatura from '@/views/TelaViatura.vue'
 import DashboardView from '../views/DashboardView.vue'
 import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
+import RegisterTechnical from '@/views/RegisterTechnical.vue'
+
 
 const routes = [
   {
@@ -25,7 +27,7 @@ const routes = [
     component: HomeAdministrador,
     children: [
       {
-        path: '', 
+        path: '',
         name: 'dashboard',
         component: DashboardView
       }
@@ -40,6 +42,11 @@ const routes = [
     path: '/relatorios',
     name: 'relatorios',
     component: RelatoriosAdmin
+  },
+  {
+  path: '/tecnicos',
+  name: 'tecnicos',
+  component: RegisterTechnical
   }
 ]
 
