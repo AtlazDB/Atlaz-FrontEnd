@@ -53,7 +53,10 @@
     <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
       🚙 Viaturas
     </button>
-        <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
+    <button @click="handleMenuClick('tecnicos')" v-if="userType === 'admin'" class="menu">
+      👨‍🔧 Tecnicos
+    </button>
+    <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
       📈 Relatorios
     </button>
     <button @click="handleMenuClick('Login')" class="logout">
@@ -128,7 +131,9 @@ export default {
       } else if (tipo === 'relatorios') {
         this.$router.push({ name: 'relatorios' })
       } else if (tipo === 'Login') {
-        this.$router.push({ name: 'Login' })
+        this.$router.push({name: 'Login'})
+      } else if (tipo === 'tecnicos') {
+        this.$router.push({name: 'tecnicos'})
       }
     },
 
