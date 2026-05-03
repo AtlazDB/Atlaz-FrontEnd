@@ -1,11 +1,7 @@
 <template>
 
   <div class="tela">
-     <Sidebar
-      nome="Karthi Madesh"
-      cargo="Técnico"
-      userType="tecnico"
-    />
+     <Sidebar :nome="nomeUsuario" cargo="Técnico" userType="tecnico" />
 
      <div class="main-content">
         <div class="form-box">
@@ -110,7 +106,9 @@
             v-for="viatura in viaturas"
             :key="viatura.id"
             :value="viatura.id"
-            > {{ viatura.prefixo }} - {{ viatura.modelo.nomeModelo}}</option>
+          >
+            {{ viatura.prefix }} - {{ viatura.brand }} {{ viatura.model }}
+          </option>
         </select>
 
       </div>
@@ -194,11 +192,12 @@
     </div>
     </div>
   </div>
-</template> 
+</template>
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
+import { viaturaService } from '@/services/viaturaService.js'
 
 export default {
    components: {
@@ -206,6 +205,7 @@ export default {
   },
   data() {
     return {
+      nomeUsuario: localStorage.getItem('userName') || 'Técnico',
       osId: null,
       viaturas: [],
       viaturaSelecionada: "",
@@ -225,11 +225,10 @@ export default {
         TRANSLADO: 'Translado',
         VERIFICACAO: 'Verificação'
       },
-      
+
       justificativa: "",
       requisitante: "",
       destinoSelecionado: "",
-
 
       SaidaKM: "",
       ChegadaKM: "",
@@ -240,7 +239,8 @@ export default {
 
       Litros: "",
       Valor: "",
-      notaFiscal: ""
+      notaFiscal: "",
+      kmAtualViatura: 0
   }
 },
 
@@ -266,10 +266,26 @@ computed: {
   },
 
   async mounted() {
+     console.log('userId no localStorage:', localStorage.getItem('userId'))
     await this.carregarViaturas();
     this.tiposOcorrencia = await ordemDeServicoService.listaTipos();
+    await this.carregarSaidaPendente();
   },
-
+  watch: {
+    async viaturaSelecionada(novoId) {
+      if (!novoId) {
+        this.kmAtualViatura = 0
+        return
+      }
+      try {
+        const viatura = await viaturaService.buscarPorId(novoId)
+        this.kmAtualViatura = viatura.km
+        console.log('vehicleId:', this.viaturaSelecionada, typeof this.viaturaSelecionada)
+      } catch (e) {
+        console.error('Erro ao buscar KM da viatura:', e)
+      }
+    }
+  },
   methods: {
 
     async salvarSaida() {
@@ -312,29 +328,37 @@ computed: {
         this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY.");
         return;
       }
+      console.log('userId:', parseInt(localStorage.getItem('userId')), typeof parseInt(localStorage.getItem('userId')))
+    try {
+      const dadosOs = {
+        serviceType: this.ocorrenciaSelecionada,
+        destinationLocation: this.destinoSelecionado,
+        justification: this.justificativa,
+        requester: this.requisitante,
+        departureKm: this.kmAtualViatura,
+        departureDate: this.converterDataHora(this.dataSaida, this.HorarioSaida),
+        userId: parseInt(localStorage.getItem('userId')),
+        vehicleId: parseInt(this.viaturaSelecionada)
+      }
 
+      console.log('Payload saída:', dadosOs)
+      const os = await ordemDeServicoService.salvar(dadosOs)
+      this.osId = os.id
+
+      } catch (error) {
+        console.error('Erro ao registrar saída:', error)
+        this.exibirMensagem('Erro ao registrar. Tente novamente.')
+      }
+    },
+
+    async carregarViaturas() {
       try {
-        const dadosOs = {
-          tipoServico: this.ocorrenciaSelecionada,
-          localDestino: this.destinoSelecionado,
-          justificativa: this.justificativa,
-          requisitante: this.requisitante,
-          kmSaida: parseFloat(this.SaidaKM),
-          dataSaida: this.converterDataHora(this.dataSaida, this.HorarioSaida),
-          idUsuario: 1, 
-          idViatura: this.viaturaSelecionada
-        };
-
-        const os = await ordemDeServicoService.salvar(dadosOs);
-        this.osId = os.id;
-
-        this.resetarFormulario();
-
-        } catch (error) {
-          console.error('Erro ao registrar saída:', error);
-          this.exibirMensagem('Erro ao registrar. Tente novamente.');
-        }
-      },
+        const lista = await viaturaService.listar()
+        this.viaturas = lista.filter(v => v.status === 'DISPONIVEL')
+      } catch (error) {
+        console.error('Erro ao carregar viaturas:', error)
+    }
+    },
 
     async salvarChegada(){
       if(!this.osId){
@@ -372,14 +396,15 @@ computed: {
         return;
       }
 
-      try {
-        const dadosAtualizacao = {
-        kmChegada: parseFloat(this.ChegadaKM),
-        dataRetorno: this.converterDataHora(this.dataChegada, this.HorarioChegada)
+    try {
+      const dadosAtualizacao = {
+      arrivalKm: parseFloat(this.ChegadaKM),
+      returnDate: this.converterDataHora(this.dataChegada, this.HorarioChegada)
     };
-    
-    await ordemDeServicoService.atualizar(this.osId, dadosAtualizacao);
-    
+
+    await ordemDeServicoService.atualizar(this.osId, dadosAtualizacao)
+    this.osId = null;
+    this.resetarFormulario();
     } catch (error) {
         console.error('Erro ao registrar chegada:', error);
         this.exibirMensagem('Erro ao registrar. Tente novamente.');
@@ -469,6 +494,45 @@ computed: {
       this.Litros = "";
       this.Valor = "";
       this.notaFiscal = "";
+    },
+    async carregarSaidaPendente() {
+      try {
+        const userId = parseInt(localStorage.getItem('userId'))
+        const ordens = await ordemDeServicoService.listar()
+        const pendente = ordens.find(
+          os => os.user.id === userId && os.returnDate === null
+        )
+        if (pendente) {
+            this.osId = pendente.id
+            this.viaturaSelecionada = pendente.vehicle.id
+            this.kmAtualViatura = pendente.vehicle.km
+            this.ocorrenciaSelecionada = pendente.serviceType
+            this.justificativa = pendente.justification
+            this.requisitante = pendente.requester
+            this.destinoSelecionado = pendente.destinationLocation
+            this.dataSaida = this.converterParaDataBR(pendente.departureDate)
+            this.HorarioSaida = this.converterParaHora(pendente.departureDate)
+        }
+      } catch (e) {
+        console.error('Erro ao carregar saída pendente:', e)
+      }
+    },
+
+    converterParaDataBR(dataISO) {
+      if (!dataISO) return ''
+      const data = new Date(dataISO)
+      const dia = String(data.getDate()).padStart(2, '0')
+      const mes = String(data.getMonth() + 1).padStart(2, '0')
+      const ano = data.getFullYear()
+      return `${dia}/${mes}/${ano}`
+    },
+
+    converterParaHora(dataISO) {
+      if (!dataISO) return ''
+      const data = new Date(dataISO)
+      const hora = String(data.getHours()).padStart(2, '0')
+      const min = String(data.getMinutes()).padStart(2, '0')
+      return `${hora}:${min}`
     }
   }
 };
@@ -506,7 +570,7 @@ computed: {
 }
 
 
-.card-saida, 
+.card-saida,
 .card-chegada{
   background: white;
   border-radius: 20px;
@@ -520,7 +584,7 @@ computed: {
   box-shadow: 0 25px 50px rgba(0,0,0,0.15);
 }
 
-.card-saida h3, 
+.card-saida h3,
 .card-chegada h3{
   color: #003366;
   margin: 0;

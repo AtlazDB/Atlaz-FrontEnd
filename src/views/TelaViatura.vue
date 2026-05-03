@@ -2,8 +2,10 @@
 import Sidebar from '@/views/Sidebar.vue'
 import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
 import { viaturaService } from '@/services/viaturaService.js'
+import { modelService } from '@/services/modelService.js'
 
-import { ref } from 'vue'
+
+import { ref, onMounted } from 'vue'
 
 const showForm = ref(false)
 
@@ -13,21 +15,44 @@ const vehicle = ref({
   brand: '',
   model: '',
   type: 'UTILITARIO',
-  status: 'ATIVO',
+  status: 'DISPONIVEL',
   fuelType: 'GASOLINA',
   km: 0,
 })
 const id = ref(0)
 const prefixo = ref('')
 const tipo = ref('')
-const marca = ref('')
-const modelo = ref('')
+const modelId = ref(null)
+const modelos = ref([])
 const combustivel = ref('')
 const quilometragem = ref(0)
 const status = ref('')
 const tipoAlteracao = ref('')
 
 const erros = ref({})
+
+const showNovoModelo = ref(false)
+const novoModeloNome = ref('')
+const novoModeloMarca = ref('')
+
+async function cadastrarModelo() {
+  if (!novoModeloNome.value.trim() || !novoModeloMarca.value.trim()) {
+    alert('Preencha marca e modelo')
+    return
+  }
+  try {
+    await modelService.criar({
+      nameModel: novoModeloNome.value,
+      nameBrand: novoModeloMarca.value,
+    })
+    modelos.value = await modelService.listar()
+    showNovoModelo.value = false
+    novoModeloNome.value = ''
+    novoModeloMarca.value = ''
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 //Padrão para cadastro
 function openForm(dados = null, tipoAlt = 'cadastro') {
@@ -36,8 +61,7 @@ function openForm(dados = null, tipoAlt = 'cadastro') {
   id.value = 0
   prefixo.value = ''
   tipo.value = 'UTILITARIO'
-  marca.value = ''
-  modelo.value = ''
+  modelId.value = dados?.modelId ?? null
   combustivel.value = 'GASOLINA'
   quilometragem.value = 0
   status.value = 'DISPONIVEL'
@@ -47,8 +71,6 @@ function openForm(dados = null, tipoAlt = 'cadastro') {
     id.value = dados.id
     prefixo.value = dados.prefix
     tipo.value = dados.type
-    marca.value = dados.brand
-    modelo.value = dados.model
     combustivel.value = dados.fuelType
     quilometragem.value = dados.km
     status.value = dados.status
@@ -67,8 +89,6 @@ function validateForm() {
   //Verifica se todos os valores foram preenchidos
   if (!prefixo.value?.trim()) e.prefixo = true
   if (!tipo.value) e.tipo = true
-  if (!marca.value?.trim()) e.marca = true
-  if (!modelo.value?.trim()) e.modelo = true
   if (!combustivel.value) e.combustivel = true
   if (quilometragem.value === '') e.quilometragem = true
   if (!status.value) e.status = true
@@ -77,30 +97,29 @@ function validateForm() {
   console.log('erros:', erros.value)
   return Object.keys(e).length === 0 // true = sem erros
 }
-
-function submitForm() {
+const visualizador = ref(null)
+async function submitForm() {
   if (!validateForm()) {
     alert('Todos os campos precisam ser preenchidos')
     return
-  } else {
-    //Criação do objeto para POST ou PUT
-    vehicle.value.id = id.value
-    vehicle.value.prefix = prefixo.value
-    vehicle.value.brand = marca.value
-    vehicle.value.model = modelo.value
-    vehicle.value.type = tipo.value
-    vehicle.value.status = status.value
-    vehicle.value.fuelType = combustivel.value
-    vehicle.value.km = quilometragem.value
-
+  }
+  vehicle.value = {
+    id: id.value,
+    prefix: prefixo.value,
+    modelId: modelId.value,
+    type: tipo.value,
+    status: status.value,
+    fuelType: combustivel.value,
+    km: quilometragem.value,
+  }
     //Caso seja um cadastro
     if (tipoAlteracao.value === 'cadastro') {
-      criarViatura(vehicle.value)
+      await criarViatura(vehicle.value)
     } else if (tipoAlteracao.value === 'edicao') {
-      editarViatura(vehicle.value)
+      await editarViatura(vehicle.value)
     }
     closeForm()
-  }
+    await visualizador.value.carregarTodos()
 }
 
 async function criarViatura(viatura) {
@@ -111,8 +130,13 @@ async function criarViatura(viatura) {
   }
 }
 
+ onMounted(async () => {
+  modelos.value = await modelService.listar()
+  })
+
 async function editarViatura(viatura) {
   try {
+    console.log('Enviando para edição: ', viatura)
     await viaturaService.atualizar(viatura.id, viatura)
   } catch (e) {
     console.log(e)
@@ -128,7 +152,10 @@ async function editarViatura(viatura) {
       <h1 class="titulo">Viaturas cadastradas</h1>
       <div class="visualizadorViatura">
         <button @click="openForm()">Cadastrar nova viatura</button>
-        <AppVisualizadorViatura @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)" />
+      <AppVisualizadorViatura
+      ref="visualizador"
+      @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
+      />
         <!-- chama a função com o parâmetro -->
       </div>
     </div>
@@ -156,18 +183,26 @@ async function editarViatura(viatura) {
         </div>
       </div>
 
-      <div class="linha">
-        <div class="campo">
-          <label>Marca</label>
-          <input type="text" v-model="marca" :class="{ erro: erros.marca }" />
-        </div>
-
-        <div class="campo">
-          <label>Modelo</label>
-          <input type="text" v-model="modelo" :class="{ erro: erros.modelo }" />
-        </div>
+    <div class="campo">
+      <label>Modelo</label>
+      <div class="select-wrapper">
+        <select v-model="modelId" :class="{ erro: erros.modelId }">
+          <option disabled :value="null">Selecione...</option>
+          <option v-for="m in modelos" :key="m.id" :value="m.id">
+            {{ m.brandName }} {{ m.modelName }}
+          </option>
+        </select>
       </div>
-
+      <button type="button" class="btn-novo-modelo" @click="showNovoModelo = !showNovoModelo">
+        + Cadastrar novo modelo
+      </button>
+      <div v-if="showNovoModelo" class="novo-modelo-form">
+        <input type="text" v-model="novoModeloMarca" placeholder="Marca (ex: Chevrolet)" />
+        <input type="text" v-model="novoModeloNome" placeholder="Modelo (ex: Prisma)" />
+        <button type="button" @click="cadastrarModelo">Salvar</button>
+      </div>
+    </div>
+    
       <div class="campo">
         <label>Tipo de combustível</label>
         <div class="select-wrapper">

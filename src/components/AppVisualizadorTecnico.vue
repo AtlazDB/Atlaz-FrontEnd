@@ -9,21 +9,21 @@ const registros = ref([
     nome: 'João Silva',
     matricula: '12345',
     email: 'joao@teste.com',
-    usuario_status: 'ATIVO'
+    usuario_status: 'DISPONIVEL'
   },
   {
     id_usuario: 2,
     nome: 'Maria Souza',
     matricula: '67890',
     email: 'maria@teste.com',
-    usuario_status: 'INATIVO'
+    usuario_status: 'DESLIGADO'
   },
   {
     id_usuario: 3,
     nome: 'Carlos Lima',
     matricula: '54321',
     email: 'carlos@teste.com',
-    usuario_status: 'ATIVO'
+    usuario_status: 'EM CAMPO'
   },
 ])
 
@@ -59,13 +59,13 @@ const registrosFiltrados = computed(() => {
   return registros.value.filter((r) => {
     const encontrarBusca =
       !busca_filtro.value ||
-      r.nome.toLowerCase().includes(busca_filtro.value.toLowerCase())
+      r.name.toLowerCase().includes(busca_filtro.value.toLowerCase())
 
     const encontrarStatus =
-      !status_filtro.value || r.usuario_status === status_filtro.value
+      !status_filtro.value || r.userStatus === status_filtro.value
 
     const ocultarStatus =
-      status_filtro.value === 'INATIVO' || r.usuario_status !== 'INATIVO'
+      status_filtro.value === 'DESLIGADO' || r.userStatus !== 'DESLIGADO'
 
     return encontrarBusca && encontrarStatus && ocultarStatus
   })
@@ -111,8 +111,9 @@ onMounted(carregarTodos)
 
       <select v-model="status_filtro">
         <option value="">Status</option>
-        <option value="ATIVO">Ativo</option>
-        <option value="INATIVO">Inativo</option>
+        <option value="DISPONIVEL">Disponível</option>
+        <option value="EM_CAMPO">Em campo</option>
+        <option value="DESLIGADO">Desligado</option>
       </select>
     </div>
 
@@ -133,13 +134,13 @@ onMounted(carregarTodos)
 
       <tbody>
         <tr v-for="reg in registrosFiltrados" :key="reg.id_usuario">
-          <td>{{ reg.nome }}</td>
-          <td>{{ reg.matricula }}</td>
+          <td>{{ reg.name }}</td>
+          <td>{{ reg.registrationNumber }}</td>
           <td>{{ reg.email }}</td>
 
           <td>
-            <div :class="reg.usuario_status">
-              {{ refinarPalavra(reg.usuario_status) }}
+            <div :class="reg.userStatus">
+              {{ refinarPalavra(reg.userStatus) }}
             </div>
           </td>
 
@@ -229,8 +230,9 @@ td {
   height: 40px;
 }
 
-.ATIVO,
-.INATIVO {
+.DISPONIVEL,
+.EM_CAMPO,
+.DESLIGADO {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -240,12 +242,16 @@ td {
   width: 100px;
 }
 
-.ATIVO {
+
+.DISPONIVEL {
   background-color: #ebf9f1;
   color: #1f9254;
 }
-
-.INATIVO {
+.EM_CAMPO {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.DESLIGADO {
   background-color: #fbe7e8;
   color: #a30d11;
 }
