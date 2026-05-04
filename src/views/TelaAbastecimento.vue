@@ -1,11 +1,7 @@
 <template>
 
     <div class="tela">
-     <Sidebar
-      nome="Karthi Madesh"
-      cargo="Técnico"
-      userType="tecnico"
-    />
+     <Sidebar :nome="nomeUsuario" cargo="Técnico" userType="tecnico" />
 
     <div class="main">
         <h1>Abastecimento</h1>
@@ -17,71 +13,67 @@
             Cadastrar novo abastecimento
         </button>
 
-    <div v-if="mostrarFormulario" class="overlay">
-    <div class="modal">
-       <h2>Novo registro</h2>
-
-     <div class="campo">
-      <label>Prefixo da Viatura</label>
-      <input
-       v-model="form.viatura" />
-    </div>   
+<div v-if="mostrarFormulario" class="overlay">
+  <div class="modal">
+    <h2>Novo registro</h2>
 
     <div class="campo">
-      <label>Quilometragem que está sendo abastecido</label>
-      <input
-       v-model="form.quilometragem" />
+      <label>Viatura</label>
+      <select v-model="form.vehicleId">
+        <option value="">Selecione...</option>
+        <option v-for="v in viaturas" :key="v.id" :value="v.id">
+          {{ v.prefix }} - {{ v.brand }} {{ v.model }}
+        </option>
+      </select>
     </div>
 
     <div class="campo">
-      <label>Número da nota fiscal</label>
-      <input 
-      v-model="form.notaFiscal" />
+      <label>Data e Hora</label>
+      <input type="datetime-local" v-model="form.dateTimeInput" />
+    </div>
+
+    <div class="campo">
+      <label>Número da Nota Fiscal</label>
+      <input type="text" v-model="form.receiptNumber" />
     </div>
 
     <div class="campo">
       <label>Litros</label>
-      <input
-       v-model="form.litros" />
+      <input type="number" step="0.01" v-model="form.liters" />
     </div>
 
-    <button 
-    class="botao-enviar" 
-    @click="enviarFormulario">
-    Enviar
-   </button>
+    <div class="campo">
+      <label>Valor Total (R$)</label>
+      <input type="number" step="0.01" v-model="form.totalValue" />
+    </div>
 
-    <button 
-    class="botao-fechar"
-    @click="mostrarFormulario = false">
-    ✕
-    </button>
+    <button class="botao-enviar" @click="enviarFormulario">Enviar</button>
+    <button class="botao-fechar" @click="mostrarFormulario = false">✕</button>
   </div>
-   </div>
+</div>
 
-   <div class="tabela">
-        <table>
-            <thead>
-                <tr>
-                    <th>Prefixo da Viatura</th>
-                    <th>Data</th>
-                    <th>Valor</th>
-                    <th>Litros</th>
-                    <th>Nº Nota Fiscal</th>
-                </tr>
-          </thead>
-          <tbody class="registros_tabela">
-             <tr v-for="registro in registros" :key="registro.id">
-                 <td>{{ registro.viatura }}</td>
-                 <td>{{ registro.data }}</td>
-                 <td>{{ registro.valor }}</td>
-                 <td>{{ registro.litros }}</td>  
-                 <td>{{ registro.notaFiscal }}</td>
-             </tr>
-          </tbody>
-        </table>
-        </div>
-
+<div class="tabela">
+  <table>
+    <thead>
+      <tr>
+        <th>Prefixo da Viatura</th>
+        <th>Data</th>
+        <th>Valor</th>
+        <th>Litros</th>
+        <th>Nº Nota Fiscal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="registro in registros" :key="registro.id">
+        <td>{{ registro.vehicle?.prefix }}</td>
+        <td>{{ formatarData(registro.dateTime) }}</td>
+        <td>{{ formatarValor(registro.totalValue) }}</td>
+        <td>{{ registro.liters }}</td>
+        <td>{{ registro.receiptNumber }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
     </div>
     </div>
 </template>
@@ -89,50 +81,89 @@
 <script>
 import Sidebar from "@/views/Sidebar.vue";
 import { abastecimentoService } from "@/services/abastecimentoService";
+import { viaturaService } from "@/services/viaturaService";
 
 export default {
   name: "TelaAbastecimento",
-  components: {
-    Sidebar
-  }, 
+  components: { Sidebar },
   data() {
-  return {
-    registros: [],
-    mostrarFormulario: false,
-    form: {
-      viatura:'',
-      quilometragem: '',
-      notaFiscal: '',
-      litros: ''
+    return {
+       nomeUsuario: localStorage.getItem('userName') || 'Técnico',
+      registros: [],
+      viaturas: [],
+      mostrarFormulario: false,
+      form: {
+        vehicleId: '',
+        dateTimeInput: '',
+        receiptNumber: '',
+        liters: '',
+        totalValue: '',
+      }
     }
-  }
-},
-  async created() {
-    await this.carregarRegistros();
   },
-  methods:{
-    async carregarRegistros(){
+  async created() {
+    await this.carregarRegistros()
+    await this.carregarViaturas()
+  },
+  methods: {
+    async carregarRegistros() {
       try {
-        const response = await abastecimentoService.listar();
-        this.registros = response.data;
+        const userId = parseInt(localStorage.getItem('userId'))
+        const todos = await abastecimentoService.listar()
+        this.registros = todos.filter(r => r.user?.id === userId)
       } catch (error) {
-        console.error("Erro ao carregar abastecimentos:", error);
+        console.error("Erro ao carregar abastecimentos:", error)
       }
     },
 
-    async enviarFormulario(){
+    async carregarViaturas() {
       try {
-        await abastecimentoService.criar(this.form);
-
-        await this.carregarRegistros();
-
-        this.form = { viatura: '', quilometragem: '', notaFiscal: '', litros: '' };
-        this.mostrarFormulario = false;
+        this.viaturas = await viaturaService.listar()
       } catch (error) {
-        console.error("Erro ao cadastrar abastecimentos:", error);
+        console.error("Erro ao carregar viaturas:", error)
+      }
+    },
+
+    async enviarFormulario() {
+      if (!this.form.vehicleId || !this.form.dateTimeInput ||
+          !this.form.receiptNumber || !this.form.liters || !this.form.totalValue) {
+        alert('Preencha todos os campos')
+        return
+      }
+
+      try {
+
+        const payload = {
+          vehicleId: parseInt(this.form.vehicleId),
+          cityId: 1,
+          userId: parseInt(localStorage.getItem('userId')),
+          dateTime: this.form.dateTimeInput + ':00',
+          receiptNumber: this.form.receiptNumber,
+          liters: parseFloat(this.form.liters),
+          totalValue: parseFloat(this.form.totalValue),
+          serviceOrderId: null
+        }
+
+        await abastecimentoService.criar(payload)
+        await this.carregarRegistros()
+        this.mostrarFormulario = false
+        this.form = { vehicleId: '', dateTimeInput: '', receiptNumber: '', liters: '', totalValue: '' }
+      } catch (error) {
+        console.error("Erro ao cadastrar abastecimento:", error)
+        alert('Erro ao cadastrar. Verifique o console.')
+      }
+    },
+
+    formatarData(dataISO) {
+      if (!dataISO) return ''
+      return new Date(dataISO).toLocaleString('pt-BR')
+    },
+
+    formatarValor(valor) {
+      if (!valor) return ''
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor)
     }
   }
-}
 }
 </script>
 
@@ -173,13 +204,13 @@ h1 {
 
 .tabela {
   width: 100%;
-  overflow-x: auto; 
+  overflow-x: auto;
   margin-top: 30px;
 }
 
 table {
   width: 80%;
-  min-width: 400px; 
+  min-width: 400px;
   border-collapse: collapse;
   background: white;
   border-radius: 8px;

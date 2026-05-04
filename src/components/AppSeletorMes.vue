@@ -29,7 +29,7 @@ onMounted(async () => {
     const itens = []
 
     ordens.forEach((os) => {
-      const data = new Date(os.dataSaida)
+      const data = new Date(os.departureDate)
       const mes = data.getMonth()
       const ano = data.getFullYear()
       const chave = `${mes}-${ano}`

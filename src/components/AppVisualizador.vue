@@ -9,7 +9,9 @@ const props = defineProps(['filtro'])
 const registrosFiltrados = computed(() => {
   if (!props.filtro) return registros.value
   return registros.value.filter((reg) => {
-    const data = new Date(reg.os.dataSaida)
+    const dataISO = reg.tipo === 'os' ? reg.os?.departureDate : reg.refueling?.dateTime
+    if (!dataISO) return false
+    const data = new Date(dataISO)
     return data.getMonth() === props.filtro.mes && data.getFullYear() === props.filtro.ano
   })
 })
@@ -21,10 +23,19 @@ async function carregarTodos() {
       ordemDeServicoService.listar(),
       abastecimentoService.listar(),
     ])
-    registros.value = ordens.map((os) => {
-      const abastecimento = abastecimentos.find((a) => a.ordemServico?.id == os.id)
-      return { os, abastecimento }
+
+    // linhas com OS
+    const linhasOS = ordens.map((os) => {
+      const refueling = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
+      return { os, refueling, tipo: 'os' }
     })
+
+    // abastecimentos sem OS vinculada
+    const linhasAbastecimento = abastecimentos
+      .filter((a) => !a.serviceOrder)
+      .map((a) => ({ os: null, refueling: a, tipo: 'abastecimento' }))
+
+    registros.value = [...linhasOS, ...linhasAbastecimento]
   } catch (erro) {
     console.error('Erro: ' + erro)
   } finally {
@@ -69,7 +80,7 @@ watch(
       ])
 
       registros.value = ordens.map((os) => {
-        const abastecimento = abastecimentos.find((a) => a.ordemServico?.id === os.id)
+        const abastecimento = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
         return { os, abastecimento }
       })
     } catch (error) {
@@ -113,22 +124,21 @@ watch(
         </tr>
       </thead>
       <tbody>
-        <tr v-for="reg in registrosFiltrados" :key="reg.os.id">
-          <td>{{ reg.os.viatura.prefixo }} - {{ reg.os.viatura.modelo.nomeModelo }}</td>
-          <td>{{ reg.os.tipoServico }}</td>
-          <td>{{ reg.os.justificativa }}</td>
-          <td>{{ reg.os.requisitante }}</td>
-          <td>{{ reg.os.localDestino }}</td>
-          <td>{{ reg.os.kmSaida }}</td>
-          <td>{{ reg.os.kmChegada }}</td>
-          <td>{{ formatarHora(reg.os.dataSaida) }}</td>
-          <td>{{ formatarHora(reg.os.dataRetorno) }}</td>
-          <td>{{ formatarData(reg.os.dataSaida) }}</td>
-          <td>{{ formatarData(reg.os.dataRetorno) }}</td>
-          <!-- Abastecimento pode ser vazio -->
-          <td>{{ reg.abastecimento?.litros ?? '-' }}</td>
-          <td>{{ reg.abastecimento ? formatarValor(reg.abastecimento.valorTotal) : '-' }}</td>
-          <td>{{ reg.abastecimento?.numeroNotaFiscal ?? '-' }}</td>
+        <tr v-for="(reg, i) in registrosFiltrados" :key="i">
+          <td>{{ reg.tipo === 'os' ? `${reg.os.vehicle.prefix} - ${reg.os.vehicle.model.modelName}` : reg.refueling?.vehicle?.prefix }}</td>
+          <td>{{ reg.tipo === 'os' ? reg.os.serviceType : 'Abastecimento' }}</td>
+          <td>{{ reg.os?.justification ?? '-' }}</td>
+          <td>{{ reg.os?.requester ?? '-' }}</td>
+          <td>{{ reg.os?.destinationLocation ?? '-' }}</td>
+          <td>{{ reg.os?.departureKm ?? '-' }}</td>
+          <td>{{ reg.os?.arrivalKm ?? '-' }}</td>
+          <td>{{ reg.tipo === 'os' ? formatarHora(reg.os.departureDate) : formatarHora(reg.refueling?.dateTime) }}</td>
+          <td>{{ formatarHora(reg.os?.returnDate) }}</td>
+          <td>{{ reg.tipo === 'os' ? formatarData(reg.os.departureDate) : formatarData(reg.refueling?.dateTime) }}</td>
+          <td>{{ formatarData(reg.os?.returnDate) }}</td>
+          <td>{{ reg.refueling?.liters ?? '-' }}</td>
+          <td>{{ reg.refueling ? formatarValor(reg.refueling.totalValue) : '-' }}</td>
+          <td>{{ reg.refueling?.receiptNumber ?? '-' }}</td>
         </tr>
       </tbody>
     </table>

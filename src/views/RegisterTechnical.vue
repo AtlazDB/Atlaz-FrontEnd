@@ -27,11 +27,11 @@ function openForm(dados = null, tipoAlt = 'cadastro') {
   status.value = 'ATIVO'
 
   if (dados != null) {
-    id.value = dados.id_usuario
-    nome.value = dados.nome
-    matricula.value = dados.matricula
+    id.value = dados.id
+    nome.value = dados.name
+    matricula.value = dados.registrationNumber
     email.value = dados.email
-    status.value = dados.usuario_status
+    status.value = dados.userStatus
   }
 
   tipoAlteracao.value = tipoAlt
@@ -46,8 +46,8 @@ function closeForm() {
 function validateForm() {
   const e = {}
 
-  if (!nome.value?.trim()) e.nome = true
-  if (!matricula.value?.trim()) e.matricula = true
+  if (!nome.value?.trim()) e.name = true
+  if (!matricula.value?.trim()) e.registrationNumber = true
   if (!email.value?.trim()) e.email = true
   if (!senha.value?.trim() && tipoAlteracao.value === 'cadastro') e.senha = true
 
@@ -55,8 +55,8 @@ function validateForm() {
   return Object.keys(e).length === 0
 }
 
-// SUBMIT (CORRIGIDO)
-function submitForm() {
+const visualizador = ref(null)
+async function submitForm() {
   if (!validateForm()) {
     alert('Todos os campos precisam ser preenchidos')
     return
@@ -64,20 +64,26 @@ function submitForm() {
 
   const payload = {
     name: nome.value,
-    registration: matricula.value,
+    registrationNumber: matricula.value,
     email: email.value,
     passwordHash: senha.value,
     profile: 'TECNICO',
     userStatus: status.value || 'ATIVO'
   }
 
-  if (tipoAlteracao.value === 'cadastro') {
-    usuarioService.criar(payload)
-  } else {
-    usuarioService.atualizar(id.value, payload)
-  }
 
-  closeForm()
+  try {
+    if (tipoAlteracao.value === 'cadastro') {
+      await usuarioService.criar(payload)
+    } else {
+      await usuarioService.atualizar(id.value, payload)
+    }
+    closeForm()
+    await visualizador.value.carregarTodos()
+  } catch (e) {
+    console.error('Erro ao salvar técnico:', e)
+    alert('Erro ao salvar. Verifique o console.')
+  }
 }
 </script>
 
@@ -92,6 +98,7 @@ function submitForm() {
         <button @click="openForm()">Cadastrar novo técnico</button>
 
         <AppVisualizadorTecnico
+          ref="visualizador"
           @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
         />
       </div>
@@ -131,8 +138,9 @@ function submitForm() {
         <label>Status</label>
         <div class="select-wrapper">
           <select v-model="status">
-            <option value="ATIVO">Ativo</option>
-            <option value="INATIVO">Inativo</option>
+            <option value="DISPONIVEL">Disponível</option>
+            <option value="EM_CAMPO">Em campo</option>
+            <option value="DESLIGADO">Desligado</option>
           </select>
         </div>
       </div>

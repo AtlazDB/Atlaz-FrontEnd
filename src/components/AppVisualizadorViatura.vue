@@ -4,58 +4,7 @@ import { viaturaService } from '@/services/viaturaService.js'
 
 const carregando = ref(false)
 
-const registros = ref([
-  {
-    id: 1,
-    prefix: 'H1AN',
-    brand: 'Fiat',
-    model: 'Uno',
-    type: 'UTILITARIO',
-    status: 'DISPONIVEL',
-    fuelType: 'GASOLINA',
-    km: 45230,
-  },
-  {
-    id: 2,
-    prefix: 'K9XZ',
-    brand: 'Chevrolet',
-    model: 'Onix',
-    type: 'UTILITARIO',
-    status: 'EM_USO',
-    fuelType: 'FLEX',
-    km: 28910,
-  },
-  {
-    id: 3,
-    prefix: 'P3TR',
-    brand: 'Volkswagen',
-    model: 'Gol',
-    type: 'PASSEIO',
-    status: 'MANUTENCAO',
-    fuelType: 'GNV',
-    km: 67300,
-  },
-  {
-    id: 4,
-    prefix: 'Z7LM',
-    brand: 'Toyota',
-    model: 'Hilux',
-    type: 'PASSEIO',
-    status: 'DESATIVADA',
-    fuelType: 'DIESEL',
-    km: 112450,
-  },
-  {
-    id: 5,
-    prefix: 'Q2WE',
-    brand: 'Renault',
-    model: 'Kwid',
-    type: 'UTILITARIO',
-    status: 'EM_USO',
-    fuelType: 'FLEX',
-    km: 15870,
-  },
-])
+const registros = ref([])
 
 const busca_filtro = ref('')
 const marca_filtro = ref('')
@@ -140,6 +89,7 @@ function edit(viatura) {
 }
 
 onMounted(() => carregarTodos())
+defineExpose({ carregarTodos })
 </script>
 
 <template>
