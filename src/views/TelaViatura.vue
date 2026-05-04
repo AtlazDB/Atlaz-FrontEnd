@@ -146,7 +146,7 @@ async function editarViatura(viatura) {
 
 <template>
   <div class="tela">
-    <Sidebar nome="William Hasan" cargo="Administrador" userType="admin" @openForm="actionForm" />
+    <Sidebar nome="ADMIN" cargo="Administrador" userType="admin" @openForm="actionForm" />
     <router-view />
     <div class="componente">
       <h1 class="titulo">Viaturas cadastradas</h1>
@@ -202,7 +202,7 @@ async function editarViatura(viatura) {
         <button type="button" @click="cadastrarModelo">Salvar</button>
       </div>
     </div>
-    
+
       <div class="campo">
         <label>Tipo de combustível</label>
         <div class="select-wrapper">
