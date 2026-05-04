@@ -1,17 +1,12 @@
 <template>
 
   <div class="tela">
-     <Sidebar
-      nome="Karthi Madesh"
-      cargo="Técnico"
-      userType="tecnico"
-      @abrirFormulario="abrirFormulario"
-    />
+     <Sidebar :nome="nomeUsuario" cargo="Técnico" userType="tecnico" />
 
      <div class="main-content">
         <div class="form-box">
           <h1>Ocorrências</h1>
-<div class="formulario-container">
+      <div class="formulario-container">
 
           <div class="card-saida">
             <div class="card-body">
@@ -19,6 +14,7 @@
       <div class="dropdown-planejamento-viagem">
         <h3>Informações da ocorrência</h3>
         <label class="dropdown-label">Tipo de Ocorrência</label>
+
         <select class="dropdown-select" v-model="ocorrenciaSelecionada">
             <option value="">Selecione...</option>
             <option v-for="tipo in tiposOcorrencia"
@@ -98,18 +94,23 @@
             <option value="Ubatuba">Ubatuba</option>
           </select>
 
-              <div class="saida">
-             <h3>Saída</h3>
-        <div class="dropdown-viatura">
+  <div class="saida">
+          <h3>Saída</h3>
+
+      <div class="dropdown-viatura">
         <label class="dropdown-label">Viatura</label>
+
         <select class="dropdown-select" v-model="viaturaSelecionada">
           <option value="">Selecione...</option>
           <option
             v-for="viatura in viaturas"
             :key="viatura.id"
             :value="viatura.id"
-            > {{ viatura.prefixo }} - {{ viatura.modelo.nomeModelo}}</option>
+          >
+            {{ viatura.prefix }} - {{ viatura.brand }} {{ viatura.model }}
+          </option>
         </select>
+
       </div>
 
       <div class="campo-Horario-Saida">
@@ -117,22 +118,26 @@
         <input
           type="text"
           class="campo-input"
-          v-model="HorarioSaida"
-        >
+          :value="HorarioSaida"
+          @input="mascaraHora($event, 'HorarioSaida')"
+          placeholder="HH:MM"
+        />
       </div>
 
         <div class="campo-data">
         <label class="campo-label">Data Saída</label>
        <input
-        type="text"
-        class="campo-input"
-        v-model="dataSaida"
-        placeholder="DD/MM/YYYY">
+          type="text"
+          class="campo-input"
+          :value="dataSaida"
+          @input="mascaraData($event, 'dataSaida')"
+          placeholder="DD/MM/YYYY"
+        />
         </div>
 
           <div class="botao-enviar">
             <button
-               t ype="button"
+               type="button"
                class="btn-enviar"
                @click="salvarSaida">
                  Registrar Saída
@@ -152,11 +157,13 @@
         <h3>Chegada</h3>
       <div class="kmChegada">
         <label class="campo-label">Chegada(KM)</label>
-        <input
+       <input
           type="text"
           class="campo-input"
-          v-model="ChegadaKM"
-        >
+          :value="ChegadaKM"
+          @input="mascaraKM"
+          placeholder="Ex: 45.230"
+        />
       </div>
 
       <div class="Horario-Chegada">
@@ -164,22 +171,27 @@
         <input
           type="text"
           class="campo-input"
-          v-model="HorarioChegada"
-        >
+          :value="HorarioChegada"
+          @input="mascaraHora($event, 'HorarioChegada')"
+          placeholder="HH:MM"
+        />
       </div>
 
       <div class="Data-chegada">
        <div class="campo-data">
         <label class="campo-label">Data Chegada</label>
-        <input type="text"
+        <input
+          type="text"
           class="campo-input"
-          v-model="dataChegada"
-          placeholder="DD/MM/YYYY">
+          :value="dataChegada"
+          @input="mascaraData($event, 'dataChegada')"
+          placeholder="DD/MM/YYYY"
+        />
        </div>
     </div>
            <div class="botao-enviar">
             <button
-               t ype="button"
+               type="button"
                class="btn-enviar"
                @click="salvarChegada">
                  Registrar Chegada
@@ -191,60 +203,12 @@
     </div>
     </div>
   </div>
-
-    <!-- <div class="Abastecimento">
-    <h2 class="Abastecimento-titulo">ABASTECIMENTO</h2>
-       <div class="campo-Litros">
-        <label class="campo-label">Litros</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="Litros"
-          placeholder="0,00"
-        >
-      </div>
-
-       <div class="campo-Valor">
-        <label class="campo-label">Valor Total (R$)</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="Valor"
-          placeholder="R$ 0,00"
-        >
-      </div>
-
-      <div class="campo-NotaFiscal">
-        <label class="campo-label">N° Nota Fiscal</label>
-        <input
-          type="text"
-          class="campo-input"
-          v-model="notaFiscal"
-          placeholder="000.000.000"
-        >
-      </div>
-
-    </div>
-
-    <div class="botao-enviar">
-     <button
-    type="button"
-    class="btn-enviar"
-    @click="salvarDados"
-  >
-    Enviar
-   </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>-->
-</template> 
+</template>
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
-import { viaturaService } from '@/services/viaturaService.js'
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
+import { viaturaService } from '@/services/viaturaService.js'
 
 export default {
    components: {
@@ -252,6 +216,8 @@ export default {
   },
   data() {
     return {
+      nomeUsuario: localStorage.getItem('userName') || 'Técnico',
+      osId: null,
       viaturas: [],
       viaturaSelecionada: "",
 
@@ -270,21 +236,22 @@ export default {
         TRANSLADO: 'Translado',
         VERIFICACAO: 'Verificação'
       },
+
       justificativa: "",
       requisitante: "",
       destinoSelecionado: "",
 
-
       SaidaKM: "",
       ChegadaKM: "",
-      HorarioSaida: "",
+      HorarioSaida: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       HorarioChegada: "",
-      dataSaida: "",
+      dataSaida: new Date().toLocaleDateString('pt-BR'),
       dataChegada: "",
 
       Litros: "",
       Valor: "",
-      notaFiscal: ""
+      notaFiscal: "",
+      kmAtualViatura: 0
   }
 },
 
@@ -310,13 +277,52 @@ computed: {
   },
 
   async mounted() {
+     console.log('userId no localStorage:', localStorage.getItem('userId'))
     await this.carregarViaturas();
     this.tiposOcorrencia = await ordemDeServicoService.listaTipos();
+    await this.carregarSaidaPendente();
   },
-
+  watch: {
+    async viaturaSelecionada(novoId) {
+      if (!novoId) {
+        this.kmAtualViatura = 0
+        return
+      }
+      try {
+        const viatura = await viaturaService.buscarPorId(novoId)
+        this.kmAtualViatura = viatura.km
+        console.log('vehicleId:', this.viaturaSelecionada, typeof this.viaturaSelecionada)
+      } catch (e) {
+        console.error('Erro ao buscar KM da viatura:', e)
+      }
+    }
+  },
   methods: {
-    abrirFormulario(){
+    mascaraKM(event) {
+      let valor = event.target.value.replace(/\D/g, '')
+      if (valor.length > 10) valor = valor.slice(0, 10)
+      // adiciona ponto a cada 3 dígitos da direita
+      valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      event.target.value = valor
+      // salva só o número no data
+      this.ChegadaKM = valor.replace(/\./g, '')
+    },
 
+    mascaraHora(event, campo) {
+      let valor = event.target.value.replace(/\D/g, '')
+      if (valor.length > 4) valor = valor.slice(0, 4)
+      if (valor.length >= 3) valor = valor.slice(0, 2) + ':' + valor.slice(2)
+      event.target.value = valor
+      this[campo] = valor
+    },
+
+    mascaraData(event, campo) {
+      let valor = event.target.value.replace(/\D/g, '')
+      if (valor.length > 8) valor = valor.slice(0, 8)
+      if (valor.length >= 5) valor = valor.slice(0, 2) + '/' + valor.slice(2, 4) + '/' + valor.slice(4)
+      else if (valor.length >= 3) valor = valor.slice(0, 2) + '/' + valor.slice(2)
+      event.target.value = valor
+      this[campo] = valor
     },
 
     async salvarSaida() {
@@ -359,28 +365,37 @@ computed: {
         this.exibirMensagem("Data de saída inválida. Use o formato DD/MM/YYYY.");
         return;
       }
+      console.log('userId:', parseInt(localStorage.getItem('userId')), typeof parseInt(localStorage.getItem('userId')))
+    try {
+      const dadosOs = {
+        serviceType: this.ocorrenciaSelecionada,
+        destinationLocation: this.destinoSelecionado,
+        justification: this.justificativa,
+        requester: this.requisitante,
+        departureKm: this.kmAtualViatura,
+        departureDate: this.converterDataHora(this.dataSaida, this.HorarioSaida),
+        userId: parseInt(localStorage.getItem('userId')),
+        vehicleId: parseInt(this.viaturaSelecionada)
+      }
 
+      console.log('Payload saída:', dadosOs)
+      const os = await ordemDeServicoService.salvar(dadosOs)
+      this.osId = os.id
+
+      } catch (error) {
+        console.error('Erro ao registrar saída:', error)
+        this.exibirMensagem('Erro ao registrar. Tente novamente.')
+      }
+    },
+
+    async carregarViaturas() {
       try {
-        const dadosOs = {
-          tipoServico: this.ocorrenciaSelecionada,
-          localDestino: this.destinoSelecionado,
-          justificativa: this.justificativa,
-          requisitante: this.requisitante,
-          kmSaida: parseFloat(this.SaidaKM),
-          dataSaida: this.converterDataHora(this.dataSaida, this.HorarioSaida),
-          idUsuario: 1, 
-          idViatura: this.viaturaSelecionada
-        };
-
-        const os = await ordemDeServicoService.salvar(dadosOs);
-        this.osId = os.id;
-
-        this.limparCamposSaida();
-
-        } catch (error) {
-          console.error('Erro ao registrar saída:', error);
-        }
-      },
+        const lista = await viaturaService.listar()
+        this.viaturas = lista.filter(v => v.status === 'DISPONIVEL')
+      } catch (error) {
+        console.error('Erro ao carregar viaturas:', error)
+    }
+    },
 
     async salvarChegada(){
       if(!this.osId){
@@ -418,16 +433,18 @@ computed: {
         return;
       }
 
-      try {
-        const dadosAtualizacao = {
-        kmChegada: parseFloat(this.ChegadaKM),
-        dataRetorno: this.converterDataHora(this.dataChegada, this.HorarioChegada)
+    try {
+      const dadosAtualizacao = {
+      arrivalKm: parseFloat(this.ChegadaKM),
+      returnDate: this.converterDataHora(this.dataChegada, this.HorarioChegada)
     };
-    
-    await ordemDeServicoService.atualizar(this.osId, dadosAtualizacao);
-    
+
+    await ordemDeServicoService.atualizar(this.osId, dadosAtualizacao)
+    this.osId = null;
+    this.resetarFormulario();
     } catch (error) {
         console.error('Erro ao registrar chegada:', error);
+        this.exibirMensagem('Erro ao registrar. Tente novamente.');
     }
   },
 
@@ -514,6 +531,45 @@ computed: {
       this.Litros = "";
       this.Valor = "";
       this.notaFiscal = "";
+    },
+    async carregarSaidaPendente() {
+      try {
+        const userId = parseInt(localStorage.getItem('userId'))
+        const ordens = await ordemDeServicoService.listar()
+        const pendente = ordens.find(
+          os => os.user.id === userId && os.returnDate === null
+        )
+        if (pendente) {
+            this.osId = pendente.id
+            this.viaturaSelecionada = pendente.vehicle.id
+            this.kmAtualViatura = pendente.vehicle.km
+            this.ocorrenciaSelecionada = pendente.serviceType
+            this.justificativa = pendente.justification
+            this.requisitante = pendente.requester
+            this.destinoSelecionado = pendente.destinationLocation
+            this.dataSaida = this.converterParaDataBR(pendente.departureDate)
+            this.HorarioSaida = this.converterParaHora(pendente.departureDate)
+        }
+      } catch (e) {
+        console.error('Erro ao carregar saída pendente:', e)
+      }
+    },
+
+    converterParaDataBR(dataISO) {
+      if (!dataISO) return ''
+      const data = new Date(dataISO)
+      const dia = String(data.getDate()).padStart(2, '0')
+      const mes = String(data.getMonth() + 1).padStart(2, '0')
+      const ano = data.getFullYear()
+      return `${dia}/${mes}/${ano}`
+    },
+
+    converterParaHora(dataISO) {
+      if (!dataISO) return ''
+      const data = new Date(dataISO)
+      const hora = String(data.getHours()).padStart(2, '0')
+      const min = String(data.getMinutes()).padStart(2, '0')
+      return `${hora}:${min}`
     }
   }
 };
@@ -551,7 +607,7 @@ computed: {
 }
 
 
-.card-saida, 
+.card-saida,
 .card-chegada{
   background: white;
   border-radius: 20px;
@@ -562,10 +618,10 @@ computed: {
 
 .card-chegada:hover, .card-saida:hover{
   transform: translateY(-5px);
-  box-shadow: 0 25 50px rgba(0,0,0,0.15);
+  box-shadow: 0 25px 50px rgba(0,0,0,0.15);
 }
 
-.card-saida h3, 
+.card-saida h3,
 .card-chegada h3{
   color: #003366;
   margin: 0;

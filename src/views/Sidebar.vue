@@ -37,6 +37,11 @@
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Ocorrência</span>
     </button>
 
+     <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('abastecimento')">
+      <span class="icon">⛽</span>
+      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Abastecimento</span>
+    </button>
+
     <button
       v-if="userType === 'admin'"
       class="menu menu-principal"
@@ -45,8 +50,16 @@
       <span class="icon">📊</span>
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Principal</span>
     </button>
-
-    <RouterLink to="/" class="logout">
+    <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
+      🚙 Viaturas
+    </button>
+    <button @click="handleMenuClick('tecnicos')" v-if="userType === 'admin'" class="menu">
+      👨‍🔧 Tecnicos
+    </button>
+    <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
+      📈 Relatorios
+    </button>
+    <button @click="handleMenuClick('Login')" class="logout">
       <svg
         width="30"
         height="30"
@@ -63,11 +76,14 @@
         />
       </svg>
       Logout
-    </RouterLink>
+    </button>
   </div>
 </template>
 
 <script>
+//import { useRouter } from 'vue-router'
+//const router = useRouter()
+
 export default {
   name: 'Sidebar',
   props: {
@@ -105,12 +121,22 @@ export default {
 
     handleMenuClick(tipo) {
       if (tipo === 'formulario') {
-        this.$emit('abrirFormulario')
+        this.$router.push('/formulario-tecnico')
+      } else if (tipo === 'abastecimento') {
+        this.$router.push('/abastecimento')
       } else if (tipo === 'principal') {
-        this.toggleSidebar()
-        this.$emit('abrirPrincipal')
+        this.$router.push({ name: 'dashboard' })
+      } else if (tipo === 'viaturas') {
+        this.$router.push({ name: 'viaturas' })
+      } else if (tipo === 'relatorios') {
+        this.$router.push({ name: 'relatorios' })
+      } else if (tipo === 'Login') {
+        this.$router.push({name: 'Login'})
+      } else if (tipo === 'tecnicos') {
+        this.$router.push({name: 'tecnicos'})
       }
     },
+
     checkMobile() {
       const wasMobile = this.isMobile
       this.isMobile = window.innerWidth <= 768
@@ -286,6 +312,8 @@ export default {
   gap: 8px;
   transition: all 0.3s ease;
   white-space: nowrap;
+  width: 170px;
+  justify-content: center;
 }
 
 .menu:hover {
@@ -304,5 +332,8 @@ export default {
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
 }
 </style>
