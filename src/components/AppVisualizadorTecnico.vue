@@ -51,10 +51,16 @@ defineExpose({
 
 function refinarPalavra(palavra) {
   if (!palavra) return ''
+  const mapa = {
+    'EM_CAMPO': 'Em campo',
+    'DISPONIVEL': 'Disponível',
+    'DESLIGADO': 'Desligado'
+  }
+  if (mapa[palavra]) return mapa[palavra]
+
   palavra = palavra.toLowerCase()
   return palavra[0].toUpperCase() + palavra.substring(1)
 }
-
 const registrosFiltrados = computed(() => {
   return registros.value.filter((r) => {
     const encontrarBusca =

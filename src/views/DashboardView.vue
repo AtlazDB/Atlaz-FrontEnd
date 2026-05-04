@@ -71,7 +71,7 @@
 
                 <div>
                   <p class="font-black text-slate-800 text-sm">{{ atividade.prefixoViatura }} • {{ atividade.nomeTecnico }}</p>
-                  <p class="text-xs text-slate-500">{{ atividade.descricao }}</p>
+                  <p class="text-xs text-slate-500">{{ atividade.tipo === 'DESLOCAMENTO' ? `S. José dos Campos → ${atividade.descricao}` : atividade.descricao }}</p>
                 </div>
               </div>
 
@@ -105,8 +105,8 @@ const loading = ref(true);
 onMounted(async () => {
   try {
     loading.value = true;
-    const response = await dashboardService.getResumoReal();
-    resumoDados.value = response.data.data;
+    const response = await dashboardService.getResumoReal()
+    resumoDados.value = response.data.data
   } catch (error) {
     console.error("Erro ao carregar o dashboard:", error);
   } finally {

@@ -118,17 +118,21 @@
         <input
           type="text"
           class="campo-input"
-          v-model="HorarioSaida"
-        >
+          :value="HorarioSaida"
+          @input="mascaraHora($event, 'HorarioSaida')"
+          placeholder="HH:MM"
+        />
       </div>
 
         <div class="campo-data">
         <label class="campo-label">Data Saída</label>
        <input
-        type="text"
-        class="campo-input"
-        v-model="dataSaida"
-        placeholder="DD/MM/YYYY">
+          type="text"
+          class="campo-input"
+          :value="dataSaida"
+          @input="mascaraData($event, 'dataSaida')"
+          placeholder="DD/MM/YYYY"
+        />
         </div>
 
           <div class="botao-enviar">
@@ -153,11 +157,13 @@
         <h3>Chegada</h3>
       <div class="kmChegada">
         <label class="campo-label">Chegada(KM)</label>
-        <input
+       <input
           type="text"
           class="campo-input"
-          v-model="ChegadaKM"
-        >
+          :value="ChegadaKM"
+          @input="mascaraKM"
+          placeholder="Ex: 45.230"
+        />
       </div>
 
       <div class="Horario-Chegada">
@@ -165,17 +171,22 @@
         <input
           type="text"
           class="campo-input"
-          v-model="HorarioChegada"
-        >
+          :value="HorarioChegada"
+          @input="mascaraHora($event, 'HorarioChegada')"
+          placeholder="HH:MM"
+        />
       </div>
 
       <div class="Data-chegada">
        <div class="campo-data">
         <label class="campo-label">Data Chegada</label>
-        <input type="text"
+        <input
+          type="text"
           class="campo-input"
-          v-model="dataChegada"
-          placeholder="DD/MM/YYYY">
+          :value="dataChegada"
+          @input="mascaraData($event, 'dataChegada')"
+          placeholder="DD/MM/YYYY"
+        />
        </div>
     </div>
            <div class="botao-enviar">
@@ -232,9 +243,9 @@ export default {
 
       SaidaKM: "",
       ChegadaKM: "",
-      HorarioSaida: "",
+      HorarioSaida: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       HorarioChegada: "",
-      dataSaida: "",
+      dataSaida: new Date().toLocaleDateString('pt-BR'),
       dataChegada: "",
 
       Litros: "",
@@ -287,6 +298,32 @@ computed: {
     }
   },
   methods: {
+    mascaraKM(event) {
+      let valor = event.target.value.replace(/\D/g, '')
+      if (valor.length > 10) valor = valor.slice(0, 10)
+      // adiciona ponto a cada 3 dígitos da direita
+      valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      event.target.value = valor
+      // salva só o número no data
+      this.ChegadaKM = valor.replace(/\./g, '')
+    },
+
+    mascaraHora(event, campo) {
+      let valor = event.target.value.replace(/\D/g, '')
+      if (valor.length > 4) valor = valor.slice(0, 4)
+      if (valor.length >= 3) valor = valor.slice(0, 2) + ':' + valor.slice(2)
+      event.target.value = valor
+      this[campo] = valor
+    },
+
+    mascaraData(event, campo) {
+      let valor = event.target.value.replace(/\D/g, '')
+      if (valor.length > 8) valor = valor.slice(0, 8)
+      if (valor.length >= 5) valor = valor.slice(0, 2) + '/' + valor.slice(2, 4) + '/' + valor.slice(4)
+      else if (valor.length >= 3) valor = valor.slice(0, 2) + '/' + valor.slice(2)
+      event.target.value = valor
+      this[campo] = valor
+    },
 
     async salvarSaida() {
       if(!this.viaturaSelecionada){
