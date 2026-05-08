@@ -1,13 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import FormularioTecnico from '../views/FormularioTecnico.vue'
-import HomeAdministrador from '../views/HomeAdministrador.vue'
+import TechnicianForm from '../views/TechnicianForm.vue'
+import HomeAdmin from '../views/HomeAdmin.vue'
 import Login from '@/views/Login.vue'
-import TelaPrincipal from '../views/TelaPrincipal.vue'
-import AppVisualizadorViatura from '../components/AppVisualizadorViatura.vue'
-import TelaViatura from '@/views/TelaViatura.vue'
+import VehiclePage from '@/views/VehiclePage.vue'
 import DashboardView from '../views/DashboardView.vue'
-import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
+import AdminReports from '../views/AdminReports.vue'
 
 const routes = [
   {
@@ -18,14 +16,14 @@ const routes = [
   {
     path: '/formulario-tecnico',
     name: 'formulario',
-    component: FormularioTecnico
+    component: TechnicianForm
   },
   {
     path: '/home-administrador',
-    component: HomeAdministrador,
+    component: HomeAdmin,
     children: [
       {
-        path: '', 
+        path: '',
         name: 'dashboard',
         component: DashboardView
       }
@@ -34,12 +32,12 @@ const routes = [
   {
     path: '/tabela-viaturas',
     name: 'viaturas',
-    component: TelaViatura
+    component: VehiclePage
   },
     {
     path: '/relatorios',
     name: 'relatorios',
-    component: RelatoriosAdmin
+    component: AdminReports
   }
 ]
 

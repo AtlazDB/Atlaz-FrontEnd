@@ -1,6 +1,6 @@
 <script setup>
 import Sidebar from '@/views/Sidebar.vue'
-import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
+import AppVehicleVisualizer from '@/components/AppVehicleVisualizer.vue'
 import { vehicleService } from '@/services/vehicleService.js'
 
 import { ref } from 'vue'

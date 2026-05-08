@@ -244,7 +244,7 @@
 <script>
 import Sidebar from "@/views/Sidebar.vue";
 import { vehicleService } from '@/services/vehicleService.js'
-import { ordemDeServicoService } from '@/services/ordemDeServico.js'
+import { ordemDeServicoService } from '@/services/serviceOrder.js'
 
 export default {
    components: {
@@ -448,7 +448,7 @@ computed: {
       return `${ano}-${mes}-${dia}T${horaFormatada}:00`;
     },
 
-    exibirMensagem(mensagem, tipo) {
+    exibirMensagem(mensagem) {
       alert(mensagem);
     },
 

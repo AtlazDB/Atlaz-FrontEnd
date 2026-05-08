@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import AppVisualizador from '../components/AppVisualizador.vue'
-import AppSeletorMes from '../components/AppSeletorMes.vue'
+import AppVisualizador from '../components/AppVisualizer.vue'
+import AppSeletorMes from '../components/AppMonthSelector.vue'
 import Sidebar from '../views/Sidebar.vue'
 
 const filtro = ref(null)

@@ -16,7 +16,7 @@ export const userService = {
     return response.data;
   },
 
-  async atualizar(id, user) {
+  async update(id, user) {
     const response = await api.put(`/users/${id}`, user);
     return response.data;
   },

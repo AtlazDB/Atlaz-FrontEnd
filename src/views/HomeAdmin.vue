@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import Sidebar from '../views/Sidebar.vue' 
+import Sidebar from '../views/Sidebar.vue'
 
 const acaoFormulario = () => {
   console.log('Abrir formulário')
