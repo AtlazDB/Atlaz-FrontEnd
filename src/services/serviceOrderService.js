@@ -1,6 +1,6 @@
 import api from './api';
 
-export const ordemDeServicoService = {
+export const serviceOrderService = {
   async salvar(dados) {
     const response = await api.post('/service-orders', dados);
     return response.data;

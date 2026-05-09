@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue'
 import Sidebar from '../views/Sidebar.vue'
 
 const acaoFormulario = () => {
@@ -10,7 +9,7 @@ const acaoFormulario = () => {
 <template>
   <div class="tela-admin">
     <Sidebar
-      nome="William Hasan"
+      nome="ADMIN"
       cargo="Administrador"
       userType="admin"
       @abrirFormulario="acaoFormulario"

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { refuelingService } from '@/services/refuelingService.js'
-import { ordemDeServicoService } from '@/services/serviceOrder.js'
+import { ordemDeServicoService } from '@/services/serviceOrderService.js'
 
 const records = ref([])
 const isLoading = ref(true)

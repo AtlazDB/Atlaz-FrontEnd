@@ -13,7 +13,7 @@ const acaoFormulario = () => {
 <template>
   <div class="tela">
     <Sidebar
-      nome="William Hasan"
+      nome="ADMIN"
       cargo="Administrador"
       userType="admin"
       @abrirFormulario="acaoFormulario"

@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ordemDeServicoService } from '@/services/serviceOrder.js'
+import { serviceOrderService } from '@/services/serviceOrderService.js'
 
 const emit = defineEmits(['date_selected'])
 
@@ -25,7 +25,7 @@ const monthNames = [
 
 onMounted(async () => {
   try {
-    const serviceOrders = await ordemDeServicoService.list()
+    const serviceOrders = await serviceOrderService.list()
 
     const seen = new Set()
     const items = []

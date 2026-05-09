@@ -36,26 +36,37 @@
 
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import api from '@/services/api.js'
 
 const router = useRouter()
 const email = ref('')
 const senha = ref('')
 
-const usuarios = [
-  { email: 'tecnico@ipem.br', senha: '123', rota: '/formulario-tecnico' },
-  { email: 'admin@ipem.br',   senha: '123', rota: '/home-administrador' },
-]
 
-function handleLogin() {
-  const usuario = usuarios.find(
-    u => u.email === email.value && u.senha === senha.value
-  )
-  if (usuario) {
-    router.push(usuario.rota)
-  } else {
+async function handleLogin() {
+  try {
+    const response = await api.post('/auth/login', {
+      email: email.value,
+      password: senha.value
+    })
+    console.log('Login response:', response.data)
+    const { id, profile, name } = response.data
+
+    console.log('Salvando userId:', id)
+    localStorage.setItem('userId', id)
+    localStorage.setItem('userProfile', profile)
+    localStorage.setItem('userName', name)
+
+    if (profile === 'ADMIN') {
+      router.push('/home-administrador')
+    } else {
+      router.push('/formulario-tecnico')
+    }
+  } catch (e) {
     alert('Credenciais inválidas')
   }
 }
+
 </script>
 
 <style scoped>

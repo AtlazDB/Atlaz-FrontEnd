@@ -37,6 +37,11 @@
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Ocorrência</span>
     </button>
 
+     <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('abastecimento')">
+      <span class="icon">⛽</span>
+      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Abastecimento</span>
+    </button>
+
     <button
       v-if="userType === 'admin'"
       class="menu menu-principal"
@@ -48,7 +53,10 @@
     <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
       🚙 Viaturas
     </button>
-        <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
+    <button @click="handleMenuClick('tecnicos')" v-if="userType === 'admin'" class="menu">
+      👨‍🔧 Tecnicos
+    </button>
+    <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
       📈 Relatorios
     </button>
     <button @click="handleMenuClick('Login')" class="logout">
@@ -113,17 +121,22 @@ export default {
 
     handleMenuClick(tipo) {
       if (tipo === 'formulario') {
-        this.$emit('abrirFormulario')
+        this.$router.push('/formulario-tecnico')
+      } else if (tipo === 'abastecimento') {
+        this.$router.push('/abastecimento')
       } else if (tipo === 'principal') {
         this.$router.push({ name: 'dashboard' })
       } else if (tipo === 'viaturas') {
         this.$router.push({ name: 'viaturas' })
       } else if (tipo === 'relatorios') {
-        this.$router.push({ name: 'relatorios' })  
+        this.$router.push({ name: 'relatorios' })
       } else if (tipo === 'Login') {
         this.$router.push({name: 'Login'})
+      } else if (tipo === 'tecnicos') {
+        this.$router.push({name: 'tecnicos'})
       }
     },
+
     checkMobile() {
       const wasMobile = this.isMobile
       this.isMobile = window.innerWidth <= 768
@@ -299,6 +312,8 @@ export default {
   gap: 8px;
   transition: all 0.3s ease;
   white-space: nowrap;
+  width: 170px;
+  justify-content: center;
 }
 
 .menu:hover {
