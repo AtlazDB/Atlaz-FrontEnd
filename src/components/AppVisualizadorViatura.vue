@@ -14,10 +14,14 @@ const combustivel_filtro = ref('')
 
 const emit = defineEmits(['editar'])
 
+const showInfo = ref(false)
+const viaturaInfo = ref(null)
+
 async function carregarTodos() {
   carregando.value = true
   try {
-    registros.value = await viaturaService.listar()
+   registros.value = await viaturaService.listar()
+
     /*Retorna uma lista JSON da seguinte forma:
     {
       "id": 0,
@@ -35,7 +39,7 @@ async function carregarTodos() {
   } finally {
     carregando.value = false
   }
-}
+};
 
 function refinarPalavra(palavra) {
   switch (palavra) {
@@ -83,7 +87,15 @@ const registrosFiltrados = computed(() => {
     )
   })
 })
+function openInfo(viatura) {
+  viaturaInfo.value = viatura
+  showInfo.value = true
+}
 
+function closeInfo() {
+  showInfo.value = false
+  viaturaInfo.value = null
+}
 function edit(viatura) {
   emit('editar', viatura, 'edicao')
 }
@@ -144,26 +156,25 @@ defineExpose({ carregarTodos })
         <tr>
           <th>Prefixo</th>
           <th>Modelo</th>
-          <th>Tipo</th>
-          <th>Combustível</th>
-          <th>Quilometragem</th>
           <th>Status</th>
-          <th>Editar</th>
+          <th>Mais Informações</th>
+          <th>Avisos</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="reg in registrosFiltrados" :key="reg.id">
           <td>{{ reg.prefix }}</td>
           <td>{{ reg.brand }} {{ reg.model }}</td>
-          <td>{{ refinarPalavra(reg.type) }}</td>
-          <td>{{ refinarPalavra(reg.fuelType) }}</td>
-          <td>{{ reg.km }}</td>
+
           <td>
-            <div :class="reg.status">
-              {{ refinarPalavra(reg.status) }}
-            </div>
+             <span class="status-color" :class="reg.status"></span>
           </td>
+
           <td>
+            <span class="more-info-btn" @click="openInfo(reg)">•••</span>
+          </td>
+
+        <!--<td>
             <div class="editar-btn">
               <svg
                 @click="edit(reg)"
@@ -179,27 +190,53 @@ defineExpose({ carregarTodos })
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-                />
+                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"  
+                /> 
               </svg>
             </div>
-          </td>
+          </td>-->
         </tr>
       </tbody>
     </table>
   </div>
+
+  <div v-if="showInfo" class="overlay" @click="closeInfo">
+    <div class="modal-info" @click.stop>
+      <h3 class="modal-title">Informações da Viatura</h3>
+
+      <div class="info-line">
+        <span class="info-label">Prefixo</span>
+        <span class="info-value">{{ viaturaInfo.prefix }}</span>
+      </div>
+      <div class="info-line">
+        <span class="info-label">Tipo</span>
+        <span class="info-value">{{ refinarPalavra(viaturaInfo.type) }}</span>
+      </div>
+      <div class="info-line">
+        <span class="info-label">Combustível</span>
+        <span class="info-value">{{ refinarPalavra(viaturaInfo.fuelType) }}</span>
+      </div>
+      <div class="info-line">
+        <span class="info-label">Quilometragem</span>
+        <span class="info-value">{{ viaturaInfo.km }} km</span>
+      </div>
+       <button class="btn-edit" @click="() => { edit(viaturaInfo); closeInfo() }">Editar</button>
+      <button class="btn-close" @click="closeInfo">X</button>
+      </div>
+    </div>
 </template>
 
 <style scoped>
 @import '@/assets/style.css';
 
 .container {
-  width: 100%;
+  width: 80%;
   background-color: #ffffff;
   padding: 5px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
+ 
 }
 .searchHeader {
   display: flex;
@@ -233,8 +270,9 @@ select {
   margin: 0 10px 0 10px;
 }
 table {
-  width: 90%;
-  align-self: center;
+  width: 100%;
+
+  margin: 0 auto;
 }
 th,
 td {
@@ -251,36 +289,105 @@ th:nth-child(5) {
   width: max(200px);
 }
 /*Tags de status*/
-td:nth-child(6) {
-  width: max(100px);
+.status-color{
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
 }
-td:nth-child(6) div {
-  border-radius: 10px;
-  width: 100px;
-}
+
 .DISPONIVEL {
-  background-color: #ebf9f1;
-  color: #1f9254;
+ background-color: #abf5cb;
+  color: #0ae972;
 }
-.EM_USO,
-.MANUTENCAO {
-  background-color: #fef2e5;
+.EM_USO {
+background-color: #ffc78a;
+  color: #cd6200;
+}
+
+.MANUTENCAO{
+  background-color: #fc887f;
   color: #cd6200;
 }
 .DESATIVADA {
-  background-color: #fbe7e8;
+  background-color: #fa6d74;
   color: #a30d11;
 }
+
 /*Ícone de editar*/
-td:nth-child(7) {
+.more-info-btn {
   color: #624de3;
   padding-top: 2px;
   width: 100px;
+  cursor: pointer;
 }
-.editar-btn {
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height:100%;
+  background: rgba(0,0,0,0.4);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 999;
+}
+.modal-info{
+  background: white;
+  border-radius: 12% ;
+  padding: 40px;
+  width: 400px;
+  position: relative;
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-title{
+  color:#003366;
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.info-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.info-value {
+  color: #222;
+  font-size: 14px;
+}
+
+.btn-edit {
+  width: 100%;
+  padding: 14px;
+  background-color: #003366;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 15px;
+}
+
+.btn-close{
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 18px;
 }
 svg {
   cursor: pointer;
