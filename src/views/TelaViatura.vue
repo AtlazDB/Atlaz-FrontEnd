@@ -230,7 +230,6 @@ async function editarViatura(viatura) {
             <option value="DISPONIVEL">Disponível</option>
             <option value="EM_USO">Em uso</option>
             <option value="MANUTENCAO">Manutenção</option>
-            <option value="DESATIVADA">Desativada</option>
           </select>
         </div>
       </div>
