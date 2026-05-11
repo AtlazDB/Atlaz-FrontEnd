@@ -6,7 +6,7 @@ import { modelService } from '@/services/modelService.js'
 
 
 import { ref, onMounted } from 'vue'
-
+  
 const showForm = ref(false)
 
 const vehicle = ref({
@@ -149,9 +149,9 @@ async function editarViatura(viatura) {
     <Sidebar nome="ADMIN" cargo="Administrador" userType="admin" @openForm="actionForm" />
     <router-view />
     <div class="componente">
-      <h1 class="titulo">Viaturas cadastradas</h1>
+      <h1 class="titulo">Viaturas</h1>
       <div class="visualizadorViatura">
-        <button @click="openForm()">Cadastrar nova viatura</button>
+        <button class="btn-cadastrar" @click="openForm()">Cadastrar nova viatura</button>
       <AppVisualizadorViatura
       ref="visualizador"
       @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
@@ -244,9 +244,16 @@ async function editarViatura(viatura) {
 @import '@/assets/style.css';
 
 .visualizadorViatura {
-  width: max(100%);
-  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
+
+.btn-cadastrar {
+  align-self: flex-start;
+  margin-left: 5%;}
+
 button {
   background-color: #7aa6cc;
   color: white;
