@@ -206,6 +206,8 @@
 </template>
 
 <script>
+import { serviceOrderService } from "@/services/serviceOrderService";
+import { vehicleService } from "@/services/vehicleService";
 import Sidebar from "@/views/Sidebar.vue";
 
 export default {
@@ -277,7 +279,7 @@ computed: {
   async mounted() {
      console.log('userId no localStorage:', localStorage.getItem('userId'))
     await this.carregarViaturas();
-    this.tiposOcorrencia = await ordemDeServicoService.listaTipos();
+    this.tiposOcorrencia = await serviceOrderService.listaTipos();
     await this.carregarSaidaPendente();
   },
   watch: {
@@ -287,7 +289,7 @@ computed: {
         return
       }
       try {
-        const viatura = await viaturaService.buscarPorId(novoId)
+        const viatura = await vehicleService.buscarPorId(novoId)
         this.kmAtualViatura = viatura.km
         console.log('vehicleId:', this.viaturaSelecionada, typeof this.viaturaSelecionada)
       } catch (e) {
@@ -377,7 +379,7 @@ computed: {
       }
 
       console.log('Payload saída:', dadosOs)
-      const os = await ordemDeServicoService.salvar(dadosOs)
+      const os = await serviceOrderService.salvar(dadosOs)
       this.osId = os.id
 
       } catch (error) {
@@ -388,7 +390,7 @@ computed: {
 
     async carregarViaturas() {
       try {
-        const lista = await viaturaService.listar()
+        const lista = await serviceOrderService.listar()
         this.viaturas = lista.filter(v => v.status === 'DISPONIVEL')
       } catch (error) {
         console.error('Erro ao carregar viaturas:', error)
@@ -437,7 +439,7 @@ computed: {
       returnDate: this.converterDataHora(this.dataChegada, this.HorarioChegada)
     };
 
-    await serviceOrder. (this.osId, dadosAtualizacao)
+    await serviceOrderService(this.osId, dadosAtualizacao)
     this.osId = null;
     this.resetarFormulario();
     } catch (error) {
@@ -533,7 +535,7 @@ computed: {
     async carregarSaidaPendente() {
       try {
         const userId = parseInt(localStorage.getItem('userId'))
-        const ordens = await ordemDeServicoService.listar()
+        const ordens = await serviceOrderService.listar()
         const pendente = ordens.find(
           os => os.user.id === userId && os.returnDate === null
         )

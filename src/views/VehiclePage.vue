@@ -4,6 +4,7 @@ import { modelService } from '@/services/modelService.js'
 
 
 import { ref, onMounted } from 'vue'
+import { vehicleService } from '@/services/vehicleService'
 
 const showForm = ref(false)
 
@@ -134,12 +135,8 @@ async function criarViatura(viatura) {
 
 async function editarViatura(viatura) {
   try {
-<<<<<<< HEAD:src/views/VehiclePage.vue
-    await vehicleService.atualizar(viatura.id, viatura)
-=======
     console.log('Enviando para edição: ', viatura)
-    await viaturaService.atualizar(viatura.id, viatura)
->>>>>>> origin/dev:src/views/TelaViatura.vue
+    await vehicleService.atualizar(viatura.id, viatura)
   } catch (e) {
     console.log(e)
   }

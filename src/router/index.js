@@ -2,26 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import TechnicianForm from '../views/TechnicianForm.vue'
 import HomeAdmin from '../views/HomeAdmin.vue'
-import Login from '@/views/Login.vue'
-<<<<<<< HEAD
+import LoginUser from '@/views/LoginUser.vue'
 import VehiclePage from '@/views/VehiclePage.vue'
 import DashboardView from '../views/DashboardView.vue'
 import AdminReports from '../views/AdminReports.vue'
-=======
-
-
-import TelaViatura from '@/views/TelaViatura.vue'
-import DashboardView from '../views/DashboardView.vue'
-import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
-import RegisterTechnical from '@/views/RegisterTechnical.vue'
-
->>>>>>> origin/dev
+import RegisterTechnical from '../views/RegisterTechnical.vue'
 
 const routes = [
   {
     path: '/',
     name: 'Login',
-    component: Login
+    component: LoginUser
   },
   {
     path: '/formulario-tecnico',
@@ -42,7 +33,7 @@ const routes = [
   {
     path: '/abastecimento',
     name: 'abastecimento',
-    component: () => import('@/views/TelaAbastecimento.vue')
+    component: () => import('@/views/RefuellingScreen.vue')
   },
   {
     path: '/tabela-viaturas',
@@ -52,16 +43,12 @@ const routes = [
   {
     path: '/relatorios',
     name: 'relatorios',
-<<<<<<< HEAD
     component: AdminReports
-=======
-    component: RelatoriosAdmin
   },
   {
   path: '/tecnicos',
   name: 'tecnicos',
   component: RegisterTechnical
->>>>>>> origin/dev
   }
 ]
 
