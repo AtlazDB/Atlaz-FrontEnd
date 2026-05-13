@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { refuelingService } from '@/services/refuelingService.js'
-import { ordemDeServicoService } from '@/services/serviceOrderService.js'
+import { serviceOrderService } from '@/services/serviceOrderService.js'
 
 const records = ref([])
 const isLoading = ref(true)
@@ -26,14 +26,14 @@ async function loadAll() {
 
   try {
     const [serviceOrders, refuelings] = await Promise.all([
-      ordemDeServicoService.list(),
+      serviceOrderService.list(),
       refuelingService.list(),
     ])
 
     records.value = serviceOrders.map((serviceOrder) => {
       const refueling = refuelings.find(
         (refuelingItem) =>
-          refuelingItem.ordemServico?.id == serviceOrder.id,
+          refuelingItem.serviceOrder?.id == serviceOrder.id,
       )
 
       return { serviceOrder, refueling }
@@ -86,7 +86,7 @@ watch(
 
     try {
       const [serviceOrders, refuelings] = await Promise.all([
-        ordemDeServicoService.listByMonth(
+        serviceOrderService.listByMonth(
           filter.month + 1,
           filter.year,
         ),
@@ -100,7 +100,7 @@ watch(
       records.value = serviceOrders.map((serviceOrder) => {
         const refueling = refuelings.find(
           (refuelingItem) =>
-            refuelingItem.ordemServico?.id === serviceOrder.id,
+            refuelingItem.serviceOrder?.id === serviceOrder.id,
         )
 
         return { serviceOrder, refueling }
@@ -119,7 +119,7 @@ watch(
     <button
       v-if="filteredRecords.length > 0"
       @click="
-        ordemDeServicoService.exportCsv(
+        serviceOrderService.exportCsv(
           props.filter?.month,
           props.filter?.year,
         )

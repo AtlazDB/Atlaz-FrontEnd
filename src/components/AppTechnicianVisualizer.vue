@@ -1,5 +1,5 @@
 <script setup>
-import { userService } from '@/services/userServices'
+import { userService } from '@/services/userService'
 import { onMounted, ref, computed } from 'vue'
 
 const carregando = ref(false)

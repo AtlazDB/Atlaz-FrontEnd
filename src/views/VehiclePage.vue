@@ -44,7 +44,7 @@ async function cadastrarModelo() {
       nameModel: novoModeloNome.value,
       nameBrand: novoModeloMarca.value,
     })
-    modelos.value = await modelService.listar()
+    modelos.value = await modelService.list()
     showNovoModelo.value = false
     novoModeloNome.value = ''
     novoModeloMarca.value = ''
@@ -130,7 +130,7 @@ async function criarViatura(viatura) {
 }
 
  onMounted(async () => {
-  modelos.value = await modelService.listar()
+  modelos.value = await modelService.list()
   })
 
 async function editarViatura(viatura) {

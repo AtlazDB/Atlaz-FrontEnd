@@ -1,7 +1,7 @@
 <script setup>
 import Sidebar from '@/views/Sidebar.vue'
 import AppTechnicianVisualizer from '@/components/AppTechnicianVisualizer.vue'
-import { usuarioService as userServices } from '@/services/userServices.js'
+import { userService } from '@/services/userService.js'
 import { ref } from 'vue'
 
 const showForm = ref(false)
@@ -74,9 +74,9 @@ async function submitForm() {
 
   try {
     if (tipoAlteracao.value === 'cadastro') {
-      await userServices.criar(payload)
+      await userService.criar(payload)
     } else {
-      await userServices.atualizar(id.value, payload)
+      await userService.atualizar(id.value, payload)
     }
     closeForm()
     await visualizador.value.carregarTodos()

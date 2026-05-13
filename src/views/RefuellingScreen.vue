@@ -80,8 +80,8 @@
 
 <script>
 import Sidebar from "@/views/Sidebar.vue";
-import { abastecimentoService } from "@/services/abastecimentoService";
-import { viaturaService } from "@/services/viaturaService";
+import { refuelingService } from "@/services/refuelingService";
+import { vehicleService } from "@/services/vehicleService";
 
 export default {
   name: "TelaAbastecimento",
@@ -109,7 +109,7 @@ export default {
     async carregarRegistros() {
       try {
         const userId = parseInt(localStorage.getItem('userId'))
-        const todos = await abastecimentoService.listar()
+        const todos = await refuelingService.list()
         this.registros = todos.filter(r => r.user?.id === userId)
       } catch (error) {
         console.error("Erro ao carregar abastecimentos:", error)
@@ -118,7 +118,7 @@ export default {
 
     async carregarViaturas() {
       try {
-        this.viaturas = await viaturaService.listar()
+        this.viaturas = await vehicleService.list()
       } catch (error) {
         console.error("Erro ao carregar viaturas:", error)
       }
@@ -144,7 +144,7 @@ export default {
           serviceOrderId: null
         }
 
-        await abastecimentoService.criar(payload)
+        await refuelingService.criar(payload)
         await this.carregarRegistros()
         this.mostrarFormulario = false
         this.form = { vehicleId: '', dateTimeInput: '', receiptNumber: '', liters: '', totalValue: '' }
