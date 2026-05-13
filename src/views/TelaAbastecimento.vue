@@ -183,9 +183,9 @@ export default {
 
 h1 {
   color: #003366;
-  padding-left: 10px;
-  margin-bottom: 20px;
-  text-align: left;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  font-weight: 600;
 }
 
 

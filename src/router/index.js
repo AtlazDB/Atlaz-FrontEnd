@@ -9,6 +9,7 @@ import TelaViatura from '@/views/TelaViatura.vue'
 import DashboardView from '../views/DashboardView.vue'
 import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
 import RegisterTechnical from '@/views/RegisterTechnical.vue'
+import HistoricoOcorrencias from '@/views/HistoricoOcorrencias.vue'
 
 
 const routes = [
@@ -52,7 +53,12 @@ const routes = [
   path: '/tecnicos',
   name: 'tecnicos',
   component: RegisterTechnical
-  }
+  },
+  {
+    path:'/historico-de-ocorrecias',
+    name:'ocorrecias',
+    component: HistoricoOcorrencias
+  },
 ]
 
 const router = createRouter({

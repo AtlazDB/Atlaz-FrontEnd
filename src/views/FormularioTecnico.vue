@@ -606,7 +606,6 @@ computed: {
   gap: 30px;
 }
 
-
 .card-saida,
 .card-chegada{
   background: white;
