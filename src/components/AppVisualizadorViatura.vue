@@ -17,6 +17,9 @@ const emit = defineEmits(['editar'])
 const showInfo = ref(false)
 const viaturaInfo = ref(null)
 
+const showAviso = ref(false)
+const avisoInfo = ref(null)
+
 async function carregarTodos() {
   carregando.value = true
   try {
@@ -100,6 +103,20 @@ function edit(viatura) {
   emit('editar', viatura, 'edicao')
 }
 
+function precisaManutencao(km) {
+  return km >= 10000
+}
+
+function openAviso(viatura) {
+  avisoInfo.value = viatura
+  showAviso.value = true
+}
+
+function closeAviso() {
+  showAviso.value = false
+  avisoInfo.value = null
+}
+
 onMounted(() => carregarTodos())
 defineExpose({ carregarTodos })
 </script>
@@ -174,6 +191,16 @@ defineExpose({ carregarTodos })
             <span class="more-info-btn" @click="openInfo(reg)">•••</span>
           </td>
 
+          <td>
+            <div
+              class="warning-btn"
+              :class="{ ativo: precisaManutencao(reg.km) }"
+              @click="openAviso(reg)"
+            >
+              !
+            </div>
+          </td>
+
         <!--<td>
             <div class="editar-btn">
               <svg
@@ -190,8 +217,8 @@ defineExpose({ carregarTodos })
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"  
-                /> 
+                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+                />
               </svg>
             </div>
           </td>-->
@@ -224,6 +251,28 @@ defineExpose({ carregarTodos })
       <button class="btn-close" @click="closeInfo">X</button>
       </div>
     </div>
+
+    <div v-if="showAviso" class="overlay" @click="closeAviso">
+      <div class="modal-info" @click.stop>
+        <h3 class="modal-title">Avisos da Viatura</h3>
+
+        <div v-if="precisaManutencao(avisoInfo.km)" class="info-line">
+          <span class="info-label">Manutenção preventiva</span>
+          <span class="info-value">
+            Viatura atingiu {{ avisoInfo.km }} km.
+            Necessária manutenção.
+          </span>
+        </div>
+
+        <div v-else class="info-line">
+          <span class="info-value">
+            Nenhum aviso disponível.
+          </span>
+        </div>
+
+        <button class="btn-close" @click="closeAviso">X</button>
+      </div>
+    </div>
 </template>
 
 <style scoped>
@@ -236,7 +285,7 @@ defineExpose({ carregarTodos })
   border-radius: 10px;
   display: flex;
   flex-direction: column;
- 
+
 }
 .searchHeader {
   display: flex;
@@ -391,5 +440,28 @@ background-color: #ffc78a;
 }
 svg {
   cursor: pointer;
+}
+
+.warning-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.warning-btn:hover {
+  transform: scale(1.1);
+}
+
+.warning-btn.ativo {
+  background-color: #ff0000;
 }
 </style>

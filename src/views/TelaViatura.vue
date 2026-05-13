@@ -1,4 +1,4 @@
-<script setup>
+run<script setup>
 import Sidebar from '@/views/Sidebar.vue'
 import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
 import { viaturaService } from '@/services/viaturaService.js'
@@ -6,7 +6,7 @@ import { modelService } from '@/services/modelService.js'
 
 
 import { ref, onMounted } from 'vue'
-  
+
 const showForm = ref(false)
 
 const vehicle = ref({
