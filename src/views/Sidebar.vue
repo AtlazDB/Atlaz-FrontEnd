@@ -86,9 +86,6 @@
 </template>
 
 <script>
-//import { useRouter } from 'vue-router'
-//const router = useRouter()
-
 export default {
   name: 'Sidebar',
   props: {
@@ -318,7 +315,9 @@ export default {
   align-items: center;
   gap: 8px;
   transition: all 0.3s ease;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  font-size: 13px;
   width: 170px;
   justify-content: center;
 }
