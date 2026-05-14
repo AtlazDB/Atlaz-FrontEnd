@@ -42,6 +42,11 @@
       <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Abastecimento</span>
     </button>
 
+    <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('historico')">
+      <span class="icon">📈</span>
+      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Historico de Ocorrencias</span>
+    </button>
+
     <button
       v-if="userType === 'admin'"
       class="menu menu-principal"
@@ -134,6 +139,8 @@ export default {
         this.$router.push({name: 'Login'})
       } else if (tipo === 'tecnicos') {
         this.$router.push({name: 'tecnicos'})
+      } else if (tipo === 'historico') {
+        this.$router.push({name: 'ocorrecias'})
       }
     },
 
@@ -155,7 +162,7 @@ export default {
     this.checkMobile()
     window.addEventListener('resize', this.checkMobile)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('resize', this.checkMobile)
     document.body.style.overflow = ''
   },

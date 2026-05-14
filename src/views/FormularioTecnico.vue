@@ -465,7 +465,7 @@ computed: {
       return `${ano}-${mes}-${dia}T${horaFormatada}:00`;
     },
 
-    exibirMensagem(mensagem, tipo) {
+    exibirMensagem(mensagem) {
       alert(mensagem);
     },
 
