@@ -6,7 +6,7 @@ import { modelService } from '@/services/modelService.js'
 
 
 import { ref, onMounted } from 'vue'
-  
+
 const showForm = ref(false)
 
 const vehicle = ref({
@@ -151,10 +151,11 @@ async function editarViatura(viatura) {
     <div class="componente">
       <h1 class="titulo">Viaturas</h1>
       <div class="visualizadorViatura">
-        <button class="btn-cadastrar" @click="openForm()">Cadastrar nova viatura</button>
+       <!-- <button class="btn-cadastrar" @click="openForm()">Cadastrar nova viatura</button>-->
       <AppVisualizadorViatura
       ref="visualizador"
       @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
+      @abrirModal="openForm()"
       />
         <!-- chama a função com o parâmetro -->
       </div>
@@ -193,15 +194,50 @@ async function editarViatura(viatura) {
           </option>
         </select>
       </div>
-      <button type="button" class="btn-novo-modelo" @click="showNovoModelo = !showNovoModelo">
-        + Cadastrar novo modelo
-      </button>
-      <div v-if="showNovoModelo" class="novo-modelo-form">
+
+    <button
+      type="button"
+      class="btn-novo-modelo"
+      @click="showNovoModelo = !showNovoModelo">
+      + Cadastrar novo modelo
+    </button>
+
+    <div v-if="showNovoModelo" class="novo-modelo-form">
+
+    <div class="campo-modelo">
+      <label>Marca</label>
+      <input
+        type="text"
+        v-model="novoModeloMarca"
+        placeholder="Ex: Chevrolet"
+      />
+    </div>
+
+    <div class="campo-modelo">
+      <label>Modelo</label>
+      <input
+        type="text"
+        v-model="novoModeloNome"
+        placeholder="Ex: Prisma"
+      />
+    </div>
+
+    <button
+      type="button"
+      class="btn-salvar-modelo"
+      @click="cadastrarModelo"
+    >
+      Salvar modelo
+    </button>
+
+  </div>
+</div>
+      <!-- <div v-if="showNovoModelo" class="novo-modelo-form">
         <input type="text" v-model="novoModeloMarca" placeholder="Marca (ex: Chevrolet)" />
         <input type="text" v-model="novoModeloNome" placeholder="Modelo (ex: Prisma)" />
         <button type="button" @click="cadastrarModelo">Salvar</button>
       </div>
-    </div>
+    </div> -->
 
       <div class="campo">
         <label>Tipo de combustível</label>
@@ -250,12 +286,8 @@ async function editarViatura(viatura) {
   width: 100%;
 }
 
-.btn-cadastrar {
-  align-self: flex-start;
-  margin-left: 5%;}
-
 button {
-  background-color: #7aa6cc;
+  background-color: #003366;
   color: white;
   border: none;
   cursor: pointer;
@@ -263,12 +295,33 @@ button {
   border-radius: 7px;
   margin-bottom: 30px;
 }
-button:hover {
-  background-color: #457aad;
+
+.novo-modelo-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-top: 10px;
+  flex-wrap: wrap;
 }
-button:active {
-  transform: scale(0.95);
-  transition-duration: 0.1s;
+
+.campo-modelo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 180px;
+}
+
+.campo-modelo input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #003366;
+  outline: none;
+}
+
+.btn-salvar-modelo {
+  height: 40px;
+  padding: 0 16px;
+  margin-bottom: 0;
 }
 
 .overlay {
@@ -290,7 +343,7 @@ button:active {
   min-height: 520px;
   width: 90%;
   max-width: 700px;
-  background: #f8f9fb;
+  background: #ffffff;
   border-radius: 20px;
   padding: 30px 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -334,7 +387,7 @@ button:active {
 }
 
 .campo input:focus {
-  border-color: #2f12d1;
+  border-color: #003366;
 }
 .campo input.erro,
 .campo select.erro {
@@ -349,7 +402,7 @@ button:active {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #6a5acd;
+  border: 1px solid #003366;
   background: #fff;
   appearance: none;
   outline: none;
@@ -363,14 +416,13 @@ button:active {
   top: 50%;
   transform: translateY(-50%);
   font-size: 12px;
-  color: #6a5acd;
+  color: #003366;
   pointer-events: none;
 }
 
 .btn-enviar {
   margin-top: 20px;
   align-self: center;
-
   background: #003366;
   color: white;
   border: none;

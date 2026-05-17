@@ -2,6 +2,12 @@
 import { onMounted, ref, computed } from 'vue'
 import { viaturaService } from '@/services/viaturaService.js'
 
+
+const disponiveis = computed(() => registros.value.filter(v => v.status === 'DISPONIVEL').length)
+const emUso       = computed(() => registros.value.filter(v => v.status === 'EM_USO').length)
+const manutencao  = computed(() => registros.value.filter(v => v.status === 'MANUTENCAO').length)
+const desativadas = computed(() => registros.value.filter(v => v.status === 'DESATIVADA').length)
+
 const carregando = ref(false)
 
 const registros = ref([])
@@ -105,6 +111,68 @@ defineExpose({ carregarTodos })
 </script>
 
 <template>
+
+  <div class="cards-wrapper">
+
+    <div class="card">
+    <div class="card-icon icon-disponivel">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm-1 14.41-3.71-3.7 1.42-1.42L11 13.59l5.29-5.3 1.42 1.42L11 16.41z"/>
+      </svg>
+    </div>
+
+    <div class="card-info">
+      <span class="card-label">DISPONÍVEIS</span>
+      <span class="card-value card-green">{{ disponiveis }}</span>
+    </div>
+  </div>
+
+   <div class="card">
+    <div class="card-icon icon-emuso">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
+      </svg>
+    </div>
+
+    <div class="card-info">
+      <span class="card-label">EM USO</span>
+      <span class="card-value card-orange">{{ emUso }}</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-icon icon-manutencao">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M22.7 19l-9.1-9.1A6 6 0 0 0 4.5 3.4L8 6.9 6.9 8 3.4 4.5A6 6 0 0 0 9.9 13.6l9.1 9.1a1 1 0 0 0 1.4 0l2.3-2.3a1 1 0 0 0 0-1.4z"/>
+      </svg>
+    </div>
+
+    <div class="card-info">
+      <span class="card-label">MANUTENÇÃO</span>
+      <span class="card-value card-red">{{ manutencao }}</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-icon icon-desativada">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zM4 12a8 8 0 0 1 11.29-7.29L4.71 16.29A7.96 7.96 0 0 1 4 12zm8 8a7.96 7.96 0 0 1-4.29-1.71L19.29 7a8 8 0 0 1-7.29 11z"/>
+      </svg>
+    </div>
+
+    <div class="card-info">
+      <span class="card-label">DESATIVADAS</span>
+      <span class="card-value card-gray">{{ desativadas }}</span>
+    </div>
+  </div>
+
+<div class="btn-wrapper">
+  <button class="btn-cadastrar" @click="$emit('abrirModal')">
+    Cadastrar nova viatura
+  </button>
+</div>
+
+  </div>
   <div class="container">
     <div class="searchHeader">
       <div class="searchBar">
@@ -173,28 +241,6 @@ defineExpose({ carregarTodos })
           <td>
             <span class="more-info-btn" @click="openInfo(reg)">•••</span>
           </td>
-
-        <!--<td>
-            <div class="editar-btn">
-              <svg
-                @click="edit(reg)"
-                width="20"
-                height="20"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"  
-                /> 
-              </svg>
-            </div>
-          </td>-->
         </tr>
       </tbody>
     </table>
@@ -229,6 +275,78 @@ defineExpose({ carregarTodos })
 <style scoped>
 @import '@/assets/style.css';
 
+.cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  width: 80%;
+  margin: 40px auto 10px auto;
+}
+.card {
+  flex: 1;
+  min-width: 140px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.icon-disponivel { background: #d6f5e6; color: #1aab5e; }
+.icon-emuso      { background: #fff0dc; color: #d97706; }
+.icon-manutencao { background: #ffe2e0; color: #e53935; }
+.icon-desativada { background: #ececec; color: #888888; }
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.card-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #888;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.card-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111;
+  line-height: 1;
+}
+
+.card-green  { color: #1aab5e; }
+.card-orange { color: #d97706; }
+.card-red    { color: #e53935; }
+.card-gray   { color: #999;    }
+
+.btn-wrapper {
+  width: 80%;
+  margin: 10 auto 20px auto;
+}
+
+.btn-cadastrar {
+  background-color: #7aa6cc;
+  margin: 40px auto 40px auto;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+}
 .container {
   width: 80%;
   background-color: #ffffff;
@@ -236,7 +354,6 @@ defineExpose({ carregarTodos })
   border-radius: 10px;
   display: flex;
   flex-direction: column;
- 
 }
 .searchHeader {
   display: flex;
@@ -264,7 +381,6 @@ defineExpose({ carregarTodos })
   outline: none;
 }
 select {
-  border: 2px solid #003366;
   color: #003366;
   border-radius: 15px;
   margin: 0 10px 0 10px;
@@ -297,21 +413,17 @@ th:nth-child(5) {
 }
 
 .DISPONIVEL {
- background-color: #abf5cb;
-  color: #0ae972;
+ background-color: #abf5cb; color: #0ae972;
 }
 .EM_USO {
-background-color: #ffc78a;
-  color: #cd6200;
+background-color: #ffc78a; color: #cd6200;
 }
 
 .MANUTENCAO{
-  background-color: #fc887f;
-  color: #cd6200;
+  background: #ffe2e0; color: #e53935;
 }
 .DESATIVADA {
-  background-color: #fa6d74;
-  color: #a30d11;
+  background: #ececec; color: #888888;
 }
 
 /*Ícone de editar*/
