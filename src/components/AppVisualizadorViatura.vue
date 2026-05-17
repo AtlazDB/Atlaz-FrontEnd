@@ -20,7 +20,7 @@ const viaturaInfo = ref(null)
 async function carregarTodos() {
   carregando.value = true
   try {
-   registros.value = await viaturaService.listar()
+    registros.value = await viaturaService.listar()
 
     /*Retorna uma lista JSON da seguinte forma:
     {
@@ -39,25 +39,6 @@ async function carregarTodos() {
   } finally {
     carregando.value = false
   }
-};
-
-function refinarPalavra(palavra) {
-  switch (palavra) {
-    case 'UTILITARIO':
-      palavra = 'UTILITÁRIO'
-      break
-    case 'DISPONIVEL':
-      palavra = 'DISPONÍVEL'
-      break
-    case 'MANUTENCAO':
-      palavra = 'MANUTENÇÃO'
-      break
-    case 'GNV': //É uma sigla
-      return 'GNV'
-  }
-  palavra = palavra.replace('_', ' ')
-  palavra = palavra.toLowerCase()
-  return palavra[0].toUpperCase() + palavra.substring(1)
 }
 
 const registrosFiltrados = computed(() => {
@@ -167,34 +148,12 @@ defineExpose({ carregarTodos })
           <td>{{ reg.brand }} {{ reg.model }}</td>
 
           <td>
-             <span class="status-color" :class="reg.status"></span>
+            <span class="status-color" :class="reg.status" :title="reg.status"></span>
           </td>
 
           <td>
             <span class="more-info-btn" @click="openInfo(reg)">•••</span>
           </td>
-
-        <!--<td>
-            <div class="editar-btn">
-              <svg
-                @click="edit(reg)"
-                width="20"
-                height="20"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"  
-                /> 
-              </svg>
-            </div>
-          </td>-->
         </tr>
       </tbody>
     </table>
@@ -210,20 +169,30 @@ defineExpose({ carregarTodos })
       </div>
       <div class="info-line">
         <span class="info-label">Tipo</span>
-        <span class="info-value">{{ refinarPalavra(viaturaInfo.type) }}</span>
+        <span class="info-value">{{ viaturaInfo.type }}</span>
       </div>
       <div class="info-line">
         <span class="info-label">Combustível</span>
-        <span class="info-value">{{ refinarPalavra(viaturaInfo.fuelType) }}</span>
+        <span class="info-value">{{ viaturaInfo.fuelType }}</span>
       </div>
       <div class="info-line">
         <span class="info-label">Quilometragem</span>
         <span class="info-value">{{ viaturaInfo.km }} km</span>
       </div>
-       <button class="btn-edit" @click="() => { edit(viaturaInfo); closeInfo() }">Editar</button>
+      <button
+        class="btn-edit"
+        @click="
+          () => {
+            edit(viaturaInfo)
+            closeInfo()
+          }
+        "
+      >
+        Editar
+      </button>
       <button class="btn-close" @click="closeInfo">X</button>
-      </div>
     </div>
+  </div>
 </template>
 
 <style scoped>
@@ -236,7 +205,6 @@ defineExpose({ carregarTodos })
   border-radius: 10px;
   display: flex;
   flex-direction: column;
- 
 }
 .searchHeader {
   display: flex;
@@ -289,7 +257,7 @@ th:nth-child(5) {
   width: max(200px);
 }
 /*Tags de status*/
-.status-color{
+.status-color {
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -297,11 +265,11 @@ th:nth-child(5) {
 }
 
 .DISPONIVEL {
- background-color: #abf5cb;
+  background-color: #abf5cb;
   color: #0ae972;
 }
 .EM_USO {
-background-color: #ffc78a;
+  background-color: #ffc78a;
   color: #cd6200;
 }
 
@@ -327,24 +295,24 @@ background-color: #ffc78a;
   top: 0;
   left: 0;
   width: 100%;
-  height:100%;
-  background: rgba(0,0,0,0.4);
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
 }
-.modal-info{
+.modal-info {
   background: white;
-  border-radius: 12% ;
+  border-radius: 12%;
   padding: 40px;
   width: 400px;
   position: relative;
-   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.modal-title{
-  color:#003366;
+.modal-title {
+  color: #003366;
   text-align: center;
   font-size: 18px;
   margin-bottom: 20px;
@@ -380,7 +348,7 @@ background-color: #ffc78a;
   font-size: 15px;
 }
 
-.btn-close{
+.btn-close {
   position: absolute;
   top: 15px;
   right: 15px;

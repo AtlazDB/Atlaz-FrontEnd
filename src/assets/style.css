@@ -5,10 +5,52 @@
   margin: 10px;
   font-weight: bold;
 }
+
 .tela {
   display: flex;
   background-color: #f4f6f9;
 }
+
 .componente {
   width: 100%;
+}
+
+.ipt-field {
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid #6a5acd;
+  outline: none;
+  background: #fff;
+}
+.ipt-field:focus {
+  border-color: #2f12d1;
+}
+
+input.erro, select.erro {
+  border-color: #ff0000;
+}
+
+.sct-field {
+  width: 100%;
+  padding: 7px;
+  border-radius: 8px;
+  border: 1px solid #6a5acd;
+  background: #fff;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+/* Estilos de botões */
+.btn-primary {
+  background-color: #6a5acd;
+  color: #ffffff;
+  border-radius: 10px;
+  width: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
