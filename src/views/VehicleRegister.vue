@@ -1,6 +1,6 @@
 <script setup>
 import Sidebar from '@/views/Sidebar.vue'
-import AppVisualizadorViatura from '@/components/AppVisualizadorViatura.vue'
+import VehicleViewerApp from '@/components/VehicleViewerApp.vue'
 import { modelService } from '@/services/modelService.js'
 import VehicleFormApp from '@/components/VehicleFormApp.vue'
 
@@ -59,11 +59,11 @@ onMounted(async () => {
     <Sidebar nome="ADMIN" cargo="Administrador" userType="admin" @openForm="actionForm" />
     <router-view />
     <div class="componente">
-      <h1 class="titulo">Viaturas</h1>
+      <h1 class="titulo">Viaturas cadastradas</h1>
       <div class="visualizadorViatura">
         <button class="btn-cadastrar" @click="openForm()">Cadastrar viatura</button>
         <!-- chama a função 'editar' com parâmetros -->
-        <AppVisualizadorViatura
+        <VehicleViewerApp
           ref="visualizador"
           @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
         />

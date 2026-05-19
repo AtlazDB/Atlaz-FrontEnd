@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import AppVisualizador from '../components/AppVisualizador.vue'
-import AppSeletorMes from '../components/AppSeletorMes.vue'
+import GeneralViewerApp from '../components/GeneralViewerApp.vue'
+import MonthSelectorApp from '../components/MonthSelectorApp.vue'
 import Sidebar from '../views/Sidebar.vue'
 
 const filtro = ref(null)
@@ -22,10 +22,10 @@ const acaoFormulario = () => {
       <h1 class="titulo">Registros</h1>
       <div class="visualizador">
         <div class="tabela_visualizador">
-          <AppVisualizador :filtro="filtro" />
+          <GeneralViewerApp :filtro="filtro" />
         </div>
         <div class="seletor">
-          <AppSeletorMes @data_selecionada="filtro = $event" />
+          <MonthSelectorApp @data_selecionada="filtro = $event" />
         </div>
       </div>
     </div>
