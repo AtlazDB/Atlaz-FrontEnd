@@ -1,92 +1,79 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { viaturaService } from '@/services/viaturaService.js'
+import { usuarioService } from '@/services/usuarioServices.js'
 
 const carregando = ref(false)
-
 const registros = ref([])
 
 const busca_filtro = ref('')
-const marca_filtro = ref('')
-const tipo_filtro = ref('')
 const status_filtro = ref('')
-const combustivel_filtro = ref('')
+
+const userInfo = ref(null)
+const showInfo = ref(false)
 
 const emit = defineEmits(['editar'])
 
-const showInfo = ref(false)
-const viaturaInfo = ref(null)
-
 async function carregarTodos() {
   carregando.value = true
-  try {
-    registros.value = await viaturaService.listar()
 
+  try {
+    registros.value = await usuarioService.listar()
     /*Retorna uma lista JSON da seguinte forma:
-    {
-      "id": 0,
-      "prefix": "string",
-      "brand": "string",
-      "model": "string",
-      "type": "UTILITARIO",
-      "status": "DISPONIVEL",
-      "fuelType": "GASOLINA",
-      "km": 0.1
-    }
-    */
+     * [
+     *   {
+     *    id: 0,
+     *    name: '',
+     *    registrationNumber: '',
+     *    email: '',
+     *    passwordHash: '',
+     *    profile: 'TECNICO',
+     *    userStatus: 'DISPONIVEL'
+     *   }
+     * ]
+     */
   } catch (erro) {
-    console.error('Erro: ' + erro)
+    console.error('Erro ao carregar usuários:', erro)
   } finally {
     carregando.value = false
   }
 }
 
+defineExpose({
+  carregarTodos,
+})
+
 const registrosFiltrados = computed(() => {
   return registros.value.filter((r) => {
     const encontrarBusca =
-      !busca_filtro.value || r.prefix.toLowerCase().includes(busca_filtro.value.toLowerCase())
+      !busca_filtro.value || r.name.toLowerCase().includes(busca_filtro.value.toLowerCase())
 
-    const encontrarStatus = !status_filtro.value || r.status === status_filtro.value
-    // Impossibilita que o usuário visualize viaturas com a tag DESATIVADA, a não ser que ele selecione ela no filtro.
-    const ocultarStatus = status_filtro.value === 'DESATIVADA' || r.status !== 'DESATIVADA'
+    const encontrarStatus = !status_filtro.value || r.userStatus === status_filtro.value
 
-    const encontrarTipo = !tipo_filtro.value || r.type === tipo_filtro.value
+    const ocultarStatus = status_filtro.value === 'DESLIGADO' || r.userStatus !== 'DESLIGADO'
 
-    const encontrarMarca =
-      !marca_filtro.value || r.brand.toLowerCase().includes(marca_filtro.value.toLowerCase())
-
-    const encontrarCombustivel =
-      !combustivel_filtro.value || r.fuelType === combustivel_filtro.value
-
-    return (
-      encontrarStatus &&
-      encontrarBusca &&
-      encontrarMarca &&
-      encontrarTipo &&
-      encontrarCombustivel &&
-      ocultarStatus
-    )
+    return encontrarBusca && encontrarStatus && ocultarStatus
   })
 })
-function openInfo(viatura) {
-  viaturaInfo.value = viatura
+
+function openInfo(user) {
+  userInfo.value = user
   showInfo.value = true
 }
 
 function closeInfo() {
   showInfo.value = false
-  viaturaInfo.value = null
-}
-function edit(viatura) {
-  emit('editar', viatura, 'edicao')
+  userInfo.value = null
 }
 
-onMounted(() => carregarTodos())
-defineExpose({ carregarTodos })
+function edit(tecnico) {
+  emit('editar', tecnico, 'edicao')
+}
+
+onMounted(carregarTodos)
 </script>
 
 <template>
-  <div class="container">
+  <div class="container_tabela">
     <div class="searchHeader">
       <div class="searchBar">
         <svg
@@ -95,7 +82,6 @@ defineExpose({ carregarTodos })
           viewBox="0 0 24 24"
           stroke-width="1.5"
           stroke="currentColor"
-          class="size-6"
           height="20"
           width="20"
         >
@@ -105,52 +91,44 @@ defineExpose({ carregarTodos })
             d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
           />
         </svg>
-        <input type="search" placeholder="Buscar pelo prefixo" v-model="busca_filtro" />
+
+        <input type="search" placeholder="Buscar pelo nome" v-model="busca_filtro" />
       </div>
+
       <div
         style="width: 1px; height: max(100%); border-left: 1px solid #cccc; margin: 0 10px 0 10px"
       />
-      <select v-model="tipo_filtro">
-        <option value="" selected>Tipo</option>
-        <option value="UTILITARIO">Utilitário</option>
-        <option value="PASSEIO">Passeio</option>
-      </select>
+
       <select v-model="status_filtro">
-        <option value="" selected>Status</option>
+        <option value="">Status</option>
         <option value="DISPONIVEL">Disponível</option>
-        <option value="MANUTENCAO">Manutenção</option>
-        <option value="EM_USO">Em uso</option>
-        <option value="DESATIVADA">Desativada</option>
-      </select>
-      <select v-model="combustivel_filtro">
-        <option value="" selected>Combustível</option>
-        <option value="DIESEL">Diesel</option>
-        <option value="ETANOL">Etanol</option>
-        <option value="GASOLINA">Gasolina</option>
-        <option value="GNV">GNV</option>
-        <option value="FLEX">Flex</option>
+        <option value="EM_CAMPO">Em campo</option>
+        <option value="DESLIGADO">Desligado</option>
       </select>
     </div>
+
     <p style="align-self: center" v-if="registrosFiltrados.length === 0">Sem informação</p>
+
     <table v-else>
       <thead>
         <tr>
-          <th>Prefixo</th>
-          <th>Modelo</th>
+          <th>Nome</th>
+          <th>Matrícula</th>
+          <th>Email</th>
           <th>Status</th>
-          <th>Mais Informações</th>
-          <th>Avisos</th>
+          <th>Informações</th>
         </tr>
       </thead>
+
       <tbody>
         <tr v-for="reg in registrosFiltrados" :key="reg.id">
-          <td>{{ reg.prefix }}</td>
-          <td>{{ reg.brand }} {{ reg.model }}</td>
+          <td>{{ reg.name }}</td>
+          <td>{{ reg.registrationNumber }}</td>
+          <td>{{ reg.email }}</td>
 
           <td>
-            <span class="status-color" :class="reg.status" :title="reg.status"></span>
+            <span class="status-color" :class="reg.userStatus" :title="reg.userStatus"></span>
           </td>
-
           <td>
             <span class="more-info-btn" @click="openInfo(reg)">•••</span>
           </td>
@@ -161,29 +139,29 @@ defineExpose({ carregarTodos })
 
   <div v-if="showInfo" class="overlay" @click="closeInfo">
     <div class="modal-info" @click.stop>
-      <h3 class="modal-title">Informações da Viatura</h3>
+      <h3 class="modal-title">Informações do usuário</h3>
 
       <div class="info-line">
-        <span class="info-label">Prefixo</span>
-        <span class="info-value">{{ viaturaInfo.prefix }}</span>
+        <span class="info-label">Registro</span>
+        <span class="info-value">{{ userInfo.registrationNumber }}</span>
       </div>
       <div class="info-line">
-        <span class="info-label">Tipo</span>
-        <span class="info-value">{{ viaturaInfo.type }}</span>
+        <span class="info-label">Nome</span>
+        <span class="info-value">{{ userInfo.name }}</span>
       </div>
       <div class="info-line">
-        <span class="info-label">Combustível</span>
-        <span class="info-value">{{ viaturaInfo.fuelType }}</span>
+        <span class="info-label">Email</span>
+        <span class="info-value">{{ userInfo.email }}</span>
       </div>
       <div class="info-line">
-        <span class="info-label">Quilometragem</span>
-        <span class="info-value">{{ viaturaInfo.km }} km</span>
+        <span class="info-label">Senha</span>
+        <span class="info-value">{{ userInfo.passwordHash }}</span>
       </div>
       <button
         class="btn-edit"
         @click="
           () => {
-            edit(viaturaInfo)
+            edit(userInfo)
             closeInfo()
           }
         "
@@ -198,28 +176,22 @@ defineExpose({ carregarTodos })
 <style scoped>
 @import '@/assets/style.css';
 
-.container {
-  width: 80%;
-  background-color: #ffffff;
-  padding: 5px;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-}
 .searchHeader {
   display: flex;
   height: 25px;
   margin-bottom: 10px;
 }
+
 .searchBar {
   display: flex;
   align-items: center;
 }
+
 .searchBar svg {
   background-color: #f4f6f9;
   border-radius: 5px 0 0 5px;
-  cursor: default;
 }
+
 .searchBar input {
   width: 160px;
   background-color: #f4f6f9;
@@ -228,34 +200,30 @@ defineExpose({ carregarTodos })
   margin-right: 10px;
   height: 100%;
 }
+
 .searchBar input:focus {
   outline: none;
 }
+
 select {
   border: 2px solid #003366;
   color: #003366;
   border-radius: 15px;
-  margin: 0 10px 0 10px;
+  margin: 0 10px;
 }
-table {
-  width: 100%;
 
-  margin: 0 auto;
+table {
+  width: 90%;
+  align-self: center;
 }
+
 th,
 td {
   text-align: center;
   vertical-align: middle;
   height: 40px;
 }
-/*Prefixo, modelo, tipo, combustível, quilometragem*/
-th:nth-child(1),
-th:nth-child(2),
-th:nth-child(3),
-th:nth-child(4),
-th:nth-child(5) {
-  width: max(200px);
-}
+
 /*Tags de status*/
 .status-color {
   display: inline-block;
@@ -268,16 +236,11 @@ th:nth-child(5) {
   background-color: #abf5cb;
   color: #0ae972;
 }
-.EM_USO {
+.EM_CAMPO {
   background-color: #ffc78a;
   color: #cd6200;
 }
-
-.MANUTENCAO{
-  background-color: #fc887f;
-  color: #cd6200;
-}
-.DESATIVADA {
+.DESLIGADO {
   background-color: #fa6d74;
   color: #a30d11;
 }
