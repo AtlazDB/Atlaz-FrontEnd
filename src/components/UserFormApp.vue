@@ -16,7 +16,8 @@ const status = ref('DISPONIVEL')
 const tipoAlteracao = ref('')
 const erros = ref({})
 
-const statusList = ref(['DISPONIVEL', 'EM_CAMPO', 'DESLIGADO'])
+const statusListEdit = ref(['DISPONIVEL', 'EM_CAMPO', 'DESLIGADO'])
+const statusListReg = ref(['DISPONIVEL'])
 
 defineExpose({ openForm })
 
