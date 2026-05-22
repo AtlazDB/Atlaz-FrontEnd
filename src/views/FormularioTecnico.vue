@@ -594,7 +594,8 @@ computed: {
   max-width: 900px;
   padding: 30px;
 }
-.form-box > h1 {
+
+ .form-box > h1 {
   color: #003366;
   font-size: 2rem;
   margin-bottom: 30px;
