@@ -25,7 +25,8 @@ const tipo = ref('')
 const modelId = ref(null)
 const modelos = ref([])
 const combustivel = ref('')
-const quilometragem = ref(0)
+const quilometragem = ref('')
+const quilometragemRaw = ref(null)
 const status = ref('')
 const tipoAlteracao = ref('')
 
@@ -34,6 +35,31 @@ const erros = ref({})
 const showNovoModelo = ref(false)
 const novoModeloNome = ref('')
 const novoModeloMarca = ref('')
+
+function maskQuilometragem(event) {
+  const raw = event.target.value.replace(/\D/g, '').slice(0, 9)
+  quilometragemRaw.value = raw === '' ? null : parseInt(raw, 10)
+
+  const formatted = raw === '' ? '' : parseInt(raw, 10).toLocaleString('pt-BR')
+  quilometragem.value = formatted
+  event.target.value = formatted
+}
+
+function capitalize(str) {
+  return str.replace(/\b\w/g, c => c.toUpperCase())
+}
+
+function maskModeloNome(event) {
+  const val = capitalize(event.target.value)
+  novoModeloNome.value = val
+  event.target.value = val
+}
+
+function maskModeloMarca(event) {
+  const val = capitalize(event.target.value)
+  novoModeloMarca.value = val
+  event.target.value = val
+}
 
 async function cadastrarModelo() {
   if (!novoModeloNome.value.trim() || !novoModeloMarca.value.trim()) {
@@ -63,16 +89,20 @@ function openForm(dados = null, tipoAlt = 'cadastro') {
   tipo.value = 'UTILITARIO'
   modelId.value = dados?.modelId ?? null
   combustivel.value = 'GASOLINA'
-  quilometragem.value = 0
+  quilometragem.value = ''
+  quilometragemRaw.value = 0
   status.value = 'DISPONIVEL'
 
   //Caso seja uma edição atribui os dados passados
   if (dados != null) {
     id.value = dados.id
-    prefixo.value = dados.prefix
+    prefixo.value =  dados.prefix
     tipo.value = dados.type
     combustivel.value = dados.fuelType
-    quilometragem.value = dados.km
+    quilometragemRaw.value = dados.km
+    quilometragem.value = dados.km != null
+    ? parseInt(dados.km, 10).toLocaleString('pt-BR')
+      : ''
     status.value = dados.status
   }
   tipoAlteracao.value = tipoAlt
@@ -90,7 +120,7 @@ function validateForm() {
   if (!prefixo.value?.trim()) e.prefixo = true
   if (!tipo.value) e.tipo = true
   if (!combustivel.value) e.combustivel = true
-  if (quilometragem.value === '') e.quilometragem = true
+  if (quilometragemRaw.value === '' || quilometragemRaw.value === null) e.quilometragem = true
   if (!status.value) e.status = true
 
   erros.value = e
@@ -110,7 +140,7 @@ async function submitForm() {
     type: tipo.value,
     status: status.value,
     fuelType: combustivel.value,
-    km: quilometragem.value,
+    km: quilometragemRaw.value
   }
     //Caso seja um cadastro
     if (tipoAlteracao.value === 'cadastro') {
@@ -232,12 +262,6 @@ async function editarViatura(viatura) {
 
   </div>
 </div>
-      <!-- <div v-if="showNovoModelo" class="novo-modelo-form">
-        <input type="text" v-model="novoModeloMarca" placeholder="Marca (ex: Chevrolet)" />
-        <input type="text" v-model="novoModeloNome" placeholder="Modelo (ex: Prisma)" />
-        <button type="button" @click="cadastrarModelo">Salvar</button>
-      </div>
-    </div> -->
 
       <div class="campo">
         <label>Tipo de combustível</label>
@@ -255,7 +279,12 @@ async function editarViatura(viatura) {
 
       <div class="campo">
         <label>Quilometragem do veículo</label>
-        <input type="number" v-model="quilometragem" :class="{ erro: erros.quilometragem }" />
+        <input type="text"
+         inputmode="numeric"
+         :value="quilometragem"
+         @input="maskQuilometragem"
+         placeholder="Ex: 12.500"
+         :class="{ erro: erros.quilometragem }" />
       </div>
 
       <div class="campo">
