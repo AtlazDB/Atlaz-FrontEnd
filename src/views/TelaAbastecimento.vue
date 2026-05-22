@@ -38,12 +38,20 @@
 
     <div class="campo">
       <label>Litros</label>
-      <input type="number" step="0.01" v-model="form.liters" />
+      <input type="text"
+      inputmode="numeric"
+      :value="form.liters"
+      @input="maskLitros"
+      placeholder="Ex: 45,50" />
     </div>
 
     <div class="campo">
       <label>Valor Total</label>
-      <input type="number" step="0.01" v-model="form.totalValue" />
+      <input type="text"
+      inputmode="numeric"
+      :value="form.totalValue"
+      @input="maskValor"
+      placeholder="Ex: R$ 342,80" />
     </div>
 
     <button class="botao-enviar" @click="enviarFormulario">Enviar</button>
@@ -182,7 +190,36 @@ export default {
     formatarValor(valor) {
       if (!valor) return ''
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor)
-    }
+    },
+
+    maskLitros(event) {
+      let raw = event.target.value.replace(/[^\d]/g, '').slice(0, 6)
+      if (raw === '') {
+        this.form.liters = ''
+        event.target.value = ''
+        return
+        }
+
+      while (raw.length < 3) raw = '0' + raw
+      const formatted = raw.slice(0, -2).replace(/^0+(\d)/, '$1') + ',' + raw.slice(-2)
+      this.form.liters = parseFloat(raw.slice(0, -2) + '.' + raw.slice(-2))
+      event.target.value = formatted
+    },
+
+      maskValor(event) {
+        let raw = event.target.value.replace(/[^\d]/g, '').slice(0, 9)
+        if (raw === '') {
+          this.form.totalValue = ''
+          event.target.value = ''
+          return
+          }
+        while (raw.length < 3) raw = '0' + raw
+        const intPart = raw.slice(0, -2).replace(/^0+(\d)/, '$1')
+        const intFormatted = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+        const formatted = 'R$ ' + intFormatted + ',' + raw.slice(-2)
+        this.form.totalValue = parseFloat(raw.slice(0, -2) + '.' + raw.slice(-2))
+        event.target.value = formatted
+},
   }
 }
 </script>
