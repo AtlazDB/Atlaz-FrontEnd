@@ -1,7 +1,5 @@
 <template>
-
   <div class="tela">
-
     <Sidebar :nome="nomeUsuario" cargo="Técnico" userType="tecnico" />
 
     <div class="main">
@@ -27,14 +25,25 @@
             </svg>
             <input type="search" placeholder="Buscar por viatura" v-model="busca_viatura" />
           </div>
-          <input
-            type="text"
-            class="filtro-data"
-            placeholder="Data (DD/MM/AAAA)"
-            :value="busca_data"
-            @input="mascaraData"
-            maxlength="10"
-          />
+
+          <div class="filtros-data">
+            <input
+              type="text"
+              class="filtro-data"
+              placeholder="De (DD/MM/AAAA)"
+              :value="busca_data"
+              @input="mascaraData"
+              maxlength="10"
+            />
+            <input
+              type="text"
+              class="filtro-data"
+              placeholder="Até (DD/MM/AAAA)"
+              :value="busca_data_fim"
+              @input="mascaraDataFim"
+              maxlength="10"
+            />
+          </div>
         </div>
         <div class="table">
           <table>
@@ -149,24 +158,13 @@ import { ordemDeServicoService } from '@/services/ordemDeServico.js'
 
 const busca_viatura = ref('')
 const busca_data = ref('')
+const busca_data_fim = ref('')
 const registros = ref([])
 const modalAberto = ref(false)
 const registroSelecionado = ref(null)
 
 onMounted(async () => {
   registros.value = await ordemDeServicoService.listar()
-})
-
-const registrosFiltrados = computed(() => {
-  return registros.value.filter((r) => {
-    const viatura = r.vehicle?.prefix?.toLowerCase() ?? ''
-    const matchViatura = viatura.includes(busca_viatura.value.toLowerCase())
-
-    const dataFormatada = formatarData(r.dateTime)
-    const matchData = busca_data.value === '' || dataFormatada.includes(busca_data.value)
-
-    return matchViatura && matchData
-  })
 })
 
 function mascaraData(e) {
@@ -199,6 +197,32 @@ function fecharModal() {
   modalAberto.value = false
   registroSelecionado.value = null
 }
+
+function mascaraDataFim(e) {
+  let v = e.target.value.replace(/\D/g, '')
+  if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2)
+  if (v.length > 5) v = v.slice(0, 5) + '/' + v.slice(5)
+  busca_data_fim.value = v
+}
+
+const registrosFiltrados = computed(() => {
+  return registros.value.filter((r) => {
+    const viatura = r.vehicle?.prefix?.toLowerCase() ?? ''
+    const matchViatura = viatura.includes(busca_viatura.value.toLowerCase())
+
+    const dataFormatada = formatarData(r.dateTime) // DD/MM/AAAA
+
+    const matchInicio =
+      busca_data.value.length < 10 ||
+      dataFormatada >= busca_data.value.split('/').reverse().join('-')
+
+    const matchFim =
+      busca_data_fim.value.length < 10 ||
+      dataFormatada <= busca_data_fim.value.split('/').reverse().join('-')
+
+    return matchViatura && matchInicio && matchFim
+  })
+})
 </script>
 
 <style scoped>
@@ -239,7 +263,9 @@ h1 {
 
 .searchHeader {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 8px;
   width: 100%;
 }
