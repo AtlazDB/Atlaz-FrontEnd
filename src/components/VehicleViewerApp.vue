@@ -239,7 +239,6 @@ select {
 }
 table {
   width: 100%;
-
   margin: 0 auto;
 }
 th,
@@ -255,7 +254,7 @@ th:nth-child(3),
 th:nth-child(4),
 th:nth-child(5) {
   width: max(200px);
-}
+  }
 /*Tags de status*/
 .status-color {
   display: inline-block;
