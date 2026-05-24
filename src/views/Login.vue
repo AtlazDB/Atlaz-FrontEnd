@@ -1,39 +1,20 @@
 <template>
-
-<div class="main">
+  <div class="main">
     <div class="card-login">
-
       <header class="cabecalho">
         <img src="../assets/logo-ipem.png" class="logo" />
       </header>
 
-     <label class="email-label">Email</label>
-     <input
-          v-model="email"
-          type="text"
-          class="campo-input"
-          placeholder="Informe seu email"
-        >
-     <label class="campo-label">Senha</label>
-     <input
-          v-model="senha"
-          type="password"
-          class="campo-input"
-          placeholder="Informe sua senha"
-        >
-            <button
-               type="button"
-               class="btn-entrar"
-               @click="handleLogin">
-                 Entrar
-            </button>
-
-</div>
-</div>
+      <label class="email-label">Email</label>
+      <input v-model="email" type="text" class="campo-input" placeholder="Informe seu email" />
+      <label class="campo-label">Senha</label>
+      <input v-model="senha" type="password" class="campo-input" placeholder="Informe sua senha" />
+      <button type="button" class="btn-entrar" @click="handleLogin">Entrar</button>
+    </div>
+  </div>
 </template>
 
 <script setup>
-
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api.js'
@@ -42,12 +23,11 @@ const router = useRouter()
 const email = ref('')
 const senha = ref('')
 
-
 async function handleLogin() {
   try {
     const response = await api.post('/auth/login', {
       email: email.value,
-      password: senha.value
+      password: senha.value,
     })
     console.log('Login response:', response.data)
     const { id, profile, name } = response.data
@@ -66,11 +46,9 @@ async function handleLogin() {
     alert('Credenciais inválidas')
   }
 }
-
 </script>
 
 <style scoped>
-
 .main {
   min-height: 100vh;
   display: flex;
@@ -84,23 +62,23 @@ async function handleLogin() {
   border-radius: 18px;
   padding: 48px 52px 40px;
   width: 420px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.btn-entrar{
-   background: #003366;
-   color:white;
-   border: none;
-   border-radius: 8px;
-   padding: 15px;
-   width: 100%;
-   cursor: pointer;
+.btn-entrar {
+  background: #003366;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 15px;
+  width: 100%;
+  cursor: pointer;
 }
 
-.campo-input{
+.campo-input {
   width: 100%;
   max-width: 600px;
   padding: 10px;
@@ -108,7 +86,7 @@ async function handleLogin() {
   border: 1px solid #697179;
   border-radius: 10px;
   outline: none;
-  margin: 0 auto 15px;;
+  margin: 0 auto 15px;
   font-size: 14px;
 }
 
@@ -116,5 +94,30 @@ async function handleLogin() {
   width: 60%;
   margin-top: 10px;
   margin-left: 70px;
+}
+
+@media (max-width: 480px) {
+  .card-login {
+    padding: 32px 24px 28px;
+    border-radius: 14px;
+    gap: 6px;
+  }
+
+  .logo {
+    width: 60%;
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .campo-input {
+    font-size: 16px;
+    padding: 12px 10px;
+  }
+
+  .btn-entrar {
+    padding: 14px;
+    font-size: 15px;
+  }
 }
 </style>
