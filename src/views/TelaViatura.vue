@@ -308,6 +308,14 @@ async function editarViatura(viatura) {
 <style scoped>
 @import '@/assets/style.css';
 
+.titulo {
+  font-size: 24px;
+  color: #003366;
+  border-left: 4px solid #003366;
+  padding-left: 10px;
+  margin-top: 45px;
+}
+
 .visualizadorViatura {
   display: flex;
   flex-direction: column;
@@ -360,23 +368,23 @@ button {
   width: 100%;
   height: max(100%);
   background: rgba(0, 0, 0, 0.35);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   z-index: 999;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .modal {
-  min-height: 520px;
   width: 90%;
   max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
   background: #ffffff;
   border-radius: 20px;
   padding: 30px 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -462,5 +470,41 @@ button {
 
 .btn-enviar:hover {
   background: #002244;
+}
+
+@media (max-width: 600px) {
+  .modal {
+    padding: 20px 18px;
+    gap: 10px;
+    border-radius: 14px;
+    max-height: 85vh;
+  }
+
+  .linha {
+    flex-direction: column;
+  }
+
+  .linha .campo {
+    width: 100%;
+  }
+
+  .titulo-modal {
+    font-size: 16px;
+  }
+
+  .novo-modelo-form {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .campo-modelo {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .btn-enviar {
+    width: 100%;
+    padding: 12px;
+  }
 }
 </style>
