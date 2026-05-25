@@ -1,27 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import TechnicianForm from '../views/TechnicianForm.vue'
-import HomeAdmin from '../views/HomeAdmin.vue'
-import LoginUser from '@/views/LoginUser.vue'
-import VehiclePage from '@/views/VehiclePage.vue'
+import FormularioTecnico from '../views/FormularioTecnico.vue'
+import HomeAdministrador from '../views/HomeAdministrador.vue'
+import Login from '@/views/Login.vue'
+
+
+import VehicleRegister from '@/views/VehicleRegister.vue'
 import DashboardView from '../views/DashboardView.vue'
-import AdminReports from '../views/AdminReports.vue'
-import RegisterTechnical from '../views/RegisterTechnical.vue'
+import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
+import UserRegister from '@/views/UserRegister.vue'
+
 
 const routes = [
   {
     path: '/',
     name: 'Login',
-    component: LoginUser
+    component: Login
   },
   {
     path: '/formulario-tecnico',
     name: 'formulario',
-    component: TechnicianForm
+    component: FormularioTecnico
   },
   {
     path: '/home-administrador',
-    component: HomeAdmin,
+    component: HomeAdministrador,
     children: [
       {
         path: '',
@@ -33,22 +36,22 @@ const routes = [
   {
     path: '/abastecimento',
     name: 'abastecimento',
-    component: () => import('@/views/RefuellingScreen.vue')
+    component: () => import('@/views/TelaAbastecimento.vue')
   },
   {
     path: '/tabela-viaturas',
     name: 'viaturas',
-    component: VehiclePage
+    component: VehicleRegister
   },
   {
     path: '/relatorios',
     name: 'relatorios',
-    component: AdminReports
+    component: RelatoriosAdmin
   },
   {
   path: '/tecnicos',
   name: 'tecnicos',
-  component: RegisterTechnical
+  component: UserRegister
   }
 ]
 
