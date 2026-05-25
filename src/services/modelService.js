@@ -1,27 +1,27 @@
 import api from './api';
 
 export const modelService = {
-  async listar() {
+  async list() {
     const response = await api.get('/models');
     return response.data;
   },
 
-  async buscarPorId(id) {
+  async searchById(id) {
     const response = await api.get(`/models/${id}`);
     return response.data;
   },
 
-  async criar(modelo) {
-    const response = await api.post('/models', modelo);
+  async create(model) {
+    const response = await api.post('/models', model);
     return response.data;
   },
 
-  async atualizar(id, modelo) {
-    const response = await api.put(`/models/${id}`, modelo);
+  async update(id, model) {
+    const response = await api.put(`/models/${id}`, model);
     return response.data;
   },
 
-  async deletar(id) {
+  async delete(id) {
     const response = await api.delete(`/models/${id}`);
     return response.data;
   }

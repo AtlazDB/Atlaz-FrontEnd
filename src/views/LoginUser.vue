@@ -62,7 +62,7 @@ async function handleLogin() {
     } else {
       router.push('/formulario-tecnico')
     }
-  } catch (e) {
+  } catch {
     alert('Credenciais inválidas')
   }
 }
