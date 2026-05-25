@@ -307,11 +307,9 @@ onMounted(async () => {
   width: 100%;
   height: max(100%);
   background: rgba(0, 0, 0, 0.35);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   z-index: 999;
 }
 
@@ -365,14 +363,13 @@ onMounted(async () => {
   top: 50%;
   transform: translateY(-50%);
   font-size: 12px;
-  color: #6a5acd;
+  color: #003366;
   pointer-events: none;
 }
 
 .btn-enviar {
   margin-top: 20px;
   align-self: center;
-
   background: #003366;
   color: white;
   border: none;
@@ -382,7 +379,7 @@ onMounted(async () => {
 }
 
 .btn-enviar:hover {
-  background: #002244;
+  background: #003366;
 }
 
 .add svg {

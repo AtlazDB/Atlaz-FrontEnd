@@ -28,12 +28,12 @@
 .ipt-field {
   padding: 7px;
   border-radius: 8px;
-  border: 1px solid #6a5acd;
+  border: 1px solid #003366;
   outline: none;
   background: #fff;
 }
 .ipt-field:focus {
-  border-color: #2f12d1;
+  border-color: #003366;
 }
 
 input.erro, select.erro {
@@ -44,7 +44,7 @@ input.erro, select.erro {
   width: 100%;
   padding: 7px;
   border-radius: 8px;
-  border: 1px solid #6a5acd;
+  border: 1px solid #003366;
   background: #fff;
   appearance: none;
   outline: none;
@@ -52,7 +52,7 @@ input.erro, select.erro {
 }
 /* Estilos de botões */
 .btn-primary {
-  background-color: #6a5acd;
+  background-color: #003366;
   color: #ffffff;
   border-radius: 10px;
   width: 10%;

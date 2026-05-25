@@ -4,7 +4,7 @@ import FormularioTecnico from '../views/FormularioTecnico.vue'
 import HomeAdministrador from '../views/HomeAdministrador.vue'
 import Login from '@/views/Login.vue'
 
-
+import HistoricoOcorrencias from '@/views/HistoricoOcorrencias.vue'
 import VehicleRegister from '@/views/VehicleRegister.vue'
 import DashboardView from '../views/DashboardView.vue'
 import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
@@ -52,6 +52,11 @@ const routes = [
   path: '/tecnicos',
   name: 'tecnicos',
   component: UserRegister
+  },
+  {
+  path: '/ocorrecias',
+  name: 'ocorrecias',
+  component: HistoricoOcorrencias
   }
 ]
 

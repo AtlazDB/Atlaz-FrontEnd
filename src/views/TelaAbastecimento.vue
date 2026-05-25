@@ -3,11 +3,12 @@
     <Sidebar :nome="nomeUsuario" cargo="Técnico" userType="tecnico" />
 
     <div class="main">
+      <div class="content-wrapper">
       <h1>Abastecimento</h1>
       <button type="button" class="botao-cadastrar" @click="mostrarFormulario = true">
         Cadastrar novo abastecimento
       </button>
-
+</div>
       <div class="container-busca">
         <div class="searchHeader">
           <div class="searchBar">
@@ -140,6 +141,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -195,15 +197,15 @@ export default {
     },
   },
   methods: {
-    async carregarRegistros() {
-      try {
-        const userId = parseInt(localStorage.getItem('userId'))
-        const todos = await abastecimentoService.listar()
-        this.registros = todos.filter((r) => r.user?.id === userId)
+     async carregarRegistros() {
+       try {
+         const userId = parseInt(localStorage.getItem('userId'))
+         const todos = await abastecimentoService.listar()
+         this.registros = todos.filter((r) => r.user?.id === userId)
       } catch (error) {
-        console.error('Erro ao carregar abastecimentos:', error)
-      }
-    },
+         console.error('Erro ao carregar abastecimentos:', error)
+       }
+     },
 
     async carregarViaturas() {
       try {
@@ -313,10 +315,6 @@ export default {
 }
 </script>
 
-<style>
-@import '@/assets/style.css';
-</style>
-
 <style scoped>
 .tela {
   display: flex;
@@ -327,7 +325,15 @@ export default {
   padding: 40px 80px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+}
+
+h1 {
+  color: #003366;
+  font-size: 2rem;
+  margin-bottom: 40px;
+  font-weight: 600;
+  max-width: 900px;
 }
 
 h2 {
@@ -337,38 +343,106 @@ h2 {
   font-weight: 600;
 }
 
+.content-wrapper {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .botao-cadastrar {
   padding: 10px 20px;
   background-color: #7aa6cc;
   color: white;
-  border: 1px solid #7aa6cc;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   margin-top: 10px;
+  width: fit-content;
+  white-space: nowrap;
+  align-self: flex-start;
 }
 
 .tabela {
   width: 100%;
   overflow-x: auto;
+  max-width: 800px;
+  align-self: center;
 }
 
 table {
-  width: 80%;
-  min-width: 400px;
+  width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 0px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-th,
-td {
+th,td {
   padding: 12px 16px;
   text-align: center;
 }
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  width: 400px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.botao-fechar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+.select-wrapper::after {  content: '▼';
+  position: absolute;
+  right: 12px;
+    top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #003366;
+  pointer-events: none;
+}
+
+.campo input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #003366;
+  outline: none;
+  background: #fff;
+}
+
+.botao-enviar {
+  margin: 20px auto 0 auto;
+  background: #003366;
+  color: white;
+  border: none;
+  padding: 10px 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: block;
+}
+
 
 .overlay {
   position: fixed;
@@ -426,8 +500,8 @@ td {
 }
 
 .container-busca {
-  width: 80%;
-  max-width: 900px;
+  width: 100%;
+  max-width: 800px;
   background-color: white;
   padding: 16px;
   border-radius: 5px;
@@ -435,7 +509,10 @@ td {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-self: center;
 }
+
+
 
 .searchHeader {
   display: flex;
