@@ -225,7 +225,9 @@ const registrosFiltrados = computed(() => {
 })
 </script>
 
+
 <style scoped>
+
 .tela {
   display: flex;
   min-height: 100vh;

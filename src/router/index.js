@@ -4,12 +4,11 @@ import FormularioTecnico from '../views/FormularioTecnico.vue'
 import HomeAdministrador from '../views/HomeAdministrador.vue'
 import Login from '@/views/Login.vue'
 
-
-import TelaViatura from '@/views/TelaViatura.vue'
+import HistoricoOcorrencias from '@/views/HistoricoOcorrencias.vue'
+import VehicleRegister from '@/views/VehicleRegister.vue'
 import DashboardView from '../views/DashboardView.vue'
 import RelatoriosAdmin from '../views/RelatoriosAdmin.vue'
-import RegisterTechnical from '@/views/RegisterTechnical.vue'
-import HistoricoOcorrencias from '@/views/HistoricoOcorrencias.vue'
+import UserRegister from '@/views/UserRegister.vue'
 
 
 const routes = [
@@ -42,7 +41,7 @@ const routes = [
   {
     path: '/tabela-viaturas',
     name: 'viaturas',
-    component: TelaViatura
+    component: VehicleRegister
   },
   {
     path: '/relatorios',
@@ -52,13 +51,13 @@ const routes = [
   {
   path: '/tecnicos',
   name: 'tecnicos',
-  component: RegisterTechnical
+  component: UserRegister
   },
   {
-    path:'/historico-de-ocorrecias',
-    name:'ocorrecias',
-    component: HistoricoOcorrencias
-  },
+  path: '/ocorrecias',
+  name: 'ocorrecias',
+  component: HistoricoOcorrencias
+  }
 ]
 
 const router = createRouter({

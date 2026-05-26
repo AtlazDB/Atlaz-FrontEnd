@@ -2,11 +2,28 @@
 import { onMounted, ref, computed } from 'vue'
 import { viaturaService } from '@/services/viaturaService.js'
 
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
 const disponiveis = computed(() => registros.value.filter((v) => v.status === 'DISPONIVEL').length)
 const emUso = computed(() => registros.value.filter((v) => v.status === 'EM_USO').length)
 const manutencao = computed(() => registros.value.filter((v) => v.status === 'MANUTENCAO').length)
 const desativadas = computed(() => registros.value.filter((v) => v.status === 'DESATIVADA').length)
+=======
+const disponiveis = computed(
+  () => registros.value.filter((v) => v.status === 'DISPONIVEL').length,
+)
 
+const emUso = computed(
+  () => registros.value.filter((v) => v.status === 'EM_USO').length,
+)
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
+
+const manutencao = computed(
+  () => registros.value.filter((v) => v.status === 'MANUTENCAO').length,
+)
+
+const desativadas = computed(
+  () => registros.value.filter((v) => v.status === 'DESATIVADA').length,
+)
 const carregando = ref(false)
 
 const registros = ref([])
@@ -25,7 +42,11 @@ const viaturaInfo = ref(null)
 async function carregarTodos() {
   carregando.value = true
   try {
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
     registros.value = await viaturaService.listar()
+=======
+     registros.value = await viaturaService.listar()
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
 
     /*Retorna uma lista JSON da seguinte forma:
     {
@@ -44,6 +65,7 @@ async function carregarTodos() {
   } finally {
     carregando.value = false
   }
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
 }
 
 function refinarPalavra(palavra) {
@@ -63,6 +85,8 @@ function refinarPalavra(palavra) {
   palavra = palavra.replace('_', ' ')
   palavra = palavra.toLowerCase()
   return palavra[0].toUpperCase() + palavra.substring(1)
+=======
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
 }
 
 const registrosFiltrados = computed(() => {
@@ -111,6 +135,7 @@ defineExpose({ carregarTodos })
 
 <template>
   <div class="cards-wrapper">
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
     <div class="card">
       <div class="card-icon icon-disponivel">
         <svg
@@ -188,18 +213,72 @@ defineExpose({ carregarTodos })
           />
         </svg>
       </div>
+=======
+  <div class="card">
+    <div class="card-icon icon-disponivel">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm-1 14.41-3.71-3.7 1.42-1.42L11 13.59l5.29-5.3 1.42 1.42L11 16.41z"/>
+      </svg>
+    </div>
+    <div class="card-info">
+      <span class="card-label">DISPONÍVEIS</span>
+      <span class="card-value card-green">{{ disponiveis }}</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-icon icon-emuso">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
+      </svg>
+    </div>
+    <div class="card-info">
+      <span class="card-label">EM USO</span>
+      <span class="card-value card-orange">{{ emUso }}</span>
+    </div>
+  </div>
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
 
       <div class="card-info">
         <span class="card-label">DESATIVADAS</span>
         <span class="card-value card-gray">{{ desativadas }}</span>
       </div>
     </div>
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
 
     <div class="btn-wrapper">
       <button class="btn-cadastrar" @click="$emit('abrirModal')">Cadastrar nova viatura</button>
     </div>
   </div>
   <div class="container">
+=======
+    <div class="card-info">
+      <span class="card-label">MANUTENÇÃO</span>
+      <span class="card-value card-red">{{ manutencao }}</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-icon icon-desativada">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zM4 12a8 8 0 0 1 11.29-7.29L4.71 16.29A7.96 7.96 0 0 1 4 12zm8 8a7.96 7.96 0 0 1-4.29-1.71L19.29 7a8 8 0 0 1-7.29 11z"/>
+      </svg>
+    </div>
+    <div class="card-info">
+      <span class="card-label">DESATIVADAS</span>
+      <span class="card-value card-gray">{{ desativadas }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="btn-wrapper">
+  <button class="btn-cadastrar" @click="$emit('cadastrar')">
+    Cadastrar viatura
+  </button>
+</div>
+
+  <div class="container_tabela">
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
     <div class="searchHeader">
       <div class="searchBar">
         <svg
@@ -261,8 +340,19 @@ defineExpose({ carregarTodos })
         <tr v-for="reg in registrosFiltrados" :key="reg.id">
           <td>{{ reg.prefix }}</td>
           <td>{{ reg.brand }} {{ reg.model }}</td>
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
           <td><span class="status-color" :class="reg.status"></span></td>
           <td><span class="more-info-btn" @click="openInfo(reg)">•••</span></td>
+=======
+
+          <td>
+            <span class="status-color" :class="reg.status" :title="reg.status"></span>
+          </td>
+
+          <td>
+            <span class="more-info-btn" @click="openInfo(reg)">•••</span>
+          </td>
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
         </tr>
       </tbody>
     </table>
@@ -297,11 +387,11 @@ defineExpose({ carregarTodos })
       </div>
       <div class="info-line">
         <span class="info-label">Tipo</span>
-        <span class="info-value">{{ refinarPalavra(viaturaInfo.type) }}</span>
+        <span class="info-value">{{ viaturaInfo.type }}</span>
       </div>
       <div class="info-line">
         <span class="info-label">Combustível</span>
-        <span class="info-value">{{ refinarPalavra(viaturaInfo.fuelType) }}</span>
+        <span class="info-value">{{ viaturaInfo.fuelType }}</span>
       </div>
       <div class="info-line">
         <span class="info-label">Quilometragem</span>
@@ -326,6 +416,7 @@ defineExpose({ carregarTodos })
 <style scoped>
 @import '@/assets/style.css';
 
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
 .cards-wrapper {
   display: flex;
   flex-wrap: wrap;
@@ -418,6 +509,8 @@ defineExpose({ carregarTodos })
   border-radius: 7px;
   cursor: pointer;
 }
+=======
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
 .container {
   width: 80%;
   background-color: #ffffff;
@@ -475,7 +568,7 @@ th:nth-child(3),
 th:nth-child(4),
 th:nth-child(5) {
   width: max(200px);
-}
+  }
 /*Tags de status*/
 .status-color {
   display: inline-block;
@@ -484,6 +577,7 @@ th:nth-child(5) {
   border-radius: 50%;
 }
 
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
 .DISPONIVEL {
   background-color: #abf5cb;
   color: #0ae972;
@@ -501,6 +595,12 @@ th:nth-child(5) {
   background: #ececec;
   color: #888888;
 }
+=======
+.DISPONIVEL{ background: #d6f5e6; color: #1aab5e; }
+.EM_USO { background: #fff0dc; color: #d97706; }
+.MANUTENCAO {background: #ffe2e0; color: #e53935;}
+.DESATIVADA {background: #ececec; color: #888888;}
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
 
 /*Ícone de editar*/
 .more-info-btn {
@@ -525,13 +625,20 @@ th:nth-child(5) {
 }
 .modal-info {
   background: white;
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
   border-radius: 16px;
+=======
+  border-radius: 12%;
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
   padding: 40px;
   width: 100%;
   max-width: 400px;
   position: relative;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
   box-sizing: border-box;
+=======
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
 }
 
 .modal-title {
@@ -584,6 +691,7 @@ svg {
   cursor: pointer;
 }
 
+<<<<<<< HEAD:src/components/AppVisualizadorViatura.vue
 .lista-mobile { display: none; }
 
 .card-viatura {
@@ -666,5 +774,86 @@ svg {
   .lista-mobile   { display: block; }
 
   .modal-info { padding: 28px 18px; }
+=======
+.cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  width: 80%;
+  margin: 0 auto 20px auto;
+}
+
+.card {
+  flex: 1;
+  min-width: 140px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+}
+
+.card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-disponivel { background: #d6f5e6; color: #1aab5e; }
+.icon-emuso      { background: #fff0dc; color: #d97706; }
+.icon-manutencao { background: #ffe2e0; color: #e53935; }
+.icon-desativada { background: #ececec; color: #888888; }
+
+.card-info { display: flex; flex-direction: column; gap: 2px; }
+
+.card-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #888;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.card-value {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.card-green  { color: #1aab5e; }
+.card-orange { color: #d97706; }
+.card-red    { color: #e53935; }
+.card-gray   { color: #999;}
+
+.btn-wrapper {
+  width: 100%;
+  display: left;
+  justify-content: center;
+  margin-bottom: 20px;
+  align-self: flex-start;
+  margin-left: 10%;
+}
+
+.btn-cadastrar {
+  background-color: #7aa6cc;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 15px;
+
+}
+
+.btn-cadastrar:hover {
+  background-color: #457aad;
+>>>>>>> b073f7f80575798c53129282943defd31ee6b9dd:src/components/VehicleViewerApp.vue
 }
 </style>
