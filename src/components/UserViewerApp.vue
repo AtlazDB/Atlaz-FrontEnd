@@ -11,7 +11,11 @@ const status_filtro = ref('')
 const userInfo = ref(null)
 const showInfo = ref(false)
 
-const emit = defineEmits(['editar'])
+const emit = defineEmits(['editar', 'abrir-form', 'update:totais'])
+
+const totalDisponiveis = computed(() => registros.value.filter(r => r.userStatus === 'DISPONIVEL').length)
+const totalEmCampo = computed(() => registros.value.filter(r => r.userStatus === 'EM_CAMPO').length)
+const totalDesligados = computed(() => registros.value.filter(r => r.userStatus === 'DESLIGADO').length)
 
 async function carregarTodos() {
   carregando.value = true
@@ -31,6 +35,12 @@ async function carregarTodos() {
      *   }
      * ]
      */
+
+     emit('update:totais', {
+      disponiveis: totalDisponiveis.value,
+      emCampo: totalEmCampo.value,
+      desligados: totalDesligados.value,
+    })
   } catch (erro) {
     console.error('Erro ao carregar usuários:', erro)
   } finally {
@@ -73,6 +83,12 @@ onMounted(carregarTodos)
 </script>
 
 <template>
+
+<div class="btn-container">
+  <button class="btn-cadastrar" @click="emit('abrir-form')">
+    Cadastrar técnico
+  </button>
+</div>
   <div class="container_tabela">
     <div class="searchHeader">
       <div class="searchBar">
@@ -176,6 +192,22 @@ onMounted(carregarTodos)
 <style scoped>
 @import '@/assets/style.css';
 
+.btn-container {
+  width: 80%;
+  margin: 0 auto 20px auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.btn-cadastrar {
+  background-color: #7aa6cc;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
 .searchHeader {
   display: flex;
   height: 25px;
@@ -206,7 +238,6 @@ onMounted(carregarTodos)
 }
 
 select {
-  border: 2px solid #003366;
   color: #003366;
   border-radius: 15px;
   margin: 0 10px;
