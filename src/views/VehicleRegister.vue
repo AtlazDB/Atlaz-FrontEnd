@@ -61,11 +61,11 @@ onMounted(async () => {
     <div class="componente">
       <h1 class="titulo">Viaturas cadastradas</h1>
       <div class="visualizadorViatura">
-        <button class="btn-cadastrar" @click="openForm()">Cadastrar viatura</button>
         <!-- chama a função 'editar' com parâmetros -->
         <VehicleViewerApp
           ref="visualizador"
-          @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
+           @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
+           @cadastrar="openForm()"
         />
       </div>
       <!-- garante que o componente sobreponha os outros -->
@@ -85,15 +85,12 @@ onMounted(async () => {
 @import '@/assets/style.css';
 
 .visualizadorViatura {
+  width: max(100%);
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-}
-
-.btn-cadastrar {
-  align-self: flex-start;
-  margin-left: 5%;
 }
 
 button {
@@ -121,20 +118,20 @@ button:active {
 .campo input {
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #6a5acd;
+  border: 1px solid #003366;
   outline: none;
   background: #fff;
 }
 
 .campo input:focus {
-  border-color: #2f12d1;
+  border-color: #003366;
 }
 
 .select-wrapper select {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #6a5acd;
+  border: 1px solid #003366;
   background: #fff;
   appearance: none;
   outline: none;

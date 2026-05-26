@@ -18,6 +18,8 @@ const erros = ref({})
 const visualizador = ref(null)
 const form = ref(null)
 
+const totais = ref({ disponiveis: 0, emCampo: 0, desligados: 0 })
+
 // ABRIR FORM
 async function openForm(dados = null, tipoAlt = 'cadastro') {
   erros.value = {}
@@ -48,15 +50,63 @@ async function openForm(dados = null, tipoAlt = 'cadastro') {
   <div class="tela">
     <Sidebar nome="William Hasan" cargo="Administrador" userType="admin" />
 
-    <div class="componente">
+     <div class="componente">
       <h1 class="titulo">Técnicos cadastrados</h1>
 
+      <div class="status-cards">
+        <div class="status-card">
+          <div class="status-icon disponivel">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" width="22" height="22">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div class="status-info">
+            <span class="status-label">DISPONÍVEIS</span>
+            <span class="status-count">{{ totais.disponiveis }}</span>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <div class="status-icon em-campo">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" width="22" height="22">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+            </svg>
+          </div>
+          <div class="status-info">
+            <span class="status-label">EM CAMPO</span>
+            <span class="status-count">{{ totais.emCampo }}</span>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <div class="status-icon desligado">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" width="22" height="22">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          </div>
+          <div class="status-info">
+            <span class="status-label">DESLIGADOS</span>
+            <span class="status-count">{{ totais.desligados }}</span>
+          </div>
+        </div>
+      </div>
+
       <div class="visualizadorTecnico">
-        <button class="btn-cadastrar" @click="openForm()">Cadastrar técnico</button>
+
 
         <UserViewerApp
           ref="visualizador"
           @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
+          @abrir-form="openForm()"
+          @update:totais="(t) => Object.assign(totais, t)"
         />
       </div>
       <!-- garante que o componente sobreponha os outros -->
@@ -75,16 +125,76 @@ async function openForm(dados = null, tipoAlt = 'cadastro') {
 <style scoped>
 @import '@/assets/style.css';
 
+.status-cards {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.status-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 18px 28px;
+  min-width: 180px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.status-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-icon.disponivel {
+  background-color: #e6f9f0;
+  color: #1aad5e;
+}
+
+.status-icon.em-campo {
+  background-color: #fff4e5;
+  color: #e07c00;
+}
+
+.status-icon.desligado {
+  background-color: #f5f5f5;
+  color: #888888;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.status-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #999;
+  text-transform: uppercase;
+}
+
+.status-count {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.1;
+}
+
 .visualizadorTecnico {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-}
-
-.btn-cadastrar {
-  align-self: flex-start;
-  margin-left: 5%;
 }
 
 button {
@@ -141,7 +251,7 @@ button:active {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #6a5acd;
+  border: 1px solid #003366;
   background: #fff;
   appearance: none;
   outline: none;
@@ -155,7 +265,7 @@ button:active {
   top: 50%;
   transform: translateY(-50%);
   font-size: 12px;
-  color: #6a5acd;
+  color: #003366;
   pointer-events: none;
 }
 

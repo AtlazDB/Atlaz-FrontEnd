@@ -21,6 +21,16 @@ const statusListReg = ref(['DISPONIVEL'])
 
 defineExpose({ openForm })
 
+function mascaraNome(e) {
+  nome.value = e.target.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '')
+}
+
+function mascaraMatricula(e) {
+  let v = e.target.value.replace(/\D/g, '').slice(0, 8)
+  if (v.length > 7) v = v.slice(0, 7) + '-' + v.slice(7)
+  matricula.value = v
+}
+
 // -- Funções
 function formatWord(word) {
   const map = {
@@ -107,7 +117,7 @@ async function submitForm() {
       <div class="linha">
         <div class="campo">
           <label>Nome</label>
-          <input class="ipt-field" :class="{ erro: erros.nome }" type="text" v-model="nome" />
+          <input class="ipt-field" :class="{ erro: erros.nome }" type="text" v-model="nome" @input="mascaraNome" placeholder="Ex: João Silva" />
         </div>
 
         <div class="campo">
@@ -117,6 +127,8 @@ async function submitForm() {
             :class="{ erro: erros.matricula }"
             type="text"
             v-model="matricula"
+            @input="mascaraMatricula"
+            placeholder="Ex: 1234567-8"
           />
         </div>
       </div>
@@ -124,7 +136,7 @@ async function submitForm() {
       <div class="linha">
         <div class="campo">
           <label>Email</label>
-          <input class="ipt-field" :class="{ erro: erros.email }" type="email" v-model="email" />
+          <input class="ipt-field" :class="{ erro: erros.email }" type="email" v-model="email" placeholder="exemplo@email.com" />
         </div>
 
         <div class="campo">
