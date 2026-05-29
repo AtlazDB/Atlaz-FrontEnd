@@ -137,4 +137,10 @@ button:active {
   outline: none;
   cursor: pointer;
 }
+
+@media screen {
+  .titulo{
+    margin-top: 35px;
+  }
+}
 </style>

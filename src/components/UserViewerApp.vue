@@ -354,4 +354,25 @@ td {
 svg {
   cursor: pointer;
 }
+@media screen {
+
+  .btn-container {
+    justify-content: center;
+    margin: 20px auto;
+  }
+
+  .tabela-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .searchHeader {
+    flex-direction: column;
+    height: auto;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: stretch;
+  }
+
+}
 </style>
