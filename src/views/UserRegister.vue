@@ -12,6 +12,7 @@ const matricula = ref('')
 const email = ref('')
 const senha = ref('')
 const status = ref('ATIVO')
+const cnh = ref('')
 
 const tipoAlteracao = ref('')
 const erros = ref({})
@@ -30,6 +31,7 @@ async function openForm(dados = null, tipoAlt = 'cadastro') {
   email.value = ''
   senha.value = ''
   status.value = 'ATIVO'
+  cnh.value = ''
 
   if (dados != null) {
     id.value = dados.id
@@ -37,6 +39,7 @@ async function openForm(dados = null, tipoAlt = 'cadastro') {
     matricula.value = dados.registrationNumber
     email.value = dados.email
     status.value = dados.userStatus
+    cnh.value = dados.cnhType
   }
 
   tipoAlteracao.value = tipoAlt
