@@ -146,7 +146,7 @@ defineExpose({ carregarTodos })
   </div>
 
   <div class="btn-wrapper">
-    <button class="btn-cadastrar" @click="$emit('abrirModal')">Cadastrar nova viatura</button>
+    <button class="btn-cadastrar" @click="$emit('cadastrar')">Cadastrar nova viatura</button>
   </div>
 
   <div class="container_tabela">

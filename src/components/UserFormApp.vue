@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { usuarioService } from '@/services/usuarioServices.js'
+import CnhSelectorApp from '@/components/CnhSelectorApp.vue'
 
 const emit = defineEmits(['close', 'saved'])
 
@@ -13,11 +14,14 @@ const matricula = ref('')
 const email = ref('')
 const senha = ref('')
 const status = ref('DISPONIVEL')
+const cnh = ref([])
+
 const tipoAlteracao = ref('')
 const erros = ref({})
 
 const statusListEdit = ref(['DISPONIVEL', 'EM_CAMPO', 'DESLIGADO'])
 const statusListReg = ref(['DISPONIVEL'])
+const cnhList = ref(['A', 'B', 'C', 'D', 'E'])
 
 defineExpose({ openForm })
 
@@ -54,7 +58,9 @@ function openForm(dados = null, tipoAlt = 'cadastro') {
   email.value = dados?.email ?? ''
   senha.value = dados?.passwordHash ?? ''
   status.value = dados?.userStatus ?? 'DISPONIVEL'
+  cnh.value = dados?.cnhTypes ?? []
   tipoAlteracao.value = tipoAlt
+  console.log(dados)
 
   showForm.value = true
 }
@@ -69,6 +75,7 @@ function validateForm() {
   if (!matricula.value?.trim()) e.registrationNumber = true
   if (!email.value?.trim()) e.email = true
   if (!senha.value?.trim() && tipoAlteracao.value === 'cadastro') e.senha = true
+  if (!cnh.value) e.cnhType = true
 
   erros.value = e
   return Object.keys(e).length === 0
@@ -90,6 +97,7 @@ async function submitForm() {
     passwordHash: senha.value,
     profile: 'TECNICO',
     userStatus: status.value || 'DISPONIVEL',
+    cnhTypes: cnh.value,
   }
   try {
     if (tipoAlteracao.value === 'cadastro') {
@@ -117,7 +125,14 @@ async function submitForm() {
       <div class="linha">
         <div class="campo">
           <label>Nome</label>
-          <input class="ipt-field" :class="{ erro: erros.nome }" type="text" v-model="nome" @input="mascaraNome" placeholder="Ex: João Silva" />
+          <input
+            class="ipt-field"
+            :class="{ erro: erros.nome }"
+            type="text"
+            v-model="nome"
+            @input="mascaraNome"
+            placeholder="Ex: João Silva"
+          />
         </div>
 
         <div class="campo">
@@ -136,7 +151,13 @@ async function submitForm() {
       <div class="linha">
         <div class="campo">
           <label>Email</label>
-          <input class="ipt-field" :class="{ erro: erros.email }" type="email" v-model="email" placeholder="exemplo@email.com" />
+          <input
+            class="ipt-field"
+            :class="{ erro: erros.email }"
+            type="email"
+            v-model="email"
+            placeholder="exemplo@email.com"
+          />
         </div>
 
         <div class="campo">
@@ -167,6 +188,10 @@ async function submitForm() {
             <option v-for="s in statusListEdit" :key="s" :value="s">{{ formatWord(s) }}</option>
           </select>
         </div>
+      </div>
+      <div class="campo">
+        <label>CNH</label>
+        <cnh-selector-app v-model:cnhList="cnh"/>
       </div>
 
       <button class="btn-enviar" :disabled="load" @click="submitForm()">Confirmar</button>
