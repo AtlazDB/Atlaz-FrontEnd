@@ -138,7 +138,7 @@ button:active {
   cursor: pointer;
 }
 
-@media screen {
+@media (max-width: 600px) {
   .titulo{
     margin-top: 35px;
   }
