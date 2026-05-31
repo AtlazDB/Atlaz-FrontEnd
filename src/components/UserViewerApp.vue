@@ -13,9 +13,15 @@ const showInfo = ref(false)
 
 const emit = defineEmits(['editar', 'abrir-form', 'update:totais'])
 
-const totalDisponiveis = computed(() => registros.value.filter(r => r.userStatus === 'DISPONIVEL').length)
-const totalEmCampo = computed(() => registros.value.filter(r => r.userStatus === 'EM_CAMPO').length)
-const totalDesligados = computed(() => registros.value.filter(r => r.userStatus === 'DESLIGADO').length)
+const totalDisponiveis = computed(
+  () => registros.value.filter((r) => r.userStatus === 'DISPONIVEL').length,
+)
+const totalEmCampo = computed(
+  () => registros.value.filter((r) => r.userStatus === 'EM_CAMPO').length,
+)
+const totalDesligados = computed(
+  () => registros.value.filter((r) => r.userStatus === 'DESLIGADO').length,
+)
 
 async function carregarTodos() {
   carregando.value = true
@@ -31,12 +37,13 @@ async function carregarTodos() {
      *    email: '',
      *    passwordHash: '',
      *    profile: 'TECNICO',
-     *    userStatus: 'DISPONIVEL'
+     *    userStatus: 'DISPONIVEL',
+     *    cnhTypes: '' [A,B,C,D,E]
      *   }
      * ]
      */
 
-     emit('update:totais', {
+    emit('update:totais', {
       disponiveis: totalDisponiveis.value,
       emCampo: totalEmCampo.value,
       desligados: totalDesligados.value,
@@ -83,12 +90,9 @@ onMounted(carregarTodos)
 </script>
 
 <template>
-
-<div class="btn-container">
-  <button class="btn-cadastrar" @click="emit('abrir-form')">
-    Cadastrar técnico
-  </button>
-</div>
+  <div class="btn-container">
+    <button class="btn-cadastrar" @click="emit('abrir-form')">Cadastrar técnico</button>
+  </div>
   <div class="container_tabela">
     <div class="searchHeader">
       <div class="searchBar">
@@ -173,6 +177,10 @@ onMounted(carregarTodos)
         <span class="info-label">Senha</span>
         <span class="info-value">{{ userInfo.passwordHash }}</span>
       </div>
+      <div class="info-line">
+        <span class="info-label">CNH</span>
+        <span class="info-value">{{ userInfo.cnhTypes.sort().join(', ') || '-' }}</span>
+      </div>
       <button
         class="btn-edit"
         @click="
@@ -196,7 +204,7 @@ onMounted(carregarTodos)
   width: 80%;
   margin: 0 auto 20px auto;
   display: flex;
-  justify-content: flex-start;
+  justify-content: left;
 }
 
 .btn-cadastrar {
@@ -206,6 +214,7 @@ onMounted(carregarTodos)
   padding: 8px 18px;
   border-radius: 7px;
   cursor: pointer;
+
 }
 
 .searchHeader {
@@ -353,5 +362,26 @@ td {
 }
 svg {
   cursor: pointer;
+}
+@media (max-width: 600px) {
+
+  .btn-container {
+    justify-content: center;
+    margin: 20px auto;
+  }
+
+  .tabela-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .searchHeader {
+    flex-direction: column;
+    height: auto;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: stretch;
+  }
+
 }
 </style>

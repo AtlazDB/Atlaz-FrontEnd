@@ -8,17 +8,28 @@ const carregando = ref(true)
 const activeCategory = ref('all')
 
 const props = defineProps(['filtro'])
+
 const registrosFiltrados = computed(() => {
   let lista = registros.value
 
-  // filtro de categoria
   if (activeCategory.value !== 'all') {
     lista = lista.filter((r) => r.tipo === activeCategory.value)
   }
 
-  // filtro de mês/ano
   if (!props.filtro) return lista
 
+  if (props.filtro.dataInicio && props.filtro.dataFim) {
+    const inicio = fmt(props.filtro.dataInicio)
+    const fim = fmt(props.filtro.dataFim)
+    return lista.filter((reg) => {
+      const dataISO = reg.tipo === 'os' ? reg.os?.departureDate : reg.refueling?.dateTime
+      if (!dataISO) return false
+      const data = dataISO.split('T')[0]
+      return data >= inicio && data <= fim
+    })
+  }
+
+  // filtro por mês/ano
   return lista.filter((reg) => {
     const dataISO = reg.tipo === 'os' ? reg.os?.departureDate : reg.refueling?.dateTime
     if (!dataISO) return false
@@ -35,13 +46,11 @@ async function carregarTodos() {
       abastecimentoService.listar(),
     ])
 
-    // linhas com OS
     const linhasOS = ordens.map((os) => {
       const refueling = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
       return { os, refueling, tipo: 'os' }
     })
 
-    // abastecimentos sem OS vinculada
     const linhasAbastecimento = abastecimentos
       .filter((a) => !a.serviceOrder)
       .map((a) => ({ os: null, refueling: a, tipo: 'abastecimento' }))
@@ -59,8 +68,9 @@ onMounted(() => carregarTodos())
 function formatarHora(dataISO) {
   if (!dataISO) return '-'
   const [, hora] = dataISO.split('T')
-  return hora.slice(0, 5) // pega só HH:mm
+  return hora.slice(0, 5)
 }
+
 function formatarData(dataISO) {
   if (!dataISO) return '-'
   const [data] = dataISO.split('T')
@@ -76,6 +86,8 @@ function formatarValor(valor) {
   }).format(valor)
 }
 
+const fmt = (d) => new Date(d).toISOString().split('T')[0]
+
 watch(
   () => props.filtro,
   async (filtro) => {
@@ -83,8 +95,30 @@ watch(
       await carregarTodos()
       return
     }
+
     carregando.value = true
     try {
+      // filtro por intervalo de datas
+      if (filtro.dataInicio && filtro.dataFim) {
+        const [ordens, abastecimentos, total] = await Promise.all([
+          ordemDeServicoService.listar(),
+          abastecimentoService.listar(),
+          ordemDeServicoService.countByInterval(fmt(filtro.dataInicio), fmt(filtro.dataFim)),
+        ])
+
+        registros.value = [
+          ...ordens.map((os) => {
+            const refueling = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
+            return { os, refueling, tipo: 'os' }
+          }),
+          ...abastecimentos
+            .filter((a) => !a.serviceOrder)
+            .map((a) => ({ os: null, refueling: a, tipo: 'abastecimento' })),
+        ]
+        return
+      }
+
+      // filtro por mês/ano
       const [ordens, abastecimentos] = await Promise.all([
         ordemDeServicoService.listarPorMes(filtro.mes + 1, filtro.ano),
         abastecimentoService.listarPorMes(filtro.mes + 1, filtro.ano),
@@ -113,7 +147,7 @@ watch(
   <div class="tabela">
     <button
       v-if="registrosFiltrados.length > 0"
-      @click="ordemDeServicoService.exportarCsv(props.filtro?.mes, props.filtro?.ano)"
+      @click="ordemDeServicoService.exportarCsv(props.filtro, activeCategory)"
     >
       Exportar tabela
     </button>
@@ -147,7 +181,6 @@ watch(
       <thead>
         <tr>
           <th>Viatura</th>
-
           <th v-if="activeCategory !== 'abastecimento'">Ocorrência</th>
           <th v-if="activeCategory !== 'abastecimento'">Justificativa</th>
           <th v-if="activeCategory !== 'abastecimento'">Requisitante</th>
@@ -158,7 +191,6 @@ watch(
           <th v-if="activeCategory !== 'abastecimento'">Horário chegada</th>
           <th v-if="activeCategory !== 'abastecimento'">Data saída</th>
           <th v-if="activeCategory !== 'abastecimento'">Data chegada</th>
-          <!-- Abastecimento -->
           <th v-if="activeCategory !== 'os'">Litros</th>
           <th v-if="activeCategory !== 'os'">Valor</th>
           <th v-if="activeCategory !== 'os'">Nota fiscal</th>
@@ -211,7 +243,6 @@ watch(
           <td v-if="activeCategory !== 'abastecimento'">
             {{ formatarData(reg.os?.returnDate) }}
           </td>
-          <!-- Abastecimento -->
           <td v-if="activeCategory !== 'os'">
             {{ reg.refueling?.liters ?? '-' }}
           </td>
@@ -238,11 +269,20 @@ watch(
   width: 100%;
   overflow-x: auto;
 }
+
+.total-intervalo {
+  align-self: center;
+  margin: 6px 0;
+  font-size: 13px;
+  color: #003366;
+}
+
 .category-btns {
   align-self: center;
   display: flex;
   gap: 2px;
 }
+
 .btn-1,
 .btn-2,
 .btn-3 {
@@ -256,29 +296,21 @@ watch(
   transition: 0.2s;
   opacity: 0.6;
 }
+
 .btn-1:hover,
 .btn-2:hover,
-.btn-3:hover {
-  opacity: 1;
-}
+.btn-3:hover { opacity: 1; }
+
 .btn-1.selected,
 .btn-2.selected,
-.btn-3.selected {
-  opacity: 1;
-}
-.btn-1 {
-  border-radius: 10px 0 0 10px;
-}
-.btn-2 {
-  border-radius: 0;
-}
-.btn-3 {
-  border-radius: 0 10px 10px 0;
-}
+.btn-3.selected { opacity: 1; }
 
-.info {
-  align-self: center;
-}
+.btn-1 { border-radius: 10px 0 0 10px; }
+.btn-2 { border-radius: 0; }
+.btn-3 { border-radius: 0 10px 10px 0; }
+
+.info { align-self: center; }
+
 button {
   padding: 10px;
   margin: 10px;
@@ -289,23 +321,24 @@ button {
   width: fit-content;
   cursor: pointer;
 }
+
 table {
   margin-top: 20px;
   border-collapse: collapse;
   max-width: 100%;
   table-layout: fixed;
 }
-td,
-th {
+
+td, th {
   border: 1px solid #ddd;
   font-size: 11px;
   padding-right: 2px;
   padding-left: 2px;
 }
+
 th:nth-child(6),
-th:nth-child(7) {
-  max-width: 55px;
-}
+th:nth-child(7) { max-width: 55px; }
+
 td {
   padding-top: 5px;
   padding-bottom: 5px;
@@ -315,6 +348,7 @@ td {
   max-width: 50px;
   text-align: center;
 }
+
 tbody tr:hover td {
   background-color: #7aa6cc;
   transition: 0.1s;

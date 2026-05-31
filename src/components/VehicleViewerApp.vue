@@ -16,6 +16,9 @@ const emit = defineEmits(['editar', 'abrirModal'])
 const showInfo = ref(false)
 const viaturaInfo = ref(null)
 
+const showAviso = ref(false)
+const avisoInfo = ref(null)
+
 const disponiveis = computed(() => registros.value.filter((v) => v.status === 'DISPONIVEL').length)
 const emUso = computed(() => registros.value.filter((v) => v.status === 'EM_USO').length)
 const manutencao = computed(() => registros.value.filter((v) => v.status === 'MANUTENCAO').length)
@@ -71,6 +74,20 @@ function closeInfo() {
 
 function edit(viatura) {
   emit('editar', viatura, 'edicao')
+}
+
+function precisaManutencao(km) {
+  return km >= 10000
+}
+
+function openAviso(viatura) {
+  avisoInfo.value = viatura
+  showAviso.value = true
+}
+
+function closeAviso() {
+  showAviso.value = false
+  avisoInfo.value = null
 }
 
 onMounted(() => carregarTodos())
@@ -136,9 +153,9 @@ defineExpose({ carregarTodos })
     <div class="searchHeader">
       <div class="searchBar">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke-width="1.5" stroke="currentColor" height="20" width="20">
+             stroke-width="1.5" stroke="currentColor" height="20" width="20">
           <path stroke-linecap="round" stroke-linejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
         </svg>
         <input type="search" placeholder="Buscar pelo prefixo" v-model="busca_filtro" />
       </div>
@@ -171,20 +188,30 @@ defineExpose({ carregarTodos })
 
     <table class="tabela-desktop" v-else>
       <thead>
-        <tr>
-          <th>Prefixo</th>
-          <th>Modelo</th>
-          <th>Status</th>
-          <th>Mais Informações</th>
-        </tr>
+      <tr>
+        <th>Prefixo</th>
+        <th>Modelo</th>
+        <th>Status</th>
+        <th>Mais Informações</th>
+        <th>Avisos</th>
+      </tr>
       </thead>
       <tbody>
-        <tr v-for="reg in registrosFiltrados" :key="reg.id">
-          <td>{{ reg.prefix }}</td>
-          <td>{{ reg.brand }} {{ reg.model }}</td>
-          <td><span class="status-color" :class="reg.status" :title="reg.status"></span></td>
-          <td><span class="more-info-btn" @click="openInfo(reg)">•••</span></td>
-        </tr>
+      <tr v-for="reg in registrosFiltrados" :key="reg.id">
+        <td>{{ reg.prefix }}</td>
+        <td>{{ reg.brand }} {{ reg.model }}</td>
+        <td><span class="status-color" :class="reg.status" :title="reg.status"></span></td>
+        <td><span class="more-info-btn" @click="openInfo(reg)">•••</span></td>
+        <td>
+          <div
+            class="warning-btn"
+            :class="{ ativo: precisaManutencao(reg.km) }"
+            @click="openAviso(reg)"
+          >
+            !
+          </div>
+        </td>
+      </tr>
       </tbody>
     </table>
 
@@ -192,7 +219,16 @@ defineExpose({ carregarTodos })
       <div class="card-viatura" v-for="reg in registrosFiltrados" :key="reg.id" @click="openInfo(reg)">
         <div class="card-viatura-header">
           <span class="card-viatura-prefix">{{ reg.prefix }}</span>
-          <span class="status-color" :class="reg.status"></span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div
+              class="warning-btn"
+              :class="{ ativo: precisaManutencao(reg.km) }"
+              @click.stop="openAviso(reg)"
+            >
+              !
+            </div>
+            <span class="status-color" :class="reg.status"></span>
+          </div>
         </div>
         <span class="card-viatura-model">{{ reg.brand }} {{ reg.model }}</span>
         <span class="card-viatura-tipo">{{ refinarPalavra(reg.type) }} · {{ refinarPalavra(reg.fuelType) }}</span>
@@ -221,6 +257,28 @@ defineExpose({ carregarTodos })
       </div>
       <button class="btn-edit" @click="() => { edit(viaturaInfo); closeInfo() }">Editar</button>
       <button class="btn-close" @click="closeInfo">X</button>
+    </div>
+  </div>
+
+  <div v-if="showAviso" class="overlay" @click="closeAviso">
+    <div class="modal-info" @click.stop>
+      <h3 class="modal-title">Avisos da Viatura</h3>
+
+      <div v-if="precisaManutencao(avisoInfo.km)" class="info-line">
+        <span class="info-label">Manutenção preventiva</span>
+        <span class="info-value">
+          Viatura atingiu {{ avisoInfo.km }} km.
+          Necessária manutenção.
+        </span>
+      </div>
+
+      <div v-else class="info-line">
+        <span class="info-value">
+          Nenhum aviso disponível.
+        </span>
+      </div>
+
+      <button class="btn-close" @click="closeAviso">X</button>
     </div>
   </div>
 </template>
@@ -358,6 +416,25 @@ th, td {
   width: 100px;
   cursor: pointer;
 }
+
+.warning-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #000;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.warning-btn:hover { transform: scale(1.1); }
+
+.warning-btn.ativo { background-color: #ff0000; }
 
 .overlay {
   position: fixed;
@@ -498,5 +575,7 @@ th, td {
   .lista-mobile   { display: block; }
 
   .modal-info { padding: 28px 18px; }
+
+  .warning-btn { margin: 0; }
 }
 </style>

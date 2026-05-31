@@ -1,53 +1,21 @@
 <script setup>
 import Sidebar from '@/views/Sidebar.vue'
 import VehicleViewerApp from '@/components/VehicleViewerApp.vue'
-import { modelService } from '@/services/modelService.js'
 import VehicleFormApp from '@/components/VehicleFormApp.vue'
-
 import { ref, onMounted, nextTick } from 'vue'
+import { modelService } from '@/services/modelService.js'
 
-const userName = ref(localStorage.getItem("userName") || "Administrador")
-
-const id = ref(0)
-const prefixo = ref('')
-const tipo = ref('')
-const modelId = ref(null)
-const modelos = ref([])
-const combustivel = ref('')
-const quilometragem = ref(0)
-const status = ref('')
-const tipoAlteracao = ref('')
+const userName = ref(localStorage.getItem('userName') || 'Administrador')
 
 const showForm = ref(false)
-const erros = ref({})
+const modelos = ref([])
 const visualizador = ref(null)
 const form = ref(null)
 
-//Padrão para cadastro
 async function openForm(dados = null, tipoAlt = 'cadastro') {
-  //Reset dos dados
-  erros.value = {}
-  id.value = 0
-  prefixo.value = ''
-  tipo.value = 'UTILITARIO'
-  modelId.value = dados?.modelId ?? null
-  combustivel.value = 'GASOLINA'
-  quilometragem.value = 0
-  status.value = 'DISPONIVEL'
-
-  //Caso seja uma edição atribui os dados passados
-  if (dados != null) {
-    id.value = dados.id
-    prefixo.value = dados.prefix
-    tipo.value = dados.type
-    combustivel.value = dados.fuelType
-    quilometragem.value = dados.km
-    status.value = dados.status
-  }
-  tipoAlteracao.value = tipoAlt
   showForm.value = true
-  await nextTick() // espera o VehicleFormApp montar no DOM
-  await form.value?.openForm(dados, tipoAlt) // chama o openForm do filho
+  await nextTick()
+  await form.value?.openForm(dados, tipoAlt)
 }
 
 onMounted(async () => {
@@ -62,14 +30,12 @@ onMounted(async () => {
     <div class="componente">
       <h1 class="titulo">Viaturas cadastradas</h1>
       <div class="visualizadorViatura">
-        <!-- chama a função 'editar' com parâmetros -->
         <VehicleViewerApp
           ref="visualizador"
-           @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
-           @cadastrar="openForm()"
+          @editar="(dados, tipoAlt) => openForm(dados, tipoAlt)"
+          @abrirModal="openForm()"
         />
       </div>
-      <!-- garante que o componente sobreponha os outros -->
       <Teleport to="body">
         <VehicleFormApp
           v-if="showForm"
@@ -86,8 +52,6 @@ onMounted(async () => {
 @import '@/assets/style.css';
 
 .visualizadorViatura {
-  width: max(100%);
-  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -102,9 +66,11 @@ button {
   border-radius: 7px;
   margin-bottom: 30px;
 }
+
 button:hover {
   background-color: #457aad;
 }
+
 button:active {
   transform: scale(0.95);
   transition-duration: 0.1s;
@@ -136,5 +102,11 @@ button:active {
   appearance: none;
   outline: none;
   cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .titulo {
+    margin-top: 35px;
+  }
 }
 </style>
