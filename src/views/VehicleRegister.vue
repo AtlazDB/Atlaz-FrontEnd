@@ -6,7 +6,7 @@ import VehicleFormApp from '@/components/VehicleFormApp.vue'
 
 import { ref, onMounted, nextTick } from 'vue'
 
-const showForm = ref(false)
+const userName = ref(localStorage.getItem("userName") || "Administrador")
 
 const id = ref(0)
 const prefixo = ref('')
@@ -18,6 +18,7 @@ const quilometragem = ref(0)
 const status = ref('')
 const tipoAlteracao = ref('')
 
+const showForm = ref(false)
 const erros = ref({})
 const visualizador = ref(null)
 const form = ref(null)
@@ -56,7 +57,7 @@ onMounted(async () => {
 
 <template>
   <div class="tela">
-    <Sidebar nome="ADMIN" cargo="Administrador" userType="admin" @openForm="actionForm" />
+    <Sidebar :nome="userName" cargo="Administrador" userType="admin" />
     <router-view />
     <div class="componente">
       <h1 class="titulo">Viaturas cadastradas</h1>
@@ -90,7 +91,6 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
 }
 
 button {

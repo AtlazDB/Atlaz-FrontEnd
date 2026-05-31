@@ -54,7 +54,7 @@
       <!-- Administrador -->
       <button v-if="userType === 'admin'" class="menu" @click="handleMenuClick('principal')">
         <span class="icon">📊</span>
-        <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Principal</span>
+        <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Dashboard</span>
       </button>
       <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
         🚙 Viaturas
