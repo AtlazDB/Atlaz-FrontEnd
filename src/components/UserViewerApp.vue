@@ -196,7 +196,7 @@ onMounted(carregarTodos)
   width: 80%;
   margin: 0 auto 20px auto;
   display: flex;
-  justify-content: flex-start;
+  justify-content: left;
 }
 
 .btn-cadastrar {
@@ -206,6 +206,7 @@ onMounted(carregarTodos)
   padding: 8px 18px;
   border-radius: 7px;
   cursor: pointer;
+
 }
 
 .searchHeader {
@@ -353,5 +354,26 @@ td {
 }
 svg {
   cursor: pointer;
+}
+@media (max-width: 600px) {
+
+  .btn-container {
+    justify-content: center;
+    margin: 20px auto;
+  }
+
+  .tabela-container {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .searchHeader {
+    flex-direction: column;
+    height: auto;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: stretch;
+  }
+
 }
 </style>

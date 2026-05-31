@@ -284,4 +284,68 @@ button:active {
 .btn-enviar:hover {
   background: #002244;
 }
+
+@media (max-width: 600px) {
+  .titulo {
+    margin-top: 35px;
+  }
+  .status-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  width: 80%;
+  margin: 40px auto 10px auto;
+  }
+
+ .status-card {
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px 8px;
+    gap: 6px;
+    border-radius: 10px;
+  }
+
+  .status-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+
+  .status-icon svg { width: 18px; height: 18px; }
+
+  .status-label { font-size: 9px; letter-spacing: 0.04em; }
+  .status-count { font-size: 22px; }
+
+  .visualizadorTecnico { width: 100%; }
+
+  .linha {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .linha .campo {
+    width: 100%;
+  }
+
+  .campo input,
+  .select-wrapper select {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .btn-enviar {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    border-radius: 25px;
+    margin-top: 30px;
+  }
+
+}
 </style>

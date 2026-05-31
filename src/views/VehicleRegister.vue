@@ -137,4 +137,10 @@ button:active {
   outline: none;
   cursor: pointer;
 }
+
+@media (max-width: 600px) {
+  .titulo{
+    margin-top: 35px;
+  }
+}
 </style>
