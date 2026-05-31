@@ -58,7 +58,7 @@ function openForm(dados = null, tipoAlt = 'cadastro') {
   email.value = dados?.email ?? ''
   senha.value = dados?.passwordHash ?? ''
   status.value = dados?.userStatus ?? 'DISPONIVEL'
-  cnh.value = dados?.cnhType ?? []
+  cnh.value = dados?.cnhTypes ?? []
   tipoAlteracao.value = tipoAlt
   console.log(dados)
 
@@ -97,7 +97,7 @@ async function submitForm() {
     passwordHash: senha.value,
     profile: 'TECNICO',
     userStatus: status.value || 'DISPONIVEL',
-    cnhType: cnh.value,
+    cnhTypes: cnh.value,
   }
   try {
     if (tipoAlteracao.value === 'cadastro') {

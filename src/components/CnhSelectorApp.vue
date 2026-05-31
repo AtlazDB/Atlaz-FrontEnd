@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const emit = defineEmits(['update:cnhList'])
 
@@ -25,6 +25,14 @@ const props = defineProps({
 })
 
 const selected = ref([...props.cnhList])
+
+watch(
+  () => props.cnhList,
+  (novaLista) => {
+    selected.value = [...novaLista]
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

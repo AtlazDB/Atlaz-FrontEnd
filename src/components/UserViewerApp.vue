@@ -38,7 +38,7 @@ async function carregarTodos() {
      *    passwordHash: '',
      *    profile: 'TECNICO',
      *    userStatus: 'DISPONIVEL',
-     *    cnhType: '' [A,B,C,D,E]
+     *    cnhTypes: '' [A,B,C,D,E]
      *   }
      * ]
      */
@@ -179,7 +179,7 @@ onMounted(carregarTodos)
       </div>
       <div class="info-line">
         <span class="info-label">CNH</span>
-        <span class="info-value">{{ userInfo.cnhType }}</span>
+        <span class="info-value">{{ userInfo.cnhTypes.sort().join(', ') || '-' }}</span>
       </div>
       <button
         class="btn-edit"

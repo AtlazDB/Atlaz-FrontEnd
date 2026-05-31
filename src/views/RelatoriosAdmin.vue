@@ -47,11 +47,10 @@ h1 {
   margin: 20px 10px 40px;
   background-color: #ffffff;
   border-radius: 20px;
-  padding: 10px;
   width: max(100%);
   height: fit-content;
   min-height: 100px;
-  padding-bottom: 50px;
+  padding: 10px 10px 50px;
   justify-items: center;
   flex-grow: 3;
 }
