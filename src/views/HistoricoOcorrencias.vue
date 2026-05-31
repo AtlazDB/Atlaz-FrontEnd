@@ -227,6 +227,7 @@ const registrosFiltrados = computed(() => {
 
 
 <style scoped>
+@import '@/assets/style.css';
 
 .tela {
   display: flex;
@@ -252,13 +253,8 @@ h1 {
 }
 
 .container {
-  width: 100%;
   max-width: 900px;
-  background-color: #ffffff;
   padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  display: flex;
   flex-direction: column;
   gap: 10px;
 }

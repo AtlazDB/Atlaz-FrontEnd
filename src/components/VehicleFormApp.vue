@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { viaturaService } from '@/services/viaturaService.js'
 import { modelService } from '@/services/modelService.js'
-import IconPlus from '@/assets/icons/IconPlus.vue'
+import PlusIcon from '@/assets/icons/PlusIcon.vue'
 
 // Emite ao pai para atualizar ou fechar o form
 const emit = defineEmits(['close', 'saved'])
@@ -213,7 +213,7 @@ onMounted(async () => {
             @click="showNovoModelo = !showNovoModelo"
             style="border-radius: 0 10px 10px 0"
           >
-            <IconPlus />
+            <PlusIcon />
           </button>
         </div>
       </div>

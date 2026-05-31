@@ -1,11 +1,17 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
+const date = ref(null)
 const emit = defineEmits(['data_selecionada'])
 const selecionado = ref(null)
-const minimizar = ref(true)
+
 const itens_seletor = ref([])
+
+const isOpen = ref(false)
+defineExpose({ open: () => isOpen.value = true })
 
 const mesesNome = [
   'Janeiro',
@@ -46,27 +52,40 @@ onMounted(async () => {
     console.error('Erro ao carregar meses:', erro)
   }
 })
+
+watch(date, (valor) => {
+  if (!valor) return
+  emit('data_selecionada', { dataInicio: valor[0], dataFim: valor[1] })
+  selecionado.value = null // desseleciona o card de mês
+})
 </script>
 
 <template>
-  <div class="seletor" :class="{ fechado: !minimizar }">
+  <div v-if="isOpen" class="overlay" @click="isOpen = false" />
+  <div class="sidebar" :class="{ open: isOpen }">
+    <button class="btn-fechar" @click="isOpen = false">✕</button>
     <h1 class="titulo">Datas</h1>
-    <!--
-  <select>
-    <option value="1">2026</option>
-    <option value="2">2025</option>
-  </select>
-  -->
-    <div class="meses" v-if="minimizar">
+    <p class="sidebar-p">Personalizado</p>
+    <VueDatePicker
+      v-model="date"
+      range
+      :enable-time-picker="false"
+      select-text="Selecionar"
+      cancel-text="Cancelar"
+      locale="pt-BR"
+    />
+
+    <p class="sidebar-p">Por mês</p>
+    <div class="meses">
       <div
         class="card_mes"
-        v-on:click="
+        @click="
           () => {
             selecionado = 'todos'
             emit('data_selecionada', null)
           }
         "
-        v-bind:class="{ ativo: selecionado === 'todos' }"
+        :class="{ ativo: selecionado === 'todos' }"
       >
         <h1>Todos</h1>
       </div>
@@ -74,23 +93,18 @@ onMounted(async () => {
         class="card_mes"
         v-for="item in itens_seletor"
         :key="item.titulo + item.ano"
-        v-on:click="
+        @click="
           () => {
             selecionado = item.titulo + item.ano
             emit('data_selecionada', { mes: item.mes, ano: item.ano })
           }
         "
-        v-bind:class="{ ativo: selecionado === item.titulo + item.ano }"
+        :class="{ ativo: selecionado === item.titulo + item.ano }"
       >
         <h1>{{ item.titulo }}</h1>
         <p>{{ item.ano }}</p>
       </div>
     </div>
-    <button class="minimizador" v-on:click="minimizar = !minimizar">
-      <svg width="20" height="20" viewBox="0 0 24 24" :class="{ fechado: !minimizar }">
-        <path d="M0 16.67l2.829 2.83 9.175-9.339 9.167 9.339 2.829-2.83-11.996-12.17z" />
-      </svg>
-    </button>
   </div>
 </template>
 
@@ -110,30 +124,11 @@ onMounted(async () => {
   border-radius: 20px;
   padding: 10px;
 }
-.seletor.fechado {
-  position: absolute;
-  top: 64px;
-  right: 0;
-}
-.minimizador {
-  width: stretch;
-  background-color: #ffffff;
-  border: 0;
-  cursor: pointer;
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-svg {
-  transition: 0.2s;
-}
-svg:hover {
-  width: 25px;
-  height: 25px;
-}
-svg.fechado {
-  transform: rotate(-180deg);
+
+.sidebar-p{
+  border-bottom: #cccc 1px solid;
+  margin-top: 20px;
+  margin-bottom: 10px;
 }
 .meses {
   display: flex;
@@ -141,7 +136,7 @@ svg.fechado {
   height: 230px;
   overflow-y: hidden;
   overflow-x: hidden;
-  width: 130px;
+  width: 100%;
   margin-top: 10px;
 }
 .meses:hover {
@@ -151,7 +146,7 @@ svg.fechado {
   border-bottom: 1px solid #ddd;
   padding-left: 5px;
   padding-bottom: 5px;
-  width: 130px;
+  width: 100%;
   cursor: pointer;
 }
 .card_mes:hover {
@@ -172,5 +167,39 @@ h1 {
 p {
   font-size: 12px;
   margin: 0;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 250px;
+  background: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  z-index: 100;
+  padding: 20px;
+  overflow: visible;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.btn-fechar {
+  align-self: flex-end;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 99;
+}
+
+:deep(.dp__input) {
+  height: 30px;
+  font-size: 11px;
 }
 </style>

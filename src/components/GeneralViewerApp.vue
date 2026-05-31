@@ -5,10 +5,32 @@ import { ordemDeServicoService } from '@/services/ordemDeServico.js'
 
 const registros = ref([])
 const carregando = ref(true)
+const activeCategory = ref('all')
+
 const props = defineProps(['filtro'])
+
 const registrosFiltrados = computed(() => {
-  if (!props.filtro) return registros.value
-  return registros.value.filter((reg) => {
+  let lista = registros.value
+
+  if (activeCategory.value !== 'all') {
+    lista = lista.filter((r) => r.tipo === activeCategory.value)
+  }
+
+  if (!props.filtro) return lista
+
+  if (props.filtro.dataInicio && props.filtro.dataFim) {
+    const inicio = fmt(props.filtro.dataInicio)
+    const fim = fmt(props.filtro.dataFim)
+    return lista.filter((reg) => {
+      const dataISO = reg.tipo === 'os' ? reg.os?.departureDate : reg.refueling?.dateTime
+      if (!dataISO) return false
+      const data = dataISO.split('T')[0]
+      return data >= inicio && data <= fim
+    })
+  }
+
+  // filtro por mês/ano
+  return lista.filter((reg) => {
     const dataISO = reg.tipo === 'os' ? reg.os?.departureDate : reg.refueling?.dateTime
     if (!dataISO) return false
     const data = new Date(dataISO)
@@ -24,13 +46,11 @@ async function carregarTodos() {
       abastecimentoService.listar(),
     ])
 
-    // linhas com OS
     const linhasOS = ordens.map((os) => {
       const refueling = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
       return { os, refueling, tipo: 'os' }
     })
 
-    // abastecimentos sem OS vinculada
     const linhasAbastecimento = abastecimentos
       .filter((a) => !a.serviceOrder)
       .map((a) => ({ os: null, refueling: a, tipo: 'abastecimento' }))
@@ -48,8 +68,9 @@ onMounted(() => carregarTodos())
 function formatarHora(dataISO) {
   if (!dataISO) return '-'
   const [, hora] = dataISO.split('T')
-  return hora.slice(0, 5) // pega só HH:mm
+  return hora.slice(0, 5)
 }
+
 function formatarData(dataISO) {
   if (!dataISO) return '-'
   const [data] = dataISO.split('T')
@@ -65,30 +86,60 @@ function formatarValor(valor) {
   }).format(valor)
 }
 
+const fmt = (d) => new Date(d).toISOString().split('T')[0]
+
 watch(
   () => props.filtro,
   async (filtro) => {
     if (!filtro) {
-      carregarTodos()
+      await carregarTodos()
       return
     }
+
     carregando.value = true
     try {
+      // filtro por intervalo de datas
+      if (filtro.dataInicio && filtro.dataFim) {
+        const [ordens, abastecimentos, total] = await Promise.all([
+          ordemDeServicoService.listar(),
+          abastecimentoService.listar(),
+          ordemDeServicoService.countByInterval(fmt(filtro.dataInicio), fmt(filtro.dataFim)),
+        ])
+
+        registros.value = [
+          ...ordens.map((os) => {
+            const refueling = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
+            return { os, refueling, tipo: 'os' }
+          }),
+          ...abastecimentos
+            .filter((a) => !a.serviceOrder)
+            .map((a) => ({ os: null, refueling: a, tipo: 'abastecimento' })),
+        ]
+        return
+      }
+
+      // filtro por mês/ano
       const [ordens, abastecimentos] = await Promise.all([
         ordemDeServicoService.listarPorMes(filtro.mes + 1, filtro.ano),
         abastecimentoService.listarPorMes(filtro.mes + 1, filtro.ano),
       ])
 
-      registros.value = ordens.map((os) => {
-        const abastecimento = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
-        return { os, abastecimento }
-      })
+      registros.value = [
+        ...ordens.map((os) => {
+          const refueling = abastecimentos.find((a) => a.serviceOrder?.id === os.id)
+          return { os, refueling, tipo: 'os' }
+        }),
+        ...abastecimentos
+          .filter((a) => !a.serviceOrder)
+          .map((a) => ({ os: null, refueling: a, tipo: 'abastecimento' })),
+      ]
     } catch (error) {
       console.error('Erro:', error)
     } finally {
       carregando.value = false
     }
   },
+  { immediate: false },
 )
 </script>
 
@@ -96,10 +147,33 @@ watch(
   <div class="tabela">
     <button
       v-if="registrosFiltrados.length > 0"
-      @click="ordemDeServicoService.exportarCsv(props.filtro?.mes, props.filtro?.ano)"
+      @click="ordemDeServicoService.exportarCsv(props.filtro, activeCategory)"
     >
       Exportar tabela
     </button>
+    <div class="category-btns">
+      <button
+        @click="activeCategory = 'os'"
+        class="btn-1"
+        :class="{ selected: activeCategory === 'os' }"
+      >
+        Ocorrências
+      </button>
+      <button
+        @click="activeCategory = 'all'"
+        class="btn-2"
+        :class="{ selected: activeCategory === 'all' }"
+      >
+        Todos
+      </button>
+      <button
+        @click="activeCategory = 'abastecimento'"
+        class="btn-3"
+        :class="{ selected: activeCategory === 'abastecimento' }"
+      >
+        Abastecimentos
+      </button>
+    </div>
 
     <p v-if="carregando">Carregando...</p>
 
@@ -107,38 +181,77 @@ watch(
       <thead>
         <tr>
           <th>Viatura</th>
-          <th>Ocorrência</th>
-          <th>Justificativa</th>
-          <th>Requisitante</th>
-          <th>Destino</th>
-          <th>KM de saída</th>
-          <th>KM de chegada</th>
-          <th>Horário saída</th>
-          <th>Horário chegada</th>
-          <th>Data saída</th>
-          <th>Data chegada</th>
-          <!-- Abastecimento -->
-          <th>Litros</th>
-          <th>Valor</th>
-          <th>Nota fiscal</th>
+          <th v-if="activeCategory !== 'abastecimento'">Ocorrência</th>
+          <th v-if="activeCategory !== 'abastecimento'">Justificativa</th>
+          <th v-if="activeCategory !== 'abastecimento'">Requisitante</th>
+          <th v-if="activeCategory !== 'abastecimento'">Destino</th>
+          <th v-if="activeCategory !== 'abastecimento'">KM de saída</th>
+          <th v-if="activeCategory !== 'abastecimento'">KM de chegada</th>
+          <th v-if="activeCategory !== 'abastecimento'">Horário saída</th>
+          <th v-if="activeCategory !== 'abastecimento'">Horário chegada</th>
+          <th v-if="activeCategory !== 'abastecimento'">Data saída</th>
+          <th v-if="activeCategory !== 'abastecimento'">Data chegada</th>
+          <th v-if="activeCategory !== 'os'">Litros</th>
+          <th v-if="activeCategory !== 'os'">Valor</th>
+          <th v-if="activeCategory !== 'os'">Nota fiscal</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="(reg, i) in registrosFiltrados" :key="i">
-          <td>{{ reg.tipo === 'os' ? `${reg.os.vehicle.prefix} - ${reg.os.vehicle.model.modelName}` : reg.refueling?.vehicle?.prefix }}</td>
-          <td>{{ reg.tipo === 'os' ? reg.os.serviceType : 'Abastecimento' }}</td>
-          <td>{{ reg.os?.justification ?? '-' }}</td>
-          <td>{{ reg.os?.requester ?? '-' }}</td>
-          <td>{{ reg.os?.destinationLocation ?? '-' }}</td>
-          <td>{{ reg.os?.departureKm ?? '-' }}</td>
-          <td>{{ reg.os?.arrivalKm ?? '-' }}</td>
-          <td>{{ reg.tipo === 'os' ? formatarHora(reg.os.departureDate) : formatarHora(reg.refueling?.dateTime) }}</td>
-          <td>{{ formatarHora(reg.os?.returnDate) }}</td>
-          <td>{{ reg.tipo === 'os' ? formatarData(reg.os.departureDate) : formatarData(reg.refueling?.dateTime) }}</td>
-          <td>{{ formatarData(reg.os?.returnDate) }}</td>
-          <td>{{ reg.refueling?.liters ?? '-' }}</td>
-          <td>{{ reg.refueling ? formatarValor(reg.refueling.totalValue) : '-' }}</td>
-          <td>{{ reg.refueling?.receiptNumber ?? '-' }}</td>
+          <td>
+            {{
+              reg.tipo === 'os'
+                ? `${reg.os.vehicle.prefix} - ${reg.os.vehicle.model.modelName}`
+                : reg.refueling?.vehicle?.prefix
+            }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ reg.tipo === 'os' ? reg.os.serviceType : 'Abastecimento' }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ reg.os?.justification ?? '-' }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ reg.os?.requester ?? '-' }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ reg.os?.destinationLocation ?? '-' }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ reg.os?.departureKm ?? '-' }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ reg.os?.arrivalKm ?? '-' }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{
+              reg.tipo === 'os'
+                ? formatarHora(reg.os.departureDate)
+                : formatarHora(reg.refueling?.dateTime)
+            }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ formatarHora(reg.os?.returnDate) }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{
+              reg.tipo === 'os'
+                ? formatarData(reg.os.departureDate)
+                : formatarData(reg.refueling?.dateTime)
+            }}
+          </td>
+          <td v-if="activeCategory !== 'abastecimento'">
+            {{ formatarData(reg.os?.returnDate) }}
+          </td>
+          <td v-if="activeCategory !== 'os'">
+            {{ reg.refueling?.liters ?? '-' }}
+          </td>
+          <td v-if="activeCategory !== 'os'">
+            {{ reg.refueling ? formatarValor(reg.refueling.totalValue) : '-' }}
+          </td>
+          <td v-if="activeCategory !== 'os'">
+            {{ reg.refueling?.receiptNumber ?? '-' }}
+          </td>
         </tr>
       </tbody>
     </table>
@@ -146,36 +259,6 @@ watch(
     <p class="info" v-else>Sem informação</p>
   </div>
 </template>
-<!--    <button v-if="corpo_tabela.length > 0" v-on:click="exportarTabela">Exportar tabela</button>-->
-<!--    <table v-if="corpo_tabela.length > 0">-->
-<!--      <thead>-->
-<!--        <tr>-->
-
-<!--        <tr v-for="linha in corpo_tabela" :key="linha.id">-->
-<!--          <td>{{ linha.viatura }}</td>-->
-
-<!--          <td>{{ linha.ocorrencia }}</td>-->
-<!--          <td>{{ linha.justificativa }}</td>-->
-<!--          <td>{{ linha.requisitante }}</td>-->
-<!--          <td>{{ linha.destino }}</td>-->
-
-<!--          <td>{{ linha.km_saida }}</td>-->
-<!--          <td>{{ linha.km_chegada }}</td>-->
-<!--          <td>{{ linha.hr_saida }}</td>-->
-<!--          <td>{{ linha.hr_chegada }}</td>-->
-<!--          <td>{{ linha.data_saida }}</td>-->
-<!--          <td>{{ linha.data_chegada }}</td>-->
-
-<!--          <td>{{ linha.litros }}</td>-->
-<!--          <td>{{ linha.valor }}</td>-->
-<!--          <td>{{ linha.nota_fiscal }}</td>-->
-<!--          &lt;!&ndash; ... &ndash;&gt;-->
-<!--        </tr>-->
-<!--      </tbody>-->
-<!--    </table>-->
-<!--    <p class="info" v-else>Sem informação</p>-->
-<!--  </div>-->
-<!--</template>-->
 
 <style scoped>
 @import '@/assets/style.css';
@@ -186,9 +269,48 @@ watch(
   width: 100%;
   overflow-x: auto;
 }
-.info {
+
+.total-intervalo {
   align-self: center;
+  margin: 6px 0;
+  font-size: 13px;
+  color: #003366;
 }
+
+.category-btns {
+  align-self: center;
+  display: flex;
+  gap: 2px;
+}
+
+.btn-1,
+.btn-2,
+.btn-3 {
+  display: flex;
+  margin: 10px 0 0 0;
+  width: 120px;
+  height: 30px;
+  font-size: 15px;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s;
+  opacity: 0.6;
+}
+
+.btn-1:hover,
+.btn-2:hover,
+.btn-3:hover { opacity: 1; }
+
+.btn-1.selected,
+.btn-2.selected,
+.btn-3.selected { opacity: 1; }
+
+.btn-1 { border-radius: 10px 0 0 10px; }
+.btn-2 { border-radius: 0; }
+.btn-3 { border-radius: 0 10px 10px 0; }
+
+.info { align-self: center; }
+
 button {
   padding: 10px;
   margin: 10px;
@@ -199,23 +321,24 @@ button {
   width: fit-content;
   cursor: pointer;
 }
+
 table {
   margin-top: 20px;
   border-collapse: collapse;
   max-width: 100%;
   table-layout: fixed;
 }
-td,
-th {
+
+td, th {
   border: 1px solid #ddd;
   font-size: 11px;
   padding-right: 2px;
   padding-left: 2px;
 }
+
 th:nth-child(6),
-th:nth-child(7) {
-  max-width: 55px;
-}
+th:nth-child(7) { max-width: 55px; }
+
 td {
   padding-top: 5px;
   padding-bottom: 5px;
@@ -225,6 +348,7 @@ td {
   max-width: 50px;
   text-align: center;
 }
+
 tbody tr:hover td {
   background-color: #7aa6cc;
   transition: 0.1s;
