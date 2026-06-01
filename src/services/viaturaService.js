@@ -29,4 +29,8 @@ export const viaturaService = {
     const response = await api.get('/vehicles/status')
     return response.data
   },
+  async getConsumoMedio(id) {
+  const response = await api.get(`/vehicles/${id}/average-consumption`)
+  return response.data
+  },
 }
