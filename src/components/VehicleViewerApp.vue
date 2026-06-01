@@ -37,10 +37,17 @@ async function carregarTodos() {
 
 function refinarPalavra(palavra) {
   switch (palavra) {
-    case 'UTILITARIO': palavra = 'UTILITÁRIO'; break
-    case 'DISPONIVEL': palavra = 'DISPONÍVEL'; break
-    case 'MANUTENCAO': palavra = 'MANUTENÇÃO'; break
-    case 'GNV': return 'GNV'
+    case 'UTILITARIO':
+      palavra = 'UTILITÁRIO'
+      break
+    case 'DISPONIVEL':
+      palavra = 'DISPONÍVEL'
+      break
+    case 'MANUTENCAO':
+      palavra = 'MANUTENÇÃO'
+      break
+    case 'GNV':
+      return 'GNV'
   }
   palavra = palavra.replace('_', ' ')
   palavra = palavra.toLowerCase()
@@ -58,7 +65,14 @@ const registrosFiltrados = computed(() => {
       !marca_filtro.value || r.brand.toLowerCase().includes(marca_filtro.value.toLowerCase())
     const encontrarCombustivel =
       !combustivel_filtro.value || r.fuelType === combustivel_filtro.value
-    return encontrarStatus && encontrarBusca && encontrarMarca && encontrarTipo && encontrarCombustivel && ocultarStatus
+    return (
+      encontrarStatus &&
+      encontrarBusca &&
+      encontrarMarca &&
+      encontrarTipo &&
+      encontrarCombustivel &&
+      ocultarStatus
+    )
   })
 })
 
@@ -98,8 +112,16 @@ defineExpose({ carregarTodos })
   <div class="cards-wrapper">
     <div class="card">
       <div class="card-icon icon-disponivel">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm-1 14.41-3.71-3.7 1.42-1.42L11 13.59l5.29-5.3 1.42 1.42L11 16.41z"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width="22"
+          height="22"
+        >
+          <path
+            d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm-1 14.41-3.71-3.7 1.42-1.42L11 13.59l5.29-5.3 1.42 1.42L11 16.41z"
+          />
         </svg>
       </div>
       <div class="card-info">
@@ -110,8 +132,16 @@ defineExpose({ carregarTodos })
 
     <div class="card">
       <div class="card-icon icon-emuso">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width="22"
+          height="22"
+        >
+          <path
+            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"
+          />
         </svg>
       </div>
       <div class="card-info">
@@ -122,8 +152,16 @@ defineExpose({ carregarTodos })
 
     <div class="card">
       <div class="card-icon icon-manutencao">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-          <path d="M22.7 19l-9.1-9.1A6 6 0 0 0 4.5 3.4L8 6.9 6.9 8 3.4 4.5A6 6 0 0 0 9.9 13.6l9.1 9.1a1 1 0 0 0 1.4 0l2.3-2.3a1 1 0 0 0 0-1.4z"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width="22"
+          height="22"
+        >
+          <path
+            d="M22.7 19l-9.1-9.1A6 6 0 0 0 4.5 3.4L8 6.9 6.9 8 3.4 4.5A6 6 0 0 0 9.9 13.6l9.1 9.1a1 1 0 0 0 1.4 0l2.3-2.3a1 1 0 0 0 0-1.4z"
+          />
         </svg>
       </div>
       <div class="card-info">
@@ -134,8 +172,16 @@ defineExpose({ carregarTodos })
 
     <div class="card">
       <div class="card-icon icon-desativada">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zM4 12a8 8 0 0 1 11.29-7.29L4.71 16.29A7.96 7.96 0 0 1 4 12zm8 8a7.96 7.96 0 0 1-4.29-1.71L19.29 7a8 8 0 0 1-7.29 11z"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          width="22"
+          height="22"
+        >
+          <path
+            d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zM4 12a8 8 0 0 1 11.29-7.29L4.71 16.29A7.96 7.96 0 0 1 4 12zm8 8a7.96 7.96 0 0 1-4.29-1.71L19.29 7a8 8 0 0 1-7.29 11z"
+          />
         </svg>
       </div>
       <div class="card-info">
@@ -146,16 +192,26 @@ defineExpose({ carregarTodos })
   </div>
 
   <div class="btn-wrapper">
-    <button class="btn-cadastrar" @click="$emit('cadastrar')">Cadastrar nova viatura</button>
+    <button class="btn-cadastrar" @click="$emit('abrirModal')">Cadastrar nova viatura</button>
   </div>
 
   <div class="container_tabela">
     <div class="searchHeader">
       <div class="searchBar">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-             stroke-width="1.5" stroke="currentColor" height="20" width="20">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          height="20"
+          width="20"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
         </svg>
         <input type="search" placeholder="Buscar pelo prefixo" v-model="busca_filtro" />
       </div>
@@ -188,38 +244,43 @@ defineExpose({ carregarTodos })
 
     <table class="tabela-desktop" v-else>
       <thead>
-      <tr>
-        <th>Prefixo</th>
-        <th>Modelo</th>
-        <th>Status</th>
-        <th>Mais Informações</th>
-        <th>Avisos</th>
-      </tr>
+        <tr>
+          <th>Prefixo</th>
+          <th>Modelo</th>
+          <th>Status</th>
+          <th>Mais Informações</th>
+          <th>Avisos</th>
+        </tr>
       </thead>
       <tbody>
-      <tr v-for="reg in registrosFiltrados" :key="reg.id">
-        <td>{{ reg.prefix }}</td>
-        <td>{{ reg.brand }} {{ reg.model }}</td>
-        <td><span class="status-color" :class="reg.status" :title="reg.status"></span></td>
-        <td><span class="more-info-btn" @click="openInfo(reg)">•••</span></td>
-        <td>
-          <div
-            class="warning-btn"
-            :class="{ ativo: precisaManutencao(reg.km) }"
-            @click="openAviso(reg)"
-          >
-            !
-          </div>
-        </td>
-      </tr>
+        <tr v-for="reg in registrosFiltrados" :key="reg.id">
+          <td>{{ reg.prefix }}</td>
+          <td>{{ reg.brand }} {{ reg.model }}</td>
+          <td><span class="status-color" :class="reg.status" :title="reg.status"></span></td>
+          <td><span class="more-info-btn" @click="openInfo(reg)">•••</span></td>
+          <td>
+            <div
+              class="warning-btn"
+              :class="{ ativo: precisaManutencao(reg.km) }"
+              @click="openAviso(reg)"
+            >
+              !
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
 
     <div class="lista-mobile" v-if="registrosFiltrados.length > 0">
-      <div class="card-viatura" v-for="reg in registrosFiltrados" :key="reg.id" @click="openInfo(reg)">
+      <div
+        class="card-viatura"
+        v-for="reg in registrosFiltrados"
+        :key="reg.id"
+        @click="openInfo(reg)"
+      >
         <div class="card-viatura-header">
           <span class="card-viatura-prefix">{{ reg.prefix }}</span>
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px">
             <div
               class="warning-btn"
               :class="{ ativo: precisaManutencao(reg.km) }"
@@ -231,7 +292,9 @@ defineExpose({ carregarTodos })
           </div>
         </div>
         <span class="card-viatura-model">{{ reg.brand }} {{ reg.model }}</span>
-        <span class="card-viatura-tipo">{{ refinarPalavra(reg.type) }} · {{ refinarPalavra(reg.fuelType) }}</span>
+        <span class="card-viatura-tipo"
+          >{{ refinarPalavra(reg.type) }} · {{ refinarPalavra(reg.fuelType) }}</span
+        >
       </div>
     </div>
   </div>
@@ -255,7 +318,21 @@ defineExpose({ carregarTodos })
         <span class="info-label">Quilometragem</span>
         <span class="info-value">{{ viaturaInfo.km }} km</span>
       </div>
-      <button class="btn-edit" @click="() => { edit(viaturaInfo); closeInfo() }">Editar</button>
+      <div class="info-line">
+        <span class="info-label">CNH necessária</span>
+        <span class="info-value">{{ viaturaInfo.tipoCnhNecessaria }}</span>
+      </div>
+      <button
+        class="btn-edit"
+        @click="
+          () => {
+            edit(viaturaInfo)
+            closeInfo()
+          }
+        "
+      >
+        Editar
+      </button>
       <button class="btn-close" @click="closeInfo">X</button>
     </div>
   </div>
@@ -267,15 +344,12 @@ defineExpose({ carregarTodos })
       <div v-if="precisaManutencao(avisoInfo.km)" class="info-line">
         <span class="info-label">Manutenção preventiva</span>
         <span class="info-value">
-          Viatura atingiu {{ avisoInfo.km }} km.
-          Necessária manutenção.
+          Viatura atingiu {{ avisoInfo.km }} km. Necessária manutenção.
         </span>
       </div>
 
       <div v-else class="info-line">
-        <span class="info-value">
-          Nenhum aviso disponível.
-        </span>
+        <span class="info-value"> Nenhum aviso disponível. </span>
       </div>
 
       <button class="btn-close" @click="closeAviso">X</button>
@@ -316,12 +390,28 @@ defineExpose({ carregarTodos })
   flex-shrink: 0;
 }
 
-.icon-disponivel { background: #d6f5e6; color: #1aab5e; }
-.icon-emuso      { background: #fff0dc; color: #d97706; }
-.icon-manutencao { background: #ffe2e0; color: #e53935; }
-.icon-desativada { background: #ececec; color: #888888; }
+.icon-disponivel {
+  background: #d6f5e6;
+  color: #1aab5e;
+}
+.icon-emuso {
+  background: #fff0dc;
+  color: #d97706;
+}
+.icon-manutencao {
+  background: #ffe2e0;
+  color: #e53935;
+}
+.icon-desativada {
+  background: #ececec;
+  color: #888888;
+}
 
-.card-info { display: flex; flex-direction: column; gap: 2px; }
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
 .card-label {
   font-size: 10px;
@@ -338,10 +428,18 @@ defineExpose({ carregarTodos })
   line-height: 1;
 }
 
-.card-green  { color: #1aab5e; }
-.card-orange { color: #d97706; }
-.card-red    { color: #e53935; }
-.card-gray   { color: #999; }
+.card-green {
+  color: #1aab5e;
+}
+.card-orange {
+  color: #d97706;
+}
+.card-red {
+  color: #e53935;
+}
+.card-gray {
+  color: #999;
+}
 
 .btn-wrapper {
   width: 80%;
@@ -357,7 +455,9 @@ defineExpose({ carregarTodos })
   cursor: pointer;
 }
 
-.btn-cadastrar:hover { background-color: #457aad; }
+.btn-cadastrar:hover {
+  background-color: #457aad;
+}
 
 .searchHeader {
   display: flex;
@@ -365,7 +465,10 @@ defineExpose({ carregarTodos })
   margin-bottom: 10px;
 }
 
-.searchBar { display: flex; align-items: center; }
+.searchBar {
+  display: flex;
+  align-items: center;
+}
 
 .searchBar svg {
   background-color: #f4f6f9;
@@ -382,7 +485,9 @@ defineExpose({ carregarTodos })
   height: 100%;
 }
 
-.searchBar input:focus { outline: none; }
+.searchBar input:focus {
+  outline: none;
+}
 
 select {
   color: #003366;
@@ -390,9 +495,12 @@ select {
   margin: 0 10px;
 }
 
-.tabela-desktop { width: 100%; }
+.tabela-desktop {
+  width: 100%;
+}
 
-th, td {
+th,
+td {
   text-align: center;
   vertical-align: middle;
   height: 40px;
@@ -405,10 +513,18 @@ th, td {
   border-radius: 50%;
 }
 
-.DISPONIVEL { background: #d6f5e6; }
-.EM_USO     { background: #fff0dc; }
-.MANUTENCAO { background: #ffe2e0; }
-.DESATIVADA { background: #ececec; }
+.DISPONIVEL {
+  background: #d6f5e6;
+}
+.EM_USO {
+  background: #fff0dc;
+}
+.MANUTENCAO {
+  background: #ffe2e0;
+}
+.DESATIVADA {
+  background: #ececec;
+}
 
 .more-info-btn {
   color: #624de3;
@@ -432,9 +548,13 @@ th, td {
   transition: 0.2s;
 }
 
-.warning-btn:hover { transform: scale(1.1); }
+.warning-btn:hover {
+  transform: scale(1.1);
+}
 
-.warning-btn.ativo { background-color: #ff0000; }
+.warning-btn.ativo {
+  background-color: #ff0000;
+}
 
 .overlay {
   position: fixed;
@@ -474,8 +594,15 @@ th, td {
   border-bottom: 1px solid #f0f0f0;
 }
 
-.info-label { font-weight: 600; color: #555; font-size: 14px; }
-.info-value { color: #222; font-size: 14px; }
+.info-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+.info-value {
+  color: #222;
+  font-size: 14px;
+}
 
 .btn-edit {
   width: 100%;
@@ -498,7 +625,9 @@ th, td {
   font-size: 18px;
 }
 
-.lista-mobile { display: none; }
+.lista-mobile {
+  display: none;
+}
 
 .card-viatura {
   display: flex;
@@ -518,9 +647,20 @@ th, td {
   align-items: center;
 }
 
-.card-viatura-prefix { font-weight: 700; font-size: 15px; color: #003366; }
-.card-viatura-model  { font-size: 13px; color: #444; }
-.card-viatura-tipo   { font-size: 11px; color: #999; margin-top: 2px; }
+.card-viatura-prefix {
+  font-weight: 700;
+  font-size: 15px;
+  color: #003366;
+}
+.card-viatura-model {
+  font-size: 13px;
+  color: #444;
+}
+.card-viatura-tipo {
+  font-size: 11px;
+  color: #999;
+  margin-top: 2px;
+}
 
 @media (max-width: 600px) {
   .cards-wrapper {
@@ -535,7 +675,9 @@ th, td {
     padding: 12px;
   }
 
-  .card-value { font-size: 20px; }
+  .card-value {
+    font-size: 20px;
+  }
 
   .btn-cadastrar {
     width: 100%;
@@ -554,9 +696,17 @@ th, td {
     align-items: stretch;
   }
 
-  .searchBar { height: 38px; }
-  .searchBar svg { height: 38px; width: 38px; }
-  .searchBar input { height: 38px; font-size: 14px; }
+  .searchBar {
+    height: 38px;
+  }
+  .searchBar svg {
+    height: 38px;
+    width: 38px;
+  }
+  .searchBar input {
+    height: 38px;
+    font-size: 14px;
+  }
 
   .filtros {
     display: grid;
@@ -571,11 +721,19 @@ th, td {
     padding: 0 6px;
   }
 
-  .tabela-desktop { display: none; }
-  .lista-mobile   { display: block; }
+  .tabela-desktop {
+    display: none;
+  }
+  .lista-mobile {
+    display: block;
+  }
 
-  .modal-info { padding: 28px 18px; }
+  .modal-info {
+    padding: 28px 18px;
+  }
 
-  .warning-btn { margin: 0; }
+  .warning-btn {
+    margin: 0;
+  }
 }
 </style>
