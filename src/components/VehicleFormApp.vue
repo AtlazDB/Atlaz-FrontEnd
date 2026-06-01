@@ -21,6 +21,8 @@ const erros = ref({})
 const showNovoModelo = ref(false)
 const novoModeloNome = ref('')
 const novoModeloMarca = ref('')
+const cnh = ref('')
+const cnhList = ['A', 'B', 'C', 'D', 'E']
 
 const carregando = ref(false)
 
@@ -84,6 +86,7 @@ async function openForm(dados = null, altType = 'cadastro') {
   combustivel.value = dados?.fuelType ?? 'GASOLINA'
   quilometragem.value = dados?.km ?? 0
   status.value = dados?.status ?? 'DISPONIVEL'
+  cnh.value = dados?.tipoCnhNecessaria ?? ''
   tipoAlteracao.value = altType
 }
 
@@ -99,6 +102,7 @@ function validateForm() {
   if (!combustivel.value) e.combustivel = true
   if (quilometragem.value === '') e.quilometragem = true
   if (!status.value) e.status = true
+  if (!cnh.value) e.cnh = true
   erros.value = e
   return Object.keys(e).length === 0
 }
@@ -119,16 +123,14 @@ async function submitForm() {
     status: status.value,
     fuelType: combustivel.value,
     km: quilometragem.value,
+    tipoCnhNecessaria: cnh.value,
   }
-  console.log('ok')
   try {
     if (tipoAlteracao.value === 'cadastro') {
       await viaturaService.criar(viatura)
     } else if (tipoAlteracao.value === 'edicao') {
-      console.log('okok')
       await viaturaService.atualizar(viatura.id, viatura)
     }
-    console.log('okokok')
     emit('saved') // avisa o pai para recarregar a lista
     closeForm()
   } catch (e) {
@@ -257,9 +259,18 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="campo">
-        <label>Quilometragem do veículo</label>
-        <input class="ipt-field" type="number" v-model="quilometragem" />
+      <div class="linha">
+        <div class="campo">
+          <label>Quilometragem do veículo</label>
+          <input class="ipt-field" type="number" v-model="quilometragem" />
+        </div>
+        <div class="campo">
+          <label>CNH necessária</label>
+          <select class="sct-field" v-model="cnh" :class="{ erro: erros.cnh }">
+            <option disabled value="">Selecione...</option>
+            <option v-for="c in cnhList" :key="c" :value="c">{{ c }}</option>
+          </select>
+        </div>
       </div>
 
       <div class="campo">

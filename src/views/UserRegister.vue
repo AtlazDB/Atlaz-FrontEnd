@@ -4,6 +4,8 @@ import UserViewerApp from '@/components/UserViewerApp.vue'
 import UserFormApp from '@/components/UserFormApp.vue'
 import { nextTick, ref } from 'vue'
 
+const userName = ref(localStorage.getItem('userName') || 'Administrador')
+
 const showForm = ref(false)
 
 const id = ref(0)
@@ -51,7 +53,7 @@ async function openForm(dados = null, tipoAlt = 'cadastro') {
 
 <template>
   <div class="tela">
-    <Sidebar nome="William Hasan" cargo="Administrador" userType="admin" />
+    <Sidebar :nome="userName" cargo="Administrador" userType="admin" />
 
      <div class="componente">
       <h1 class="titulo">Técnicos cadastrados</h1>

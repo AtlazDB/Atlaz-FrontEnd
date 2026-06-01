@@ -174,10 +174,6 @@ onMounted(carregarTodos)
         <span class="info-value">{{ userInfo.email }}</span>
       </div>
       <div class="info-line">
-        <span class="info-label">Senha</span>
-        <span class="info-value">{{ userInfo.passwordHash }}</span>
-      </div>
-      <div class="info-line">
         <span class="info-label">CNH</span>
         <span class="info-value">{{ userInfo.cnhTypes.sort().join(', ') || '-' }}</span>
       </div>
