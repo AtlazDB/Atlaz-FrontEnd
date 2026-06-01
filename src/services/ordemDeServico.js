@@ -1,5 +1,7 @@
 import api from './api';
 
+const fmt = (d) => new Date(d).toISOString().split('T')[0]
+
 export const ordemDeServicoService = {
   async salvar(dados) {
     const response = await api.post('/service-orders', dados);
@@ -25,23 +27,45 @@ export const ordemDeServicoService = {
     const response = await api.delete(`/service-orders/${id}`);
     return response.data;
   },
+
   async listaTipos() {
     const response = await api.get('/service-orders/occurrence-types');
     return response.data;
   },
 
-  listarPorMes: (mes, ano) => api.get('/service-orders/by-month', { params: { mes, ano } }).then(r => r.data),
+  listarPorMes: (mes, ano) =>
+    api.get('/service-orders/by-month', { params: { mes, ano } }).then((r) => r.data),
 
-  exportarCsv: async (mes, ano) => {
-    const params = mes != null ? `?mes=${mes + 1}&ano=${ano}` : ''
-    const nomeMes = mes != null ? `_${ano}_${String(mes + 1).padStart(2, '0')}` : ''
-    const response = await api.get(`/service-orders/csv${params}`, { responseType: 'blob' })
+  async exportarCsv(filtro, categoria) {
+    const params = new URLSearchParams()
 
-    const url = URL.createObjectURL(response.data)
+    if (filtro?.dataInicio && filtro?.dataFim) {
+      params.set('dataInicio', fmt(filtro.dataInicio))
+      params.set('dataFim', fmt(filtro.dataFim))
+    } else if (filtro?.mes != null) {
+      params.set('month', filtro.mes + 1)
+      params.set('year', filtro.ano)
+    }
+
+    if (categoria && categoria !== 'all') {
+      params.set('categoria', categoria)
+    }
+
+    const response = await api.get(`/service-orders/csv?${params}`, {
+      responseType: 'blob',
+    })
+
+    const url = URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
     link.href = url
-    link.download = `registros${nomeMes}.csv`
+    link.download = 'records.csv'
     link.click()
     URL.revokeObjectURL(url)
-  }
-};
+  },
+
+  async countByInterval(dataInicio, dataFim) {
+    const params = new URLSearchParams({ dataInicio, dataFim })
+    const response = await api.get(`/service-orders/count-by-interval?${params}`)
+    return response.data
+  },
+}

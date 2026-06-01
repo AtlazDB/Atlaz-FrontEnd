@@ -465,7 +465,7 @@ computed: {
       return `${ano}-${mes}-${dia}T${horaFormatada}:00`;
     },
 
-    exibirMensagem(mensagem, tipo) {
+    exibirMensagem(mensagem) {
       alert(mensagem);
     },
 
@@ -594,7 +594,8 @@ computed: {
   max-width: 900px;
   padding: 30px;
 }
-.form-box > h1 {
+
+ .form-box > h1 {
   color: #003366;
   font-size: 2rem;
   margin-bottom: 30px;
@@ -605,7 +606,6 @@ computed: {
   display: grid;
   gap: 30px;
 }
-
 
 .card-saida,
 .card-chegada{

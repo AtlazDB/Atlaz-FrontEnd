@@ -32,60 +32,52 @@
       <span class="cargo">{{ cargo }}</span>
     </div>
 
-    <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('formulario')">
-      <span class="icon">📄</span>
-      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Ocorrência</span>
-    </button>
+    <div class="btn-wrapper">
+      <!-- Técnico -->
+      <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('formulario')">
+        <span class="icon">📄</span>
+        <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Ocorrência</span>
+      </button>
 
-     <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('abastecimento')">
-      <span class="icon">⛽</span>
-      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Abastecimento</span>
-    </button>
+      <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('abastecimento')">
+        <span class="icon">⛽</span>
+        <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Abastecimento</span>
+      </button>
 
-    <button
-      v-if="userType === 'admin'"
-      class="menu menu-principal"
-      @click="handleMenuClick('principal')"
-    >
-      <span class="icon">📊</span>
-      <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Principal</span>
-    </button>
-    <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
-      🚙 Viaturas
-    </button>
-    <button @click="handleMenuClick('tecnicos')" v-if="userType === 'admin'" class="menu">
-      👨‍🔧 Tecnicos
-    </button>
-    <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
-      📈 Relatorios
-    </button>
+      <button v-if="userType === 'tecnico'" class="menu" @click="handleMenuClick('historico')">
+        <span class="icon">📈</span>
+        <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }"
+          >Histórico</span
+        >
+      </button>
+
+      <!-- Administrador -->
+      <button v-if="userType === 'admin'" class="menu" @click="handleMenuClick('principal')">
+        <span class="icon">📊</span>
+        <span class="text_btn" :class="{ hidden: isMinimized && !isMobile }">Dashboard</span>
+      </button>
+      <button @click="handleMenuClick('viaturas')" v-if="userType === 'admin'" class="menu">
+        🚙 Viaturas
+      </button>
+      <button @click="handleMenuClick('tecnicos')" v-if="userType === 'admin'" class="menu">
+        👨‍🔧 Técnicos
+      </button>
+      <button @click="handleMenuClick('relatorios')" v-if="userType === 'admin'" class="menu">
+        📈 Relatórios
+      </button>
+    </div>
     <button @click="handleMenuClick('Login')" class="logout">
-      <svg
-        width="30"
-        height="30"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="2"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-        />
-      </svg>
+      <ExitIcon />
       Logout
     </button>
   </div>
 </template>
 
 <script>
-//import { useRouter } from 'vue-router'
-//const router = useRouter()
-
+import ExitIcon from '@/assets/icons/ExitIcon.vue'
 export default {
   name: 'Sidebar',
+  components: { ExitIcon },
   props: {
     nome: {
       type: String,
@@ -131,9 +123,11 @@ export default {
       } else if (tipo === 'relatorios') {
         this.$router.push({ name: 'relatorios' })
       } else if (tipo === 'Login') {
-        this.$router.push({name: 'Login'})
+        this.$router.push({ name: 'Login' })
       } else if (tipo === 'tecnicos') {
-        this.$router.push({name: 'tecnicos'})
+        this.$router.push({ name: 'tecnicos' })
+      } else if (tipo === 'historico') {
+        this.$router.push({ name: 'ocorrecias' })
       }
     },
 
@@ -155,7 +149,7 @@ export default {
     this.checkMobile()
     window.addEventListener('resize', this.checkMobile)
   },
-  beforeDestroy() {
+  beforeUnmount() {
     window.removeEventListener('resize', this.checkMobile)
     document.body.style.overflow = ''
   },
@@ -182,6 +176,15 @@ export default {
   transition: all 0.3s ease;
 }
 
+.btn-wrapper {
+  justify-content: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  gap: 6vh;
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -196,6 +199,7 @@ export default {
 .sidebar.desktop-sidebar {
   position: sticky;
   top: 0;
+  left: 0;
   width: 240px;
   background-color: #003366;
   color: white;
@@ -216,6 +220,7 @@ export default {
     left: -280px;
     width: 280px;
     height: 100vh;
+    min-height: 100vh;
     background-color: #003366;
     color: white;
     display: flex;
@@ -257,13 +262,14 @@ export default {
   }
 
   .perfil {
+    max-height: 100px;
     margin-top: 20px;
   }
 
   .menu {
+    flex: 1;
     width: 90%;
     justify-content: center;
-    margin-top: 30px;
   }
 }
 
@@ -280,6 +286,8 @@ export default {
 }
 
 .perfil {
+  margin-top: -5vh;
+  flex-shrink: 0;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -300,7 +308,8 @@ export default {
 }
 
 .menu {
-  margin-top: 50px;
+  flex: 1;
+  max-height: 50px;
   background-color: #7aa6cc;
   color: white;
   border: none;
@@ -309,9 +318,10 @@ export default {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
   transition: all 0.3s ease;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  font-size: 13px;
   width: 170px;
   justify-content: center;
 }
@@ -322,18 +332,17 @@ export default {
 }
 
 .logout {
-  position: fixed;
-  bottom: 10vh;
   display: flex;
   align-items: center;
-  gap: 5px;
-
   color: white;
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
-  background-color: transparent;
   border: none;
   cursor: pointer;
+  flex-shrink: 0;
+  //margin-top: auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 </style>
