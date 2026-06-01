@@ -58,8 +58,8 @@
 
             <tbody>
               <tr v-for="registro in registrosFiltrados" :key="registro.id">
-                <td>{{ registro.destination }}</td>
-                <td>{{ formatarData(registro.dateTime) }}</td>
+                <td>{{ registro.destinationLocation }}</td>
+                <td>{{ formatarData(registro.departureDate) }}</td>
                 <td>{{ registro.vehicle?.prefix }}</td>
                 <td>
                   <span class="more-info-btn" @click="openInfo(registro)">•••</span>
@@ -76,7 +76,7 @@
               <div class="row">
                 <div class="field">
                   <label>Tipo de Ocorrência</label>
-                  <input type="text" :value="registroSelecionado.occurrenceType ?? '-'" disabled />
+                  <input type="text" :value="registroSelecionado.serviceType ?? '-'" disabled />
                 </div>
                 <div class="field">
                   <label>Requisitante</label>
@@ -87,7 +87,7 @@
               <div class="row">
                 <div class="field">
                   <label>Destino</label>
-                  <input type="text" :value="registroSelecionado.destination ?? '-'" disabled />
+                  <input type="text" :value="registroSelecionado.destinationLocation ?? '-'" disabled />
                 </div>
                 <div class="field">
                   <label>Viatura</label>
@@ -100,7 +100,7 @@
                   <label>Data Saída</label>
                   <input
                     type="text"
-                    :value="formatarData(registroSelecionado.departureDateTime)"
+                    :value="formatarData(registroSelecionado.departureDate)"
                     disabled
                   />
                 </div>
@@ -108,7 +108,7 @@
                   <label>Hora Saída</label>
                   <input
                     type="text"
-                    :value="formatarHora(registroSelecionado.departureDateTime)"
+                    :value="formatarHora(registroSelecionado.departureDate)"
                     disabled
                   />
                 </div>
@@ -119,7 +119,7 @@
                   <label>Data Chegada</label>
                   <input
                     type="text"
-                    :value="formatarData(registroSelecionado.arrivalDateTime)"
+                    :value="formatarData(registroSelecionado.returnDate)"
                     disabled
                   />
                 </div>
@@ -127,7 +127,7 @@
                   <label>Hora Chegada</label>
                   <input
                     type="text"
-                    :value="formatarHora(registroSelecionado.arrivalDateTime)"
+                    :value="formatarHora(registroSelecionado.returnDate)"
                     disabled
                   />
                 </div>
@@ -210,7 +210,7 @@ const registrosFiltrados = computed(() => {
     const viatura = r.vehicle?.prefix?.toLowerCase() ?? ''
     const matchViatura = viatura.includes(busca_viatura.value.toLowerCase())
 
-    const dataFormatada = formatarData(r.dateTime) // DD/MM/AAAA
+    const dataFormatada = formatarData(r.departureDate) // DD/MM/AAAA
 
     const matchInicio =
       busca_data.value.length < 10 ||
