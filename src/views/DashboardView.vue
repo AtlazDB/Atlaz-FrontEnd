@@ -39,11 +39,12 @@
         </div>
         
         <div class="bg-white border border-slate-100 shadow-sm rounded-3xl p-6 flex items-center gap-5">
-          <div class="w-14 h-14 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center text-2xl shrink-0"><i class="fas fa-gas-pump"></i></div>
+          <div class="w-14 h-14 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center text-2xl shrink-0">
+            <i class="fas fa-route"></i> </div>
           <div>
-            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Consumo Médio</p>
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Deslocamentos Concluídos</p>
             <h3 class="text-3xl font-black text-slate-900">
-              {{ metrics.averageConsum || '0.0' }} <span class="text-base font-bold text-slate-400">Km/L</span>
+              {{ metrics.completedDisplacements || '0' }}
             </h3>
           </div>
         </div>
@@ -106,7 +107,6 @@
       <div class="bg-white border border-slate-100 shadow-sm rounded-[2.5rem] p-8">
         <div class="flex justify-between items-center mb-8">
           <h4 class="text-xl font-black text-slate-800">Registros do Dia</h4>
-          <button class="text-sm font-bold text-indigo-600 hover:bg-indigo-50 px-4 py-2 rounded-xl transition-all">Ver tudo</button>
         </div>
         
         <div v-if="activities.length === 0" class="text-center py-6 text-slate-400 font-medium">
@@ -150,7 +150,7 @@ const metrics = ref({
   activeVehicles: 0,
   totalVehicles: 0,
   techniciansInField: 0,
-  averageConsum: 0,
+  completedDisplacements: 0,
   todayExpense: 0
 });
 const activities = ref([]);

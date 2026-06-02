@@ -156,6 +156,8 @@ import Sidebar from '@/views/Sidebar.vue'
 import { ref, onMounted, computed } from 'vue'
 import { ordemDeServicoService } from '@/services/ordemDeServico.js'
 
+const nomeUsuario = ref(localStorage.getItem('userName') || 'Técnico')
+
 const busca_viatura = ref('')
 const busca_data = ref('')
 const busca_data_fim = ref('')
